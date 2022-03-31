@@ -1,0 +1,122 @@
+
+ul li{list-style-type: none;}
+.product-item {
+    position: relative;
+    background-color: #f7f7f7;
+    padding-bottom: 15px;
+    max-height: inherit;
+}
+
+.product-item .product-image {
+    position: relative;
+    overflow: hidden;
+}
+
+.product-item .product-image a {
+    display: block;
+    background: #01242b;
+    margin-bottom: 15px; 
+    transition: .3s;
+}
+
+.product-item:hover .product-image a {
+    background: rgba(63, 105, 170, .5);
+}
+
+.product-item .product-image img {
+    width: 100%; 
+
+}
+
+.product-item:hover .product-image img {
+    filter: blur(5px);
+    -webkit-filter: blur(5px);
+}
+
+.product-item .product-image .product-action {
+    display: block;
+    position: absolute;
+    width: 100%;
+    height: 80px;
+    left: 0;
+    top: 50%;
+    text-align: center;
+    transition: .5s;
+    opacity: 0; 
+}
+
+.product-item:hover .product-image .product-action {
+    top: calc(50% - 25px);
+    opacity: 1; 
+}
+
+.product-item .product-image .product-action a {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    padding: 6px 0;
+    margin-right: 5px;
+    text-align: center;
+    color: #ffffff;
+    font-size: 18px;
+    background: #5c82be;
+}
+
+.product-item .product-image .product-action a:last-child {
+    margin-right: 0;
+}
+
+.product-item .product-image .product-action a:hover {
+    color: #c3d8f7;
+    background: #ffffff;
+}
+
+.product-item .product-content {
+    position: relative;
+    width: 100%;
+    text-align: center;
+    background: #f7f7f7;
+}
+
+.product-item .product-content .title,
+.product-item .product-content .ratting,
+.product-item .product-content .price {
+    position: relative;
+    width: 100%;
+}
+
+.product-item .product-content .title {
+    margin-bottom: 5px;
+}
+
+.product-item .product-content .title a {
+    color: #cdd7e6;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.product-item .product-content .ratting i {
+    font-size: 14px;
+    color: #3F69AA;
+}
+
+.product-item .product-content .price {
+    font-size: 30px;
+    color: #061327;
+    font-weight: 700; 
+}
+
+.product-item .product-content .price span {
+    margin-left: 12px;
+    text-decoration: line-through;
+    font-weight: 700;
+    color: #666666;
+}
+i#admin{color:#145580}
+i:hover{cursor: pointer;}
+button:hover{opacity:0.6}
+button#control{height:45px;width:70px}
+a{text-decoration: none;}
+.modal-header{background-color: #145580;}
+
+

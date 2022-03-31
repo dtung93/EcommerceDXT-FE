@@ -1,0 +1,33 @@
+.row{background-color: #186192;margin-left:10px;color:snow;position:relative;}
+a{text-decoration: none;list-style-type: none;color:inherit;font-size: 14px;}
+a:hover{opacity: 0.5;cursor: pointer;}
+span{font-weight:bold;font-size:25px}
+.fa{  padding: 10px;
+    font-size: 25px;
+    width: 60px;
+    text-align: center;
+    text-decoration: none;
+    margin: 5px 2px;}
+.fa-linkedin {
+    background: #007bb5;
+    color: white;
+  }
+  .fa-twitter {
+    background: #55ACEE;
+    color: white;
+  }
+  .fa-facebook {
+    background: #3B5998;
+    color: white;
+  }
+  .fa-instagram {
+    background: #125688;
+    color: white;
+  }
+  @media (max-width:500px) {
+    .footer-menu ul{
+      display: flex;
+      margin-top: 10px;
+      margin-bottom: 20px;
+    }
+    }

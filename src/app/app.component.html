@@ -1,0 +1,48 @@
+<div id="app">
+  <nav class="navbar navbar-expand-lg" style="background-color: #186192;">
+    <div class="container-fluid">
+      <a class="navbar-brand" > <button class="btn btn-default bg-white" *ngIf="isLoggedIn&&showAdminBoard||showModeratorBoard" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling" style="font-weight: bolder;font-size: 15px;"><i class="fa fa-gear"></i></button></a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a href="/home" class="nav-link" routerLinkActive="active"  routerLink="home">Home </a>
+          </li>
+          <li class="nav-item" *ngIf="!isLoggedIn"> 
+            <a href="/register" class="nav-link" routerLinkActive="active" routerLink="register">Sign Up</a>
+          </li>
+          <li class="nav-item">
+          </li>
+        </ul>
+        <form class="d-flex">
+          <a href="/login" *ngIf="!isLoggedIn" class="nav-link" routerLinkActive="active" routerLink="login">Login</a>
+          <a href="/profile" *ngIf="isLoggedIn" class="nav-link" routerLinkActive="active"routerLink="profile">Hello, {{ username }}</a>
+          <a *ngIf="isLoggedIn" href class="nav-link" (click)="logout()">LogOut</a>
+        </form>
+      </div>
+    </div>
+  </nav>
+
+</div>
+
+
+<router-outlet></router-outlet>
+<app-footer class="fixed-bottom"></app-footer>
+
+
+ <div class="offcanvas offcanvas-start " data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
+  <div class="offcanvas-header" style="background-color: #186192">
+    <h5 class="offcanvas-title" id="offcanvasScrollingLabel" style="color:snow">Control Panel</h5>
+    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">
+ <ul>
+   <li id="board" *ngIf="showAdminBoard">
+     <a href="/admin" routerLinkActive="active" routerLink="admin">Admin Board</a>
+   </li>
+   <li id="board" *ngIf="showModeratorBoard"><a  routerLinkActive="active" href="/mod" routerLink="mod">Moderator Board</a></li>
+ </ul>
+  </div>
+</div>

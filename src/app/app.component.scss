@@ -1,0 +1,35 @@
+$arial: Arial, Helvetica, sans-serif;
+.fa-gear{
+    font-size: 17px;
+}
+h1{
+color: #369;
+font-size: 250%;
+font-family: $arial;
+}
+h2,h3{
+    color:#444;
+    font-family:$arial;
+    font-weight:lighter
+}
+
+a{color:whitesmoke;}
+
+a:hover{opacity: 0.4;}
+  body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  
+  footer {
+    margin-top: auto;
+    background-color: #186192;
+  }
+
+  button#close:hover{opacity:0.7}
+  nav a:hover{cursor: pointer;text-decoration: none;color:white}
+  .offcanvas{background-color: #2179B3;width: 15rem;padding:5px}
+  ul li#board{text-decoration: none;list-style-type: none;padding:5px;font-size: 18px;}
+  .offcanvas ul li a{color:snow;text-decoration: none;}
+  .active{opacity:0.7;color:rgb(250, 251, 252);font-weight: bold;transform: scale(1.1);}

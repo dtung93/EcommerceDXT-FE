@@ -1,0 +1,64 @@
+<div class="container" *ngIf="selectedUser; else loggedOut">
+  <div class="row">
+    <h3 style="text-align: center;background-color: #145580;" class="text-white">Your profile</h3>
+  </div>
+  <p class="alert alert-primary">
+    Welcome back, <strong>{{selectedUser.username}}</strong>.<span *ngIf="isAdmin||isModerator||isMaster"> You are
+      logged in as <span *ngIf="isModerator&&!isMaster"><strong>Moderator</strong></span>
+      <span *ngIf="isAdmin"><strong>Admin</strong></span> <span *ngIf="isMaster"><strong>Master</strong></span> </span>
+  </p>
+  <p>
+    Your username:<strong>{{selectedUser.username}}</strong>
+  </p>
+  <p>
+    Email:<strong>
+      {{ selectedUser.email }}
+    </strong>
+  </p>
+  <button class="btn" style="background-color: rgb(46,113,189);color: white;" (click)="userModal()">Edit
+    profile</button>
+  <div class="modal" tabindex="-1" role="dialog" [ngStyle]="{'display':display}">
+    <div class=" modal-dialog modal-dialog-centered modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header text-white" style="background-color:#145580">
+          <h4 class="modal-title">Edit Information</h4>
+          <button type="button" class="btn-close btn-close-white" (click)="closeModal()"><span
+              aria-hidden="true"></span></button>
+        </div>
+        <div class="modal-body bg-light">
+          <table [style]="width">
+            <td><input type='hidden' [ngModel]="selectedUser.id" value={{selectedUser.id}}></td>
+            <tr>
+              <td>Username:</td>
+
+              <div style="font-weight: bold;font-size: 20px;">{{selectedUser.username}}</div>
+            </tr>
+            <tr *ngIf="isAdmin">
+              <td>Change role{{selectedUser.roles}}</td>
+              <td  style="padding-top: 22px;">
+                <select (change)="onChangeRole($event)">
+                  <option  [id]="role.id" *ngFor="let role of selectedRoles" [selected]="role.name===selectedUser.roles[0]" [value]="role.id">{{role.tag}}</option>
+                </select>&nbsp;
+
+              </td>
+
+            </tr>
+            <tr>
+              <td>Email:</td>
+              <input type='text' [style]="width" [(ngModel)]="selectedUser.email" value={{selectedUser.email}}>
+            </tr>
+          </table>
+        </div>
+        <div class="modal-footer">
+          <tr><button class='btn btn text-white' style="background-color: #145580;"
+              (click)="updateRole()">Update</button></tr>
+          <button type="button" id="close" class="btn btn-outline-secondary" (click)="closeModal()">Close</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+<ng-template #loggedOut>
+  Please login.
+</ng-template>
