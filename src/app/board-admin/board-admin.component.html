@@ -13,11 +13,36 @@
     </div>
     <div class="row">
      <div class="col-sm-2">
+      <button *ngIf="this.currentUserRole=='ROLE_MASTER'" (click)="addUserPanel()">Add New User</button>
+      <div *ngIf="showUserPanel">
+        <table>
+          <tr>
+<td>Username</td>
+<td><input type='text'></td>
+          </tr>
+<tr>
+<td>Password</td>
+<td><input type='password'></td>
+</tr>
+<tr>
+<td>Email</td>
+<td><input type='email'></td>
+</tr>
+<tr>
+<td>Role</td>
+<td>
+  <select>
+   <option *ngFor="let role of selectedRoles" [value]="role">{{role.tag}}</option>
+  </select>
+</td>
+</tr>
+<tr>
+  <button (click)="addUser()">Add User</button>
+</tr>
+        </table>
 
-
-      <button *ngIf="this.currentUserRole=='ROLE_MASTER'">HELLO MASTER</button>
+      </div>
      </div>
-
 
     </div>
     <div class="row">
