@@ -1,6 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { UserService } from '../service/user.service';
-import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { ProductService } from '../service/product.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { User } from '../model/user.model';
@@ -48,9 +47,16 @@ export class BoardAdminComponent implements OnInit {
   roles: any[] = []
   users: any[] = []
   totalAccounts = 0
-  showAll = false
-  showModsAndUsers = false
+  showUserPanel = false
   display = 'none'
+  addUserPanel(){
+   this.showUserPanel =!this.showUserPanel
+   console.log(this.showUserPanel)
+  }
+  addUser(){
+    const data={  
+    }
+  }
   getValueSelected(event: any) {
     this.roleSelected = event
   }
