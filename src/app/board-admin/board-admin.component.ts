@@ -79,6 +79,7 @@ export class BoardAdminComponent implements OnInit {
     })
     return hasAdminRole
   }
+
   checkModeratorRole(role: any) {
     let hasModeratorRole = false
     role.forEach((x: any) => {
@@ -90,7 +91,6 @@ export class BoardAdminComponent implements OnInit {
   getUsers() {
     const params = this.getRequestParams(this.username, this.page, this.pageSize)
     this.userService.getUsers(params).subscribe((res) => {
-      // this.users = res.users
       this.totalAccounts = res.totalItems
       this.count = res.totalItems
       console.log(this.currentUserRole)
@@ -119,10 +119,6 @@ export class BoardAdminComponent implements OnInit {
     return (this.selectedUser.roles
       && this.selectedUser.roles.length < 1
       && !existRole)
-  }
-  filterRole(role: any) {
-
-
   }
   openModal() {
     this.display = "block"

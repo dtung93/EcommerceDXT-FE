@@ -14,7 +14,7 @@ export class ProductDetailComponent implements OnInit {
   constructor(private toastr:ToastrService, private api:ProductService,private route:ActivatedRoute,private token:TokenStorageService) { }
   font='font-family:optima'
   padding='padding:5'
-  info='background-color:#186192 ;margin:10px 15px 10px 5px;text-align:center;color:snow;font-size:25px'
+  info='background-color:#2d8bca ;margin:10px 15px 10px 5px;text-align:center;color:snow;font-size:25px'
   title='color:#638BA6;font-size:3rem;font-weight:bold'
   category='color:#A95C68;font-size:1rem'
   description='color:grey;font-weight:bold;font-size:15px;text-align:left'

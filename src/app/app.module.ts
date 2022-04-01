@@ -46,8 +46,8 @@ import { NgxSpinnerModule } from 'ngx-spinner';
     BrowserAnimationsModule,
     NgxPaginationModule,
     ToastrModule.forRoot({
-      timeOut:6000,preventDuplicates:true,
-      positionClass:'toast-bottom-right'
+      timeOut:5000,preventDuplicates:true,
+      positionClass:'toast-bottom-center'
    })
   ],
   schemas:[CUSTOM_ELEMENTS_SCHEMA],

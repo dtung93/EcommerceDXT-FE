@@ -25,8 +25,8 @@ export class AppComponent implements OnInit, OnDestroy {
       this.showModeratorBoard = this.roles.includes('ROLE_MODERATOR')||this.roles.includes('ROLE_ADMIN')||this.roles.includes('ROLE_MASTER');
       this.username = user.username;
     }
-    this.eventBusSub = this.eventBusService.on('logout', () => {
-      this.logout();
+    this.eventBusSub = this.eventBusService.on('logOut', () => {
+      this.logOut();
     });
   }
   ngOnDestroy(): void {
@@ -37,7 +37,7 @@ export class AppComponent implements OnInit, OnDestroy {
     this.showSideMenu!=this.showSideMenu
   }
  
-  logout(): void {
+  logOut(): void {
     this.tokenStorageService.signOut();
     this.isLoggedIn = false;
     this.roles = [];
