@@ -20,7 +20,7 @@ export class LoginComponent implements OnInit {
   errorMessage = '';
   roles: string[] = [];
   form: any = {
-    username: null,
+    username:null,
     email: null,
     password: null
   };
@@ -57,7 +57,7 @@ export class LoginComponent implements OnInit {
         this.isLoggedIn = true;
         this.roles = this.tokenStorage.getUser().roles;//get user roles  
         this.spinner.show()
-        setInterval(()=>window.location.href='/home',2000)   
+        setInterval(()=>window.location.href='/home',1000)   
       },
       //Error message if cannot or fail to communicate with API
       err => {

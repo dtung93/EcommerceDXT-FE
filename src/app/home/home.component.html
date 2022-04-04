@@ -1,12 +1,7 @@
 
-<div class="container" style="
-    margin-bottom: 18rem;
-    margin-top: 1rem;
-    min-height: 100%;
-    object-fit: cover;
-  ">
+<div class="container" >
   <div class="row" *ngIf="HasProducts">
-    <input style="width: 50%; margin-left: 5px" type="text" class="form-control" placeholder="Search by product name"
+    <input id="filter-control" type="text" class="form-control" placeholder="Search by product name"
       [(ngModel)]="name" />&nbsp;
     <select style="width: fit-content" [(ngModel)]="category">
       <option value="" selected hidden disabled>Filter By Category</option>
@@ -29,14 +24,10 @@
         x.name }}
       </div>
     </div>
-    <button class="btn btn-default" style="
-        width: 80px;
-        background-color: #145580;
-        color: whitesmoke;
-      " class="btn btn-outline-secondary" type="button" (click)="searchTitle()">
+    <button class="btn btn-default" id="search" type="button" (click)="searchTitle()">
       Search
-    </button>
-    <button style="width: max-content; margin-left: 15px" *ngIf="products?.length !== null" (click)="backToResults()"
+    </button>&nbsp;
+    <button id="remove" *ngIf="products?.length !== null" (click)="backToResults()"
       class="btn btn-secondary">
       Remove all filters
     </button>
@@ -77,7 +68,7 @@
     </div>
     <div class="row" id="table" *ngIf="isAdminOrMod">
       <table style="padding: 15px" class="table table-striped" >
-        <thead class="text-white" style="background-color: #145580">
+        <thead class="text-white" style="background-color: #2d80b8;">
           <tr>
             <th><span style="display: none">AccountId</span></th>
             <th>Image</th>
@@ -99,7 +90,7 @@
             ">
             <td><input type="hidden" value="{{ x.id }}" /></td>
             <td>
-              <a routerLink="/product/{{ x.id }}">  <img src="{{ x.img }}" style="width: 200px; height: 170px" onerror="this.src='/assets/img/noimage.jpg'" /></a>
+              <a routerLink="/product/{{ x.id }}">  <img src="{{ x.img }}" style="width: 200px; height: 150px" onerror="this.src='/assets/img/noimage.jpg'" /></a>
             </td>
             <td><a style="font-weight:bold;color:black" routerLink="/product/{{ x.id }}">{{ x.name }}</a></td>
             <td>{{ x.price }}</td>
@@ -107,8 +98,8 @@
               {{x.category}}
             </td>
             <td>
-              <a routerLink="/product/{{ x.id }}"><button id="control" class="btn btn-sm text-white" style="background-color: #145580">View</button></a>&nbsp;
-                <button id="control"class="btn btn-sm text-white" style="background-color: rgb(170, 22, 22);" (click)="this.openModal(x)">Delete</button>
+              <a routerLink="/product/{{ x.id }}"><button id="control" class="btn text-white" style="background-color: #2d8bca">View</button></a>&nbsp;
+                <button id="control"class="btn text-white" style="background-color: rgb(170, 22, 22);" (click)="this.openModal(x)">Delete</button>
             </td>
           </tr>
         </tbody>

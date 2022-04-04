@@ -4,13 +4,19 @@
       <h3  class="text-white component-title">Manage Users</h3>
     </div>
     <div class="row">
-      <div class="col-md-6">
+      <div class="col-md-3">
         <input type="text" class="form-control" placeholder="Search by username" [(ngModel)]="username">
       </div>
       <div class="col-md-6 pt-2">
         <button class="btn text-white" id='search' (click)="searchUsername()">Search</button>
       </div>
+      <div class="col-md-3 mt-3">
+        <button type="button" class="btn btn text-white" style="background-color:#2d80b8" data-bs-toggle="modal" data-bs-target="#exampleModal">
+          Add A User
+        </button>
+      </div>
     </div>
+
     <div class="row">
      <div class="col-sm-2">
       <button *ngIf="this.currentUserRole=='ROLE_MASTER'" (click)="addUserPanel()">Add New User</button>
@@ -41,7 +47,31 @@
 </tr>
         </table>
 
+<<<<<<< HEAD
       </div>
+=======
+
+
+
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Add A New Account</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+         <input type="text">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+>>>>>>> 04f7154 (admin-control-view-menu-color-header)
      </div>
 
     </div>
@@ -57,7 +87,7 @@
       </div>
     </div>
     <table  class="table table p-0.5">
-      <thead class="text-white" style="background-color: #145580;">
+      <thead class="text-white" style="background-color: #2d80b8;">
         <tr>
           <th>User Name</th>
           <th>Email</th>
@@ -66,7 +96,11 @@
         </tr>
       </thead>
       <tbody class="px-5">
-        <tr [ngClass]="{'usernamerow':this.currentUsername===user.username||checkAdminRole(user.roles),'masterrow':checkMasterRole(user.roles),'moderatorrow':checkModeratorRole(user.roles)}"
+        <tr
+          [ngClass]="{'usernamerow':this.currentUsername===user.username||
+          checkAdminRole(user.roles),
+          'masterrow':checkMasterRole(user.roles),
+          'moderatorrow':checkModeratorRole(user.roles)}"
           *ngFor="let user of users | paginate
                   : {
                       itemsPerPage: pageSize,
@@ -80,10 +114,10 @@
 
           </td>
           <td>
-            <div class="controlbuttons" *ngIf="user.editable">
+            <div class="controlbuttons" >
             <button class="btn btn text-white" 
-              style="background-color: #145580" (click)="this.userModal(user.id)">View</button>&nbsp;
-            <button class="btn btn text-white"
+              style="background-color: #318dca" (click)="this.userModal(user.id)">View</button>&nbsp;
+            <button class="btn btn text-white" *ngIf="user.editable"
               style="background-color: rgb(170, 22, 22);" data-bs-toggle="modal" data-bs-target="#deleteModal" (click)="getUserDetail(user.id)">Delete</button>
           </div>
             </td>
@@ -96,7 +130,7 @@
       <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
           <div class="modal-content">
-            <div class="modal-header text-white" style="background-color: #145580;">
+            <div class="modal-header text-white" style="background-color: #318dca">
               <h4 class="modal-title"  id="exampleModalLabel">Delete confirmation</h4>
               <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -116,7 +150,7 @@
   <div class="modal" tabindex="-1" role="dialog" [ngStyle]="{'display':display}">
     <div class=" modal-dialog modal-dialog-centered modal-lg" role="document">
       <div class="modal-content">
-        <div class="modal-header text-white" style="background-color:#145580">
+        <div class="modal-header text-white" style="background-color:#3085bd">
           <h4 class="modal-title">Edit Information</h4>
           <button type="button" class="btn-close btn-close-white" (click)="onCloseHandled()"><span
               aria-hidden="true"></span></button>
@@ -130,7 +164,7 @@
             </tr>
             <tr>
             <tr>
-              <td>Change role</td>
+              <td>Role:</td>
               <td>
                 <select [(ngModel)]='roleSelected'(change)="addRole(roleSelected.id)">
                   <option [id]="role.id" *ngFor="let role of selectedRoles" [selected]="role.id==selectedUser.roles[0]?.id" [ngValue]="role">{{role.tag}}</option>
@@ -145,7 +179,7 @@
           </table>
         </div>
         <div class="modal-footer">
-          <tr><button id="control" class='btn btn text-white' style="background-color: #145580;"
+          <tr><button *ngIf="selectedUser.roles[0]?.id!==4&&selectedUser.roles[0]?.id!==3"  id="control" class='btn btn text-white' style="background-color: #3085bd;"
               (click)='updateUser()'>Update</button></tr>
           <button type="button"  id="control" class="btn btn-outline-secondary" (click)="onCloseHandled()">Cancel</button>
         </div>
