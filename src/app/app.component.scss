@@ -2,16 +2,7 @@ $arial: Arial, Helvetica, sans-serif;
 .fa-gear{
     font-size: 17px;
 }
-h1{
-color: #369;
-font-size: 250%;
-font-family: $arial;
-}
-h2,h3{
-    color:#444;
-    font-family:$arial;
-    font-weight:lighter
-}
+.navbar{background-color:#318dca}
 
 a{color:whitesmoke;}
 
@@ -22,10 +13,10 @@ a:hover{opacity: 0.4;}
     min-height: 100vh;
   }
   
-  footer {
+ footer {
     margin-top: auto;
-    background-color: #186192;
-  }
+    background-color: #2d88c5;
+  } 
 
   button#close:hover{opacity:0.7}
   nav a:hover{cursor: pointer;text-decoration: none;color:white}

@@ -9,6 +9,7 @@ import { ToastrService } from 'ngx-toastr';
   styleUrls: ['./board-moderator.component.scss']
 })
 export class BoardModeratorComponent implements OnInit {
+  display= 'none'
   addedProductId:any
   content?:string
   categories:any=[
@@ -34,7 +35,13 @@ export class BoardModeratorComponent implements OnInit {
     this.toastr.success(
       "Product id="+id+" "+name+" is succesfully added to the inventory"
     )
-      
+    }
+    openModal(){
+      this.display='block'
+
+    }
+    closeModal(){
+      this.display='none'
     }
     submitForm(){
       if(this.productForm.valid){

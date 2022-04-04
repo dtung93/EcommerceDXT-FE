@@ -25,7 +25,7 @@ console.log(this.user);
       err => {
         this.content = JSON.parse(err.error).message||err.error||err.message
         if(err.status===403)
-        this.eventBusService.emit(new EventData('logout',null))
+        this.eventBusService.emit(new EventData('logOut',null))
       }
     );
   }
