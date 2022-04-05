@@ -10,7 +10,7 @@
     <div class="modal" tabindex="-1" role="dialog" [ngStyle]="{ display: display }">
       <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
-          <div class="modal-header ">
+          <div class="modal-header text-white " style="background-color:'#308dca'">
             <h3 class="modal-title">
              Add A New Product
             </h3>
@@ -40,10 +40,12 @@
                 <label for="price" id="error" *ngIf="productForm.controls['price'].invalid">Price must be set</label><br>
               <label for="qty">Quantity:</label><br>
               <input type="number" onkeyup="if(this.value<0){this.value= this.value * -1}"  min="0" formControlName="qty"><br>
-              <input type="submit" class="btn" [disabled]="productForm.invalid" value="Submit">
+              <div class='buttons' style="float:right">
+              <input style="background-color:#318dca" (click)="submitForm()" type="btn btn submit" class="btn text-white" [disabled]="productForm.invalid" value="Submit">&nbsp;
               <button  type="button"  class="btn btn-outline-dark" style="width: 10rem;" (click)="closeModal()" >
                 No
               </button>
+              </div>
             </form>
           </div>
         </div>

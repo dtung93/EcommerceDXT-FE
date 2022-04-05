@@ -21,6 +21,9 @@ export class UserService {
   getAdminBoard(): Observable<any> {
     return this.http.get(apiURL + '/admin', { responseType: 'text' });
   }
+  getMasterBoard():Observable<any> {
+   return this.http.get(apiURL + '/master', { responseType: 'text' });
+  }
   getUsers(params:any):Observable<any>{
     return this.http.get(apiURL+ '/admin/users',{ params })
   }

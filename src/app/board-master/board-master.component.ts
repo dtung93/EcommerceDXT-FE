@@ -1,22 +1,20 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { UserService } from '../service/user.service';
-import { ProductService } from '../service/product.service';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { User } from '../model/user.model';
-import { ToastrService } from 'ngx-toastr';
-import { ConsoleLogger } from '@angular/compiler-cli/private/localize';
-import { collapseTextChangeRangesAcrossMultipleVersions } from 'typescript';
-import Swal from 'sweetalert2'
-import { TokenStorageService } from '../service/token-storage.service';
+import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { UserService } from '../service/user.service';
+import { ToastrService } from 'ngx-toastr';
+import { User } from '../model/user.model';
+import { TokenStorageService } from '../service/token-storage.service';
+import { confirmField } from '../service/validator';
+import { AuthService } from '../service/auth.service';
 @Component({
-  selector: 'app-board-admin',
-  templateUrl: './board-admin.component.html',
-  styleUrls: ['./board-admin.component.scss']
+  selector: 'app-board-master',
+  templateUrl: './board-master.component.html',
+  styleUrls: ['./board-master.component.scss']
 })
-export class BoardAdminComponent implements OnInit {
-  isSubmitted=false
-  userForm!: FormGroup 
+export class BoardMasterComponent implements OnInit {
+ addUserRole:any
+  isSubmitted = false;
+  userForm!: FormGroup
   isAdmin = false
   isMaster = false
   currentUserRole = '';
@@ -41,8 +39,10 @@ export class BoardAdminComponent implements OnInit {
   ]
   selectedRoles: any = [
     { id: 1, name: 'ROLE_USER', tag: 'User' },
-    { id: 2, name: 'ROLE_MODERATOR', tag: 'Moderator' }, { id: 3, name: "ROLE_ADMIN", tag: 'Admin' }
+    { id: 2, name: 'ROLE_MODERATOR', tag: 'Moderator' }, { id: 3, name: "ROLE_ADMIN", tag: 'Admin' },
+    {id:4,name:'ROLE_MASTER',tag:'Master'}
   ]
+  role: any[] = []
   page = 1
   count = 0
   pageSize = 6
@@ -52,12 +52,27 @@ export class BoardAdminComponent implements OnInit {
   totalAccounts = 0
   showUserPanel = false
   display = 'none'
-  addUserPanel(){
-   this.showUserPanel =!this.showUserPanel
-   console.log(this.showUserPanel)
+  addUserPanel() {
+    this.showUserPanel = !this.showUserPanel
+    console.log(this.showUserPanel)
   }
-  addUser(){
-    const data={  
+  checkAddRole(id:number){
+
+
+  }
+  addUser() {
+    this.isSubmitted = true
+    if (this.userForm.invalid) { return }
+    else {
+      const data = {
+        username: this.userForm.get('username')?.value,
+        email: this.userForm.get('email')?.value,
+        password: this.userForm.controls['password'].value,
+        roles:[this.addUserRole]
+      }
+    this.userService.updateUser(data).subscribe((res)=>{
+      console.log(res)
+    })
     }
   }
   getValueSelected(event: any) {
@@ -123,8 +138,11 @@ export class BoardAdminComponent implements OnInit {
     }
 
   }
+  testRole(){
+    console.log(this.addUserRole)
+  }
   checkRole(id: any) {
-    const existRole = this.selectedUser.roles.find(role => role.id === id)
+    const existRole = this.selectedUser.roles.find((role: { id: any; }) => role.id === id)
     return (this.selectedUser.roles
       && this.selectedUser.roles.length < 1
       && !existRole)
@@ -140,20 +158,27 @@ export class BoardAdminComponent implements OnInit {
   isOpen() {
     this.isOpened = !this.isOpened
   }
-  constructor(private fb:FormBuilder,private userService: UserService, private toastr: ToastrService, private token: TokenStorageService) {
+ 
+  constructor(private authService: AuthService, private fb: FormBuilder, private userService: UserService, private toastr: ToastrService, private token: TokenStorageService) {
+    this.userForm = this.fb.group({
+      username: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(20)]],
+      password: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(50)]],
+      confirmPassword: ['', [Validators.minLength(6), Validators.maxLength(50)]],
+      email: ['', [Validators.email, Validators.required, Validators.minLength(8)]]
+    }, {
+      validator: confirmField("password", "confirmPassword")
+    })
   }
   ngOnInit(): void {
-    this.userService.getAdminBoard().subscribe(res => {
+    this.userService.getMasterBoard().subscribe(res => {
       this.content = res
-    }, error => { this.content = JSON.parse(error.error).message })
+    }, error => { this.content = JSON.parse(error.message) })
     this.getUsers()
     if (this.token.getToken()) {
       this.currentUserRole = this.token.getUser().roles
       this.currentUsername = this.token.getUser().username
       if (this.currentUserRole == "ROLE_MASTER")
         this.isMaster = true
-      if (this.currentUserRole == "ROLE_ADMIN")
-        this.isAdmin = true
     }
   }
   getUserDetail(id: number) {
@@ -164,10 +189,6 @@ export class BoardAdminComponent implements OnInit {
     })
   }
 
-  deleteRole(index: any) {
-    this.selectedUser.roles?.splice(index, 1)
-    console.log(this.selectedUser.roles)
-  }
   userModal(id: number) {
     this.openModal()
     this.getUserDetail(id)
@@ -185,7 +206,7 @@ export class BoardAdminComponent implements OnInit {
       this.toastr.error("Role must not be empty")
     }
     else
-      this.userService.updateUser(data).subscribe((res) => {
+      this.userService.updateUser(data).subscribe((res: any) => {
         console.log(res)
         this.display = 'none'
         this.toastr.info("User #" + res.id + " is updated")
@@ -196,14 +217,13 @@ export class BoardAdminComponent implements OnInit {
     this.toastr.error(username, 'Notification')
   }
   deleteUser(id: number) {
-    let modal=document.getElementById('delete-modal')
-    this.userService.deleteUser(id).subscribe((res) => {
+    this.userService.deleteUser(id).subscribe((res: any) => {
       console.log(id)
-      this.selectedUser = this.users.find(user => user.id === id);
+      this.selectedUser = this.users.find(user => user.id === id)
+      this.display = 'none'
       this.users = this.users.filter(user => user.id != id)
-      this.display='none'
       this.showToast(this.selectedUser.username)
-    }, error => {
+    }, (error: any) => {
       this.toastr.warning("Cannot delete user! An error has occured", error.message)
     })
   }
@@ -219,7 +239,9 @@ export class BoardAdminComponent implements OnInit {
 
   handlePageSizeChange(event: any): void {
     this.pageSize = event.target.value
-    this.page = this.page
+    this.page = 1
     this.getUsers()
   }
+
+
 }

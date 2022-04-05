@@ -19,7 +19,7 @@ export class ProductDetailComponent implements OnInit {
   category='color:#A95C68;font-size:1rem'
   description='color:grey;font-weight:bold;font-size:15px;text-align:left'
   price='color:smoke;font-weight:bolder;font-size:2rem'
-  edit='color:white;font-size:20px;width:100%;background-color:#145580'
+  edit='color:white;font-size:20px;width:100%;background-color:#318dca'
   width='width:100%'
   isLoggedIn=false
   showButton=false

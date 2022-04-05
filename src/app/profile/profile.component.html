@@ -1,6 +1,6 @@
 <div class="container" *ngIf="selectedUser; else loggedOut">
   <div class="row">
-    <h3 style="text-align: center;background-color: #2d80b8;" class="text-white">Your profile</h3>
+    <h3 style="text-align: center;background-color: #3492d1;" class="text-white">Your profile</h3>
   </div>
   <p class="alert alert-primary">
     Welcome back, <strong>{{selectedUser.username}}</strong>.<span *ngIf="isAdmin||isModerator||isMaster"> You are
@@ -15,12 +15,12 @@
       {{ selectedUser.email }}
     </strong>
   </p>
-  <button class="btn" style="background-color: rgb(46,113,189);color: white;" (click)="userModal()">Edit
+  <button class="btn" style="background-color: #3492d1;color: white;" (click)="userModal()">Edit
     profile</button>
   <div class="modal" tabindex="-1" role="dialog" [ngStyle]="{'display':display}">
     <div class=" modal-dialog modal-dialog-centered modal-lg" role="document">
       <div class="modal-content">
-        <div class="modal-header text-white" style="background-color:#145580">
+        <div class="modal-header text-white" style="background-color:#3492d1">
           <h4 class="modal-title">Edit Information</h4>
           <button type="button" class="btn-close btn-close-white" (click)="closeModal()"><span
               aria-hidden="true"></span></button>
@@ -34,7 +34,7 @@
               <div style="font-weight: bold;font-size: 20px;">{{selectedUser.username}}</div>
             </tr>
             <tr *ngIf="isAdmin">
-              <td>Change role{{selectedUser.roles}}</td>
+              <td>Change role</td>
               <td  style="padding-top: 22px;">
                 <select (change)="onChangeRole($event)">
                   <option  [id]="role.id" *ngFor="let role of selectedRoles" [selected]="role.name===selectedUser.roles[0]" [value]="role.id">{{role.tag}}</option>
