@@ -1,24 +1,30 @@
 <div id="app">
   <nav class="navbar navbar-expand-lg">
     <div class="container-fluid">
-      <a class="navbar-brand" > <button class="btn btn-default bg-white" *ngIf="isLoggedIn&&showAdminBoard||showModeratorBoard" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling" style="font-weight: bolder;font-size: 15px;"><i class="fa fa-gear"></i></button></a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+      <a class="navbar-brand"> <button class="btn btn-default bg-white" (click)="openSideMenu()"
+          *ngIf="isLoggedIn&&showAdminBoard||showModeratorBoard" type="button" data-bs-toggle="offcanvas" 
+          data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling"
+          style="font-weight: bolder;font-size: 15px;"><i class="fa fa-gear"></i></button></a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo02"
+        aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <ul [ngClass]=" showSideMenu?'push-menu':' '" class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <a href="/home" class="nav-link" routerLinkActive="active"  routerLink="home">Home </a>
+            <a href="/home" class="nav-link" routerLinkActive="active" routerLink="home">Home </a>
           </li>
-          <li class="nav-item" *ngIf="!isLoggedIn"> 
+          <li class="nav-item" *ngIf="!isLoggedIn">
             <a href="/register" class="nav-link" routerLinkActive="active" routerLink="register">Sign Up</a>
           </li>
           <li class="nav-item">
+
           </li>
         </ul>
         <form class="d-flex">
           <a href="/login" *ngIf="!isLoggedIn" class="nav-link" routerLinkActive="active" routerLink="login">Login</a>
-          <a href="/profile" *ngIf="isLoggedIn" class="nav-link" routerLinkActive="active"routerLink="profile">Hello, {{ username }}</a>
+          <a href="/profile" *ngIf="isLoggedIn" class="nav-link" routerLinkActive="active" routerLink="profile">Hello,
+            {{ username }}</a>
           <a *ngIf="isLoggedIn" href class="nav-link" (click)="logOut()">LogOut</a>
         </form>
       </div>
@@ -29,20 +35,25 @@
 
 
 <router-outlet></router-outlet>
-<app-footer class="fixed-bottom"></app-footer>
+<app-footer [ngClass]="showFooter?'push-footer':''" class="footer fixed-bottom"></app-footer>
 
 
- <div class="offcanvas offcanvas-start " data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
+<div class="offcanvas offcanvas-start " data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1"
+  id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
   <div class="offcanvas-header">
     <h5 class="offcanvas-title" id="offcanvasScrollingLabel" style="color:snow">Control Panel</h5>
-    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    <button type="button" (click)="openSideMenu()" class="btn-close text-reset bg-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
   </div>
   <div class="offcanvas-body">
- <ul>
-   <li id="board" *ngIf="showAdminBoard">
-     <a href="/admin" routerLinkActive="active" routerLink="admin">Admin Board</a>
-   </li>
-   <li id="board" *ngIf="showModeratorBoard"><a  routerLinkActive="active" href="/mod" routerLink="mod">Moderator Board</a></li>
- </ul>
+    <ul>
+      <li id="board" *ngIf="showAdminBoard">
+        <a href="/admin" routerLinkActive="active" routerLink="admin">Admin Board</a>
+      </li>
+      <li id="board" *ngIf="showModeratorBoard"><a routerLinkActive="active" href="/mod" routerLink="mod">Moderator
+          Board</a></li>
+      <li id="board" *ngIf="showMasterBoard">
+        <a href="/master" class="nav-link" routerLinkActive="active" routerLink="master">Master Board</a>
+      </li>
+    </ul>
   </div>
 </div>

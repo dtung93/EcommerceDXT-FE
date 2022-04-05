@@ -8,7 +8,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ProfileComponent } from './profile/profile.component';
 import { HomeComponent } from './home/home.component';
 import { BoardAdminComponent } from './board-admin/board-admin.component';
-import { BoardUserComponent } from './board-user/board-user.component';
 import { BoardModeratorComponent } from './board-moderator/board-moderator.component';
 import { HttpClientModule } from '@angular/common/http';
 import { authInterceptorProviders } from './service/auth.interceptor';
@@ -20,6 +19,7 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { FooterComponent } from './footer/footer.component';
 import { FileUpLoadComponent } from './file-up-load/file-up-load.component';
 import { NgxSpinnerModule } from 'ngx-spinner';
+import { BoardMasterComponent } from './board-master/board-master.component';
 
 @NgModule({
   declarations: [
@@ -29,11 +29,11 @@ import { NgxSpinnerModule } from 'ngx-spinner';
     ProfileComponent,
     HomeComponent,
     BoardAdminComponent,
-    BoardUserComponent,
     BoardModeratorComponent,
     ProductDetailComponent,
     FooterComponent,
     FileUpLoadComponent,
+    BoardMasterComponent,
   ],
   imports: [
     BrowserModule,
@@ -47,7 +47,7 @@ import { NgxSpinnerModule } from 'ngx-spinner';
     NgxPaginationModule,
     ToastrModule.forRoot({
       timeOut:5000,preventDuplicates:true,
-      positionClass:'toast-bottom-center'
+      positionClass:'toast-bottom-right'
    })
   ],
   schemas:[CUSTOM_ELEMENTS_SCHEMA],
