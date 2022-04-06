@@ -41,7 +41,7 @@ export class ProfileComponent implements OnInit {
     this.userService.getUser(id).subscribe((res) => {
       this.selectedUser = res
       this.selectedUser.roles = res.roles  
-      console.log(this.selectedUser.id)
+      console.log(this.selectedUser)
     })
   }
 
@@ -63,24 +63,20 @@ this.display='none'
 this.toastr.info('Your role is updated')
   })
   }
+  testModal(){
+    console.log(this.selectedUser.username)
+  }
   updateUser(): void {
     const data = {
       id: this.selectedUser.id,
       email: this.selectedUser.email,
       username: this.selectedUser.username,
       password: this.selectedUser.password,
-      roles: this.selectedUser.roles
+      address:this.selectedUser.address,
+      phone:this.selectedUser.phone,
+      roles: [this.roleSelected]
     }
-    if (data.roles.length == 0 || data.roles.length == null) {
-      Swal.fire({
-        title: "Update error",
-        text: "Roles must not be empty",
-        showConfirmButton: true,
-        icon: "error",
-        confirmButtonColor: "#186192"
-      })
-    }
-    else
+
       this.userService.updateUser(data).subscribe((res) => {
         console.log(res)
         this.display = 'none'

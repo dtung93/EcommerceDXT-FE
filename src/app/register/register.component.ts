@@ -10,7 +10,10 @@ export class RegisterComponent implements OnInit {
 form:any={
   username:null,
   email:null,
-  password:null
+  password:null,
+  avatar:null,
+  address:null,
+  phone:null
 }
 isSuccessful=false
 isSignedUpFailed=false
@@ -20,15 +23,17 @@ errorMessage=''
   ngOnInit(): void {
   }
   onSubmit():void{
-    const{username,email,password}=this.form
-    this.authService.register(username,email,password).subscribe(res=>{
-      console.log(res)
-      this.isSuccessful=true
-      this.isSignedUpFailed=false
-    },error=>{
-      this.errorMessage=error.error.message
-      this.isSignedUpFailed=true
-    })
+    const{username,email,password,avatar,phone,address}=this.form
+    console.log(this.form)
+    // this.authService.register(username,email,password,avatar,address,phone).subscribe(res=>{
+    //   console.log(res)
+    //   this.isSuccessful=true
+    //   this.isSignedUpFailed=false
+    // },error=>{
+    //   this.errorMessage=error.message
+    //   this.isSignedUpFailed=true
+    //   console.log(this.errorMessage)
+    // })
   }
 
 }

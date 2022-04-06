@@ -7,6 +7,7 @@ export class User{
  email!:string
  address!:string
  avatar!:string
+ phone!:number
  roles:any[]=[]
 //  constructor(id:number,username:string,password:string,email:string,address:string,avatar:string,roles:[]) {
 //   this.id=id

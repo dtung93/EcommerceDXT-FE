@@ -30,8 +30,8 @@ export class AuthService {
  return this.http.put('http://localhost:8080/api/user/update',data)
 
  }
-  register(username:string, password:string,email:string): Observable<any> {
+  register(username:string, password:string,email:string,address:string,avatar:string,phone:string): Observable<any> {
     return this.http.post(apiURL + 'signup',
-    {username,password,email}, httpOptions);
+    {username,password,email,phone,avatar,address}, httpOptions);
   }
 }
