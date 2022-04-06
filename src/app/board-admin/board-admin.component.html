@@ -23,7 +23,7 @@
         </table>
       </div>
     </div>
-    <table class="table table p-0.5">
+    <table class="table table p-0.5 table-striped">
       <thead class="text-white" style="background-color: #2d80b8;">
         <tr>
           <th>User Name</th>
@@ -111,6 +111,14 @@
               <tr>
                 <td>Email:</td>
                 <input type='text' [style]="width" [(ngModel)]="selectedUser.email" value={{selectedUser.email}}>
+              </tr>
+              <tr>
+                <td>Phone numbers:</td>
+                <input type='text' [style]="width" [(ngModel)]="selectedUser.phone" value={{selectedUser.phone}}>
+              </tr>
+              <tr>
+                <td>Address:</td>
+                <input type='text' [style]="width" [(ngModel)]="selectedUser.address" value={{selectedUser.address}}>
               </tr>
             </table>
           </div>

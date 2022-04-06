@@ -8,33 +8,86 @@
       <span *ngIf="isAdmin"><strong>Admin</strong></span> <span *ngIf="isMaster"><strong>Master</strong></span> </span>
   </p>
   <p>
-    Your username:<strong>{{selectedUser.username}}</strong>
+    Your username:<strong>{{selectedUser.username}}</strong><img src={{selectedUser.avatar}}>
   </p>
   <p>
     Email:<strong>
       {{ selectedUser.email }}
     </strong>
   </p>
-  <button class="btn" style="background-color: #3492d1;color: white;" (click)="userModal()">Edit
-    profile</button>
+  <p>Phone number:<strong>{{selectedUser.phone}}</strong></p>
+  <p>Address:<strong>{{selectedUser.address}}</strong></p>
+  <div class="button-row" style="margin-left:-2px">
+  <button *ngIf="isAdmin||isMaster" class="btn" style="background-color: #3492d1;color: white;" (click)="userModal()">Edit
+    Role</button>
+    &nbsp;
+    <button type="button" (click)="getUserDetail(selectedUser.id)" class="btn btn text-white" data-bs-toggle="modal" data-bs-target="#exampleModal" style="background-color:#3492d1">
+      Edit Profile
+    </button>
+  </div>
+    
+    <!-- Profile Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header text-white" style="background-color: #3492d1;">
+            <h5 class="modal-title" id="exampleModalLabel">Edit Profile</h5>
+            <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <table [style]="width">
+              <td><input type='hidden' [ngModel]="selectedUser.id" value={{selectedUser.id}}></td>
+              <tr>
+                <td>Username:</td>
+  
+                <div style="font-weight: bold;font-size: 20px;">{{selectedUser.username}}</div>
+              </tr>
+              <tr *ngIf="isAdmin||isMaster">
+                <td>Role:</td>
+                <td  style="padding-top: 22px;">
+                  <select (change)="onChangeRole($event)">
+                    <option  [id]="role.id" *ngFor="let role of selectedRoles" [selected]="role.name===selectedUser.roles[0]" [value]="role.id">{{role.tag}}</option>
+                  </select>&nbsp;
+  
+                </td>
+  
+              </tr>
+              <tr>
+                <td>Email:</td>
+                <input type='text' [style]="width" [(ngModel)]="selectedUser.email" value={{selectedUser.email}}>
+              </tr>
+              <tr>
+                <td>Phone Numbers:</td>
+                <input type='text' [style]="width" [(ngModel)]="selectedUser.phone" value={{selectedUser.phone}}>
+              </tr>
+              <tr>
+                <td>Address:</td>
+                <input type='text' [style]="width" [(ngModel)]="selectedUser.address" value={{selectedUser.address}}>
+              </tr>
+            </table>
+          </div>
+          <div class="modal-footer">
+            <button id="control" (click)="updateUser()"type="button" class="btn btn-primary" style="background-color:#2d8bca">Update Profile</button>
+            <button id="control" type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+          
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit Role Modal -->
   <div class="modal" tabindex="-1" role="dialog" [ngStyle]="{'display':display}">
     <div class=" modal-dialog modal-dialog-centered modal-lg" role="document">
       <div class="modal-content">
         <div class="modal-header text-white" style="background-color:#3492d1">
-          <h4 class="modal-title">Edit Information</h4>
-          <button type="button" class="btn-close btn-close-white" (click)="closeModal()"><span
+          <h4 class="modal-title">Edit Role</h4>
+          <button type="button" class="btn-close bg-white" (click)="closeModal()"><span
               aria-hidden="true"></span></button>
         </div>
         <div class="modal-body bg-light">
           <table [style]="width">
-            <td><input type='hidden' [ngModel]="selectedUser.id" value={{selectedUser.id}}></td>
-            <tr>
-              <td>Username:</td>
-
-              <div style="font-weight: bold;font-size: 20px;">{{selectedUser.username}}</div>
-            </tr>
             <tr *ngIf="isAdmin">
-              <td>Change role</td>
+              <td>Role:</td>
               <td  style="padding-top: 22px;">
                 <select (change)="onChangeRole($event)">
                   <option  [id]="role.id" *ngFor="let role of selectedRoles" [selected]="role.name===selectedUser.roles[0]" [value]="role.id">{{role.tag}}</option>
@@ -43,16 +96,13 @@
               </td>
 
             </tr>
-            <tr>
-              <td>Email:</td>
-              <input type='text' [style]="width" [(ngModel)]="selectedUser.email" value={{selectedUser.email}}>
-            </tr>
+
           </table>
         </div>
         <div class="modal-footer">
-          <tr><button class='btn btn text-white' style="background-color: #145580;"
-              (click)="updateRole()">Update</button></tr>
-          <button type="button" id="close" class="btn btn-outline-secondary" (click)="closeModal()">Close</button>
+          <tr><button #control class='btn btn text-white' id="control" style="background-color: #2d8bca;"
+              (click)="updateRole()">Update Role</button></tr>
+          <button type="button" id="control" class="btn btn-outline-secondary" (click)="closeModal()">Close</button>
         </div>
       </div>
 

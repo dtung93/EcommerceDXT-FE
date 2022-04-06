@@ -179,12 +179,10 @@ export class BoardAdminComponent implements OnInit {
       email: this.selectedUser.email,
       username: this.selectedUser.username,
       password: this.selectedUser.password,
+      address:this.selectedUser.address,
+      phone:this.selectedUser.phone,
       roles: [this.roleSelected]
     }
-    if (data.roles.length == 0 || data.roles.length == null) {
-      this.toastr.error("Role must not be empty")
-    }
-    else
       this.userService.updateUser(data).subscribe((res) => {
         console.log(res)
         this.display = 'none'
@@ -196,7 +194,6 @@ export class BoardAdminComponent implements OnInit {
     this.toastr.error(username, 'Notification')
   }
   deleteUser(id: number) {
-    let modal=document.getElementById('delete-modal')
     this.userService.deleteUser(id).subscribe((res) => {
       console.log(id)
       this.selectedUser = this.users.find(user => user.id === id);
