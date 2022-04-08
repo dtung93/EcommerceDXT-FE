@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { UserService } from '../service/user.service';
 import { ToastrService } from 'ngx-toastr';
@@ -12,7 +12,9 @@ import { AuthService } from '../service/auth.service';
   styleUrls: ['./board-master.component.scss']
 })
 export class BoardMasterComponent implements OnInit {
- addUserRole:any
+ addUserRole={id:1,
+  name:'ROLE_USER',
+  tag:'User'}
   isSubmitted = false;
   userForm!: FormGroup
   isAdmin = false
@@ -20,7 +22,7 @@ export class BoardMasterComponent implements OnInit {
   currentUserRole = '';
   currentUsername: any
   username: any
-  roleSelected: any = null
+  roleSelected={id:null, name:''}
   font = 'font-family:optima'
   padding = 'padding:5'
   info = 'background-color:#97C5E3 ;margin:10px 15px 10px 5px;text-align:center;color:snow;font-size:25px'
@@ -52,13 +54,11 @@ export class BoardMasterComponent implements OnInit {
   totalAccounts = 0
   showUserPanel = false
   display = 'none'
+  @ViewChild('closeAdUser') closeAddUser?: ElementRef 
+  @ViewChild('closeDeleteUser') closeDeleteUser?:ElementRef
   addUserPanel() {
     this.showUserPanel = !this.showUserPanel
     console.log(this.showUserPanel)
-  }
-  checkAddRole(id:number){
-
-
   }
   addUser() {
     this.isSubmitted = true
@@ -68,13 +68,23 @@ export class BoardMasterComponent implements OnInit {
         username: this.userForm.get('username')?.value,
         email: this.userForm.get('email')?.value,
         password: this.userForm.controls['password'].value,
-        roles:[this.addUserRole]
+        address:this.userForm.controls['address'].value,
+        phone:this.userForm.controls['phone'].value,
+        roles:this.findByRoleId(this.userForm.controls['role'].value)
       }
+
     this.userService.updateUser(data).subscribe((res)=>{
       console.log(res)
+      this.closeAddUser?.nativeElement.click()
+      this.toastr.info("New user is successfully added to the list")
     })
     }
   }
+  findByRoleId(id: any) {
+    const roleItem = this.selectedRoles.find((role:any)=>+role.id===+id)
+    return ( roleItem ) ? [roleItem] : null
+  }
+
   getValueSelected(event: any) {
     this.roleSelected = event
   }
@@ -138,9 +148,7 @@ export class BoardMasterComponent implements OnInit {
     }
 
   }
-  testRole(){
-    console.log(this.addUserRole)
-  }
+
   checkRole(id: any) {
     const existRole = this.selectedUser.roles.find((role: { id: any; }) => role.id === id)
     return (this.selectedUser.roles
@@ -163,7 +171,10 @@ export class BoardMasterComponent implements OnInit {
     this.userForm = this.fb.group({
       username: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(20)]],
       password: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(50)]],
+      address:[],
+      role:[1],
       confirmPassword: ['', [Validators.minLength(6), Validators.maxLength(50)]],
+      phone:['',[Validators.required,Validators.maxLength(15)]],
       email: ['', [Validators.email, Validators.required, Validators.minLength(8)]]
     }, {
       validator: confirmField("password", "confirmPassword")
@@ -185,7 +196,8 @@ export class BoardMasterComponent implements OnInit {
     return this.userService.getUser(id).subscribe((res) => {
       this.selectedUser = res
       this.selectedUser.roles = res.roles
-      console.log(this.selectedUser.roles)
+      this.roleSelected= this.selectedUser.roles[0]
+      console.log(this.roleSelected)
     })
   }
 
@@ -200,9 +212,12 @@ export class BoardMasterComponent implements OnInit {
       email: this.selectedUser.email,
       username: this.selectedUser.username,
       password: this.selectedUser.password,
+      address:this.selectedUser.address,
+      phone:this.selectedUser.phone,
       roles: [this.roleSelected]
     }
-    if (data.roles.length == 0 || data.roles.length == null) {
+    console.log(data);
+    if (data.roles.length === 0 || data.roles.length == null) {
       this.toastr.error("Role must not be empty")
     }
     else
@@ -211,16 +226,15 @@ export class BoardMasterComponent implements OnInit {
         this.display = 'none'
         this.toastr.info("User #" + res.id + " is updated")
       })
-
   }
   showToast(username: string) {
-    this.toastr.error(username, 'Notification')
+    this.toastr.error(username+ ' has been deleted')
   }
   deleteUser(id: number) {
     this.userService.deleteUser(id).subscribe((res: any) => {
       console.log(id)
       this.selectedUser = this.users.find(user => user.id === id)
-      this.display = 'none'
+      this.closeDeleteUser?.nativeElement.click()
       this.users = this.users.filter(user => user.id != id)
       this.showToast(this.selectedUser.username)
     }, (error: any) => {

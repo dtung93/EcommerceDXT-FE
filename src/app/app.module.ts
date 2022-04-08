@@ -46,8 +46,8 @@ import { BoardMasterComponent } from './board-master/board-master.component';
     BrowserAnimationsModule,
     NgxPaginationModule,
     ToastrModule.forRoot({
-      timeOut:5000,preventDuplicates:true,
-      positionClass:'toast-bottom-right'
+      timeOut:3000,preventDuplicates:true,
+      positionClass: 'toast-bottom-right'
    })
   ],
   schemas:[CUSTOM_ELEMENTS_SCHEMA],

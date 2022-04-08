@@ -3,6 +3,7 @@ import {HttpClient, HttpHeaders} from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import Swal from 'sweetalert2';
 import { catchError } from 'rxjs';
+import { User } from '../model/user.model';
 const apiURL="http://localhost:8080/api/auth/"
 const httpOptions ={
   headers: new HttpHeaders({'Content-Type':'application/json'})
@@ -28,10 +29,19 @@ export class AuthService {
  addUser(username:string,password:string,email:string,roles:[]):Observable<any>{
    const data={username,password,email,roles}
  return this.http.put('http://localhost:8080/api/user/update',data)
-
  }
-  register(username:string, password:string,email:string,address:string,avatar:string,phone:string): Observable<any> {
-    return this.http.post(apiURL + 'signup',
-    {username,password,email,phone,avatar,address}, httpOptions);
+
+  register(username:string,password:string,address:string,email:string,phone:string, avatar:string){
+    const data={username,password,email,phone,avatar,address}
+    return this.http.post(apiURL + 'signup',data,
+     httpOptions);
+    // const formData:FormData = new FormData();
+    // formData.append('username',username);
+    // formData.append('avatar',avatar);
+    // formData.append('email',email);
+    // formData.append('password',password);
+    // formData.append('address',address)
+    // formData.append('phone',phone);
+    // return this.http.post(apiURL+ 'signup', formData, httpOptions)
   }
 }

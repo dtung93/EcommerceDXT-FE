@@ -33,13 +33,10 @@ export class HomeComponent implements OnInit {
   keyword: boolean = false
   roles?: any[] = []
   currentUser: any
-
   sortOptions = [
     { id: 1, name: 'Sort by ascending price', value: 'ascending' },
     { id: 2, name: 'Sort by descending price', value: 'descending' }
   ]
-
-
   sortedOptions(value: string) {
     this.sortValue = this.sortOptions.find(x => x.value == value)?.value
     this.sortProducts()
@@ -99,9 +96,9 @@ export class HomeComponent implements OnInit {
       text: 'Products could not be loaded. Please check your connection to the server ',
       footer: '<a href="">Why is this issue?</a>',
       showConfirmButton: true,
-      confirmButtonColor: 'rgb(46,113,189)',
+      confirmButtonColor: '#2d8bca',
       color: 'red',
-      timer: 8000
+      timer: 7000
     }))
   }
   //http service to get and display the array of products with no parameters
@@ -119,9 +116,9 @@ export class HomeComponent implements OnInit {
       text: 'Cannot get any products. Please check your connection ' + error.message,
       footer: '<a href="">Why is this issue?</a>',
       showConfirmButton: true,
-      confirmButtonColor: 'rgb(46,113,189)',
+      confirmButtonColor: '#2d8bca',
       color: 'red',
-      timer: 8000
+      timer: 7000
     }))
   }
   getSortParams(page: number, pageSize: number, value: string) {
