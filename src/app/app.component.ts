@@ -48,5 +48,6 @@ export class AppComponent implements OnInit, OnDestroy {
     this.roles = [];
     this.showAdminBoard = false;
     this.showModeratorBoard = false;
+    this.showMasterBoard=false
   }
 }

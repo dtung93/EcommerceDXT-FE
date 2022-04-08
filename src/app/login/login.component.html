@@ -1,17 +1,19 @@
 <div class="container">
   <div class="row">
+    <!-- ALERT SUCCESS -->
     <div class="alert alert-primary" *ngIf="isLoggedIn">
       You are successfuly logged in! Redirecting to home page...<ngx-spinner type="ball-clip-rotate"
         bdColor="rgba(90, 89, 89, 0.8) ">
         <p style="color:rgb(15, 36, 107);font-size:30px">Please wait! you are being redirected to home</p>
       </ngx-spinner>
     </div>
-
+   
     <div class="row mt-4" *ngIf="!isLoggedIn">
       <div class="col-md-4"></div>
       <div class="col-md-5" id="form-signin">
         <div style="text-align: center;"><h4>Login</h4></div>
-        
+         
+        <!-- LOGIN FORM -->
         <form *ngIf="!isLoggedIn" name="form" (ngSubmit)="f.form.valid && onSubmit()" #f="ngForm" novalidate
           style="width: 100%">
           <div class="form-group">

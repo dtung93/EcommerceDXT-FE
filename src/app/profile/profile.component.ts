@@ -60,7 +60,13 @@ export class ProfileComponent implements OnInit {
   this.userService.updateRole(data).subscribe((res)=>{
 console.log(res)
 this.display='none'
-this.toastr.info('Your role is updated')
+this.toastr.info('Your role has changed! Please login again')
+setInterval(
+  () =>{
+    window.location.href='/home',1000
+    this.token.signOut()
+  }
+)
   })
   }
   testModal(){

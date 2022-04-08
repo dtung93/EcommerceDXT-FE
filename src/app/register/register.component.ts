@@ -20,12 +20,19 @@ isSignedUpFailed=false
 errorMessage=''
   constructor(private authService:AuthService) { }
 
+currentFile: any
+onFileSelected(event:any){
+  if(event.target.files.length>0){
+    console.log(event.target.files[0].name)
+  }
+}
+
   ngOnInit(): void {
   }
   onSubmit():void{
     const{username,email,password,avatar,phone,address}=this.form
     console.log(this.form)
-    // this.authService.register(username,email,password,avatar,address,phone).subscribe(res=>{
+    // this.authService.register(username,password,address,email,phone,avatar).subscribe(res=>{
     //   console.log(res)
     //   this.isSuccessful=true
     //   this.isSignedUpFailed=false

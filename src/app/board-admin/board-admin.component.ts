@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { UserService } from '../service/user.service';
 import { ProductService } from '../service/product.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -22,7 +22,7 @@ export class BoardAdminComponent implements OnInit {
   currentUserRole = '';
   currentUsername: any
   username: any
-  roleSelected: any = null
+  roleSelected={id:null,name:''}
   font = 'font-family:optima'
   padding = 'padding:5'
   info = 'background-color:#97C5E3 ;margin:10px 15px 10px 5px;text-align:center;color:snow;font-size:25px'
@@ -32,6 +32,7 @@ export class BoardAdminComponent implements OnInit {
   price = 'color:smoke;font-weight:bolder;font-size:2rem'
   edit = 'color:white;font-size:20px;width:100%;background-color:#2179B3'
   width = 'width:100%;backround-color:#145580'
+  @ViewChild('closeDeleteModal') closeDeleteModal?: ElementRef 
   selectedUser = new User()
   content?: string
   categories: any = [
@@ -55,10 +56,6 @@ export class BoardAdminComponent implements OnInit {
   addUserPanel(){
    this.showUserPanel =!this.showUserPanel
    console.log(this.showUserPanel)
-  }
-  addUser(){
-    const data={  
-    }
   }
   getValueSelected(event: any) {
     this.roleSelected = event
@@ -183,22 +180,26 @@ export class BoardAdminComponent implements OnInit {
       phone:this.selectedUser.phone,
       roles: [this.roleSelected]
     }
+    if(data.roles.length<1){
+      this.toastr.error('Error!','Roles must not be empty. Please select a role')     
+    }
+    else{
       this.userService.updateUser(data).subscribe((res) => {
         console.log(res)
         this.display = 'none'
         this.toastr.info("User #" + res.id + " is updated")
       })
-
+    }
   }
   showToast(username: string) {
-    this.toastr.error(username, 'Notification')
+    this.toastr.error(username, ' has been deleted!')
   }
   deleteUser(id: number) {
     this.userService.deleteUser(id).subscribe((res) => {
       console.log(id)
       this.selectedUser = this.users.find(user => user.id === id);
       this.users = this.users.filter(user => user.id != id)
-      this.display='none'
+      this.closeDeleteModal?.nativeElement.click()
       this.showToast(this.selectedUser.username)
     }, error => {
       this.toastr.warning("Cannot delete user! An error has occured", error.message)

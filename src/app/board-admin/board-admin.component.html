@@ -1,5 +1,6 @@
 <body>
   <div class="container">
+    <!-- SEARCH BAR -->
     <div class="row">
       <h3 class="text-white component-title">Manage Users</h3>
     </div>
@@ -12,6 +13,7 @@
       </div>
     </div>
 
+    <!-- USER TABLE -->
     <div class="row">
       <div class="col-sm-2">
         <table class="table table-sm">
@@ -23,7 +25,7 @@
         </table>
       </div>
     </div>
-    <table class="table table p-0.5 table-striped">
+    <table class="table table p-0.5">
       <thead class="text-white" style="background-color: #2d80b8;">
         <tr>
           <th>User Name</th>
@@ -62,6 +64,8 @@
     <pagination-controls previousLabel="Prev" nextLabel="Next" [responsive]="true"
       (pageChange)="handlePageChange($event)" style="float:right;padding-top:27px"></pagination-controls>
 
+
+      <!-- DELETE CONFIRMATION MODAL -->
     <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -74,14 +78,16 @@
               *ngFor="let role of selectedUser.roles">{{role['name']}}</strong>?
             . <strong class="text-danger">This is an irreversible action!</strong></div>
           <div class="modal-footer">
-            <button id="control" type="button" class="btn text-white" style="background-color: #145580;">Yes</button>
-            <button id='control' type="button" class="btn btn-outline-dark " data-bs-dismiss="modal">Cancel</button>
+            <button id="control" (click)="deleteUser(selectedUser.id)" type="button" class="btn text-white" style="background-color: #145580;">Yes</button>
+            <button id='control' #closeDeleteModal type="button" class="btn btn-outline-dark " data-bs-dismiss="modal">Cancel</button>
           </div>
         </div>
       </div>
     </div>
 
 
+
+<!-- EDIT CONFIRMATION MODAL -->
     <div class="modal" tabindex="-1" role="dialog" [ngStyle]="{'display':display}">
       <div class=" modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
