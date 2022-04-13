@@ -6,6 +6,7 @@ import { User } from '../model/user.model';
 import { TokenStorageService } from '../service/token-storage.service';
 import { confirmField } from '../service/validator';
 import { AuthService } from '../service/auth.service';
+import Swal from 'sweetalert2';
 @Component({
   selector: 'app-board-master',
   templateUrl: './board-master.component.html',
@@ -54,15 +55,17 @@ export class BoardMasterComponent implements OnInit {
   totalAccounts = 0
   showUserPanel = false
   display = 'none'
-  @ViewChild('closeAdUser') closeAddUser?: ElementRef 
-  @ViewChild('closeDeleteUser') closeDeleteUser?:ElementRef
+  @ViewChild('closeAddUser') closeAddUser?: ElementRef 
+  @ViewChild('closeDeleteModal') closeDeleteModal?:ElementRef
   addUserPanel() {
     this.showUserPanel = !this.showUserPanel
     console.log(this.showUserPanel)
   }
   addUser() {
     this.isSubmitted = true
-    if (this.userForm.invalid) { return }
+    if (this.userForm.invalid) { 
+     this.toastr.error('Failed to add new user, Please check your input fields again')
+    }
     else {
       const data = {
         username: this.userForm.get('username')?.value,
@@ -197,7 +200,6 @@ export class BoardMasterComponent implements OnInit {
       this.selectedUser = res
       this.selectedUser.roles = res.roles
       this.roleSelected= this.selectedUser.roles[0]
-      console.log(this.roleSelected)
     })
   }
 
@@ -234,7 +236,7 @@ export class BoardMasterComponent implements OnInit {
     this.userService.deleteUser(id).subscribe((res: any) => {
       console.log(id)
       this.selectedUser = this.users.find(user => user.id === id)
-      this.closeDeleteUser?.nativeElement.click()
+      this.closeDeleteModal?.nativeElement.click()
       this.users = this.users.filter(user => user.id != id)
       this.showToast(this.selectedUser.username)
     }, (error: any) => {

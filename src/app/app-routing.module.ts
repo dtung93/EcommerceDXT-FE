@@ -8,6 +8,9 @@ import { BoardAdminComponent } from './board-admin/board-admin.component';
 import { BoardModeratorComponent } from './board-moderator/board-moderator.component';
 import { ProductDetailComponent } from './product-detail/product-detail.component';
 import { BoardMasterComponent } from './board-master/board-master.component';
+import { FileUpLoadComponent } from './file-up-load/file-up-load.component';
+import {ForgotpasswordComponent} from './forgot-password/forgotpassword.component'
+import { ResetPasswordComponent } from './reset-password/reset-password.component';
 const routes: Routes = [
   { path: 'home', component: HomeComponent },
   { path: 'login', component: LoginComponent },
@@ -18,6 +21,9 @@ const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
   {path:'product/:id',component:ProductDetailComponent},
   {path:'master',component:BoardMasterComponent},
+  {path:'file-upload',component:FileUpLoadComponent},
+  {path:'forgot-password',component:ForgotpasswordComponent},
+  {path:'reset-password',component:ResetPasswordComponent},
 ];
 
 @NgModule({

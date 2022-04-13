@@ -39,4 +39,10 @@ export class UserService {
   updateRole(data:any):Observable<User>{
  return this.http.put<User>('http://localhost:8080/api/role/update',data)
   }
+ sendResetPasswordEmail(email:string){
+ return this.http.post(apiURL +'/forgot-password',email)
+ }
+
 }
+
+

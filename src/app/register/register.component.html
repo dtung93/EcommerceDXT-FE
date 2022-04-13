@@ -59,8 +59,9 @@
         </div>
         <div class="form-group">
         <label for="avatar"> Choose your profile picture</label> <br>
-          <input (change)="onFileSelected($event)"
-           type="file" [(ngModel)]="form.avatar" name="avatar" accept="image/png, image/jpeg, image/jpg, image/gif">
+          <!-- <input (change)="onFileSelected($event)"
+           type="file" [(ngModel)]="form.avatar" name="avatar" accept="image/png, image/jpeg, image/jpg, image/gif"> -->
+           <app-file-up-load></app-file-up-load>
         </div>
         <div class="form-group">
           <button class="btn btn-block text-white mt-1" style="background-color: #318dca;">Sign Up</button>
@@ -72,7 +73,7 @@
         </div>
       </form>
     </div>
-    <div class="alert alert-secondary" *ngIf="isSuccessful">
+    <div class="alert alert-info" *ngIf="isSuccessful">
       Your registration is successful!
     </div>
   </div>

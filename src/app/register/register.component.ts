@@ -32,15 +32,15 @@ onFileSelected(event:any){
   onSubmit():void{
     const{username,email,password,avatar,phone,address}=this.form
     console.log(this.form)
-    // this.authService.register(username,password,address,email,phone,avatar).subscribe(res=>{
-    //   console.log(res)
-    //   this.isSuccessful=true
-    //   this.isSignedUpFailed=false
-    // },error=>{
-    //   this.errorMessage=error.message
-    //   this.isSignedUpFailed=true
-    //   console.log(this.errorMessage)
-    // })
+    this.authService.register(username,password,address,email,phone,avatar).subscribe(res=>{
+      console.log(res)
+      this.isSuccessful=true
+      this.isSignedUpFailed=false
+    },error=>{
+      this.errorMessage=error.message
+      this.isSignedUpFailed=true
+      console.log(this.errorMessage)
+    })
   }
 
 }

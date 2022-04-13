@@ -192,7 +192,7 @@ export class BoardAdminComponent implements OnInit {
     }
   }
   showToast(username: string) {
-    this.toastr.error(username, ' has been deleted!')
+    this.toastr.error(username+ ' has been deleted!')
   }
   deleteUser(id: number) {
     this.userService.deleteUser(id).subscribe((res) => {
