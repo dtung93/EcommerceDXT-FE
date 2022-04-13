@@ -15,7 +15,7 @@ export class FileUpLoadComponent implements OnInit {
   fileInfos?: Observable<any>;
   constructor(private uploadService: FileUploadService) { }
   ngOnInit(): void {
-    throw new Error('Method not implemented.');
+   
   }
   selectFile(event: any): void {
     this.selectedFiles = event.target.files;

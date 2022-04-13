@@ -20,7 +20,8 @@ import { FooterComponent } from './footer/footer.component';
 import { FileUpLoadComponent } from './file-up-load/file-up-load.component';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { BoardMasterComponent } from './board-master/board-master.component';
-
+import { ForgotpasswordComponent } from './forgot-password/forgotpassword.component';
+import { ResetPasswordComponent } from './reset-password/reset-password.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -34,6 +35,8 @@ import { BoardMasterComponent } from './board-master/board-master.component';
     FooterComponent,
     FileUpLoadComponent,
     BoardMasterComponent,
+    ForgotpasswordComponent,
+    ResetPasswordComponent,
   ],
   imports: [
     BrowserModule,

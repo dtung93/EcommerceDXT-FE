@@ -9,6 +9,8 @@ import { ToastrService } from 'ngx-toastr';
   styleUrls: ['./board-moderator.component.scss']
 })
 export class BoardModeratorComponent implements OnInit {
+  width='width:100%'
+  isSubmitted=false
   display= 'none'
   addedProductId:any
   content?:string
@@ -38,12 +40,12 @@ export class BoardModeratorComponent implements OnInit {
     }
     openModal(){
       this.display='block'
-
     }
     closeModal(){
       this.display='none'
     }
     submitForm(){
+      this.isSubmitted=true
       if(this.productForm.valid){
       var data=this.productForm.value
       return this.api.addProduct(data).subscribe((res)=>{
@@ -52,8 +54,7 @@ export class BoardModeratorComponent implements OnInit {
       },error=>console.log(error.message))
      }
      else{
-       
-       return null
+     return this.toastr.error('Failed to add product','Please check the fields again')
      }}
   ngOnInit(): void {
     this.userService.getModeratorBoard().subscribe(

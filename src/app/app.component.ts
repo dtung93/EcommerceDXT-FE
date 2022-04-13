@@ -9,6 +9,7 @@ import { EventBusService } from './service/event-bus.service';
 })
 export class AppComponent implements OnInit, OnDestroy {
   private roles:string[]=[]
+  avatar?=''
   isLoggedIn=false
   showFooter=false
   showAdminBoard=false
@@ -21,7 +22,8 @@ export class AppComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.isLoggedIn = !!this.tokenStorageService.getToken();
     if (this.isLoggedIn) {
-      const user = this.tokenStorageService.getUser();
+      const user = this.tokenStorageService.getUser(); 
+      this.avatar=user.avatar
       this.roles = user.roles;
       this.showMasterBoard=this.roles.includes("ROLE_MASTER")
       this.showAdminBoard = this.roles.includes('ROLE_ADMIN')

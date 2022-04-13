@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { TokenStorageService } from '../service/token-storage.service';
 import { UserService } from '../service/user.service';
@@ -11,7 +11,7 @@ import { ConsoleLogger } from '@angular/compiler-cli';
   styleUrls: ['./profile.component.scss']
 })
 export class ProfileComponent implements OnInit {
-  roleSelected: any = null
+  roleSelected :any=null
   display = 'none'
   isAdmin = false
   isModerator = false
@@ -25,12 +25,12 @@ export class ProfileComponent implements OnInit {
     { id: 2, name: 'ROLE_MODERATOR', tag: 'Moderator' }, { id: 3, name: "ROLE_ADMIN", tag: 'Admin' }
   ]
   constructor(private token: TokenStorageService, private userService: UserService, private toastr: ToastrService) { }
-
+  @ViewChild('closeUpdateModal') closeUpdateModal?: ElementRef 
   ngOnInit():void {
     if (this.token.getToken()) {
       this.selectedUser = this.token.getUser()
-    if(this.selectedUser.roles.find(element=>element=='ROLE_MASTER'))
-      this.isAdmin=true
+    if(this.selectedUser.roles.find((element)=>element=='ROLE_MASTER'))
+      this.isMaster=true
     if(this.selectedUser.roles.find(element=>element=='ROLE_ADMIN'))
       this.isAdmin=true
     if(this.selectedUser.roles.find(element=>element=='ROLE_MODERATOR'))
@@ -80,16 +80,16 @@ setInterval(
       password: this.selectedUser.password,
       address:this.selectedUser.address,
       phone:this.selectedUser.phone,
-      roles: [this.roleSelected]
+      roles:[this.selectedUser.roles[0]]
     }
-
       this.userService.updateUser(data).subscribe((res) => {
         console.log(res)
-        this.display = 'none'
+        this.closeUpdateModal?.nativeElement.click();
         this.toastr.info("Your account is updated!")
       },error=>{
         console.log(error.message)
       })
+
   }
 
   addRole(id: any) {
@@ -119,5 +119,7 @@ setInterval(
     }
     this.selectedUser.roles = [roleParam];
   }
-
+updatePassword(){
+  this.toastr.info('A confirmation link for password change was sent to your email address')
+}
 }

@@ -23,7 +23,7 @@ export class AuthService {
    return this.http.post(apiURL + 'signin', {
       username,
       password
-    }, httpOptions,)
+    }, httpOptions)
 
   }
  addUser(username:string,password:string,email:string,roles:[]):Observable<any>{
