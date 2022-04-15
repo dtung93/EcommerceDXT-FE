@@ -42,7 +42,9 @@ export class UserService {
  sendResetPasswordEmail(email:string){
  return this.http.post(apiURL +'/forgot-password',email)
  }
-
+sendResetPassword(data:any){
+  return this.http.post(apiURL+'/reset-password',{ data })
+}
 }
 
 

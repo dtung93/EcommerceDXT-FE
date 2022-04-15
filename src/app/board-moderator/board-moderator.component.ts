@@ -49,7 +49,7 @@ export class BoardModeratorComponent implements OnInit {
       if(this.productForm.valid){
       var data=this.productForm.value
       return this.api.addProduct(data).subscribe((res)=>{
-        this.productForm.reset()
+        window.location.reload()
       this.showToast(res.id,res.name)
       },error=>console.log(error.message))
      }

@@ -1,5 +1,6 @@
 <div class="container" *ngIf="selectedUser; else loggedOut">
   <div class="row">
+    <!-- PROFILE INFO -->
     <h3 style="text-align: center;background-color: #3492d1;" class="text-white">Your profile</h3>
   </div>
   <p class="alert alert-primary">
@@ -26,8 +27,10 @@
     </button>&nbsp;
     <button style="background-color:#3492d1" class="btn text-white" data-bs-toggle="modal" data-bs-target="#changePassword" >Change password</button>
   </div>
+
+  <!-- CHANGE PASSWORD MODAL -->
   <div class="modal" tabindex="-1" role="dialog" id="changePassword" aria-labelledby="changePassword" aria-hidden="true">
-    <div class=" modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class=" modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-header text-white" style="background-color:#3492d1">
           <h4 class="modal-title">Change password</h4>
@@ -67,9 +70,9 @@
   </div>
 
 
-    <!-- Profile Modal -->
+    <!-- Edit Profile Modal -->
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
           <div class="modal-header text-white" style="background-color: #3492d1;">
             <h5 class="modal-title" id="exampleModalLabel">Edit Profile</h5>
@@ -150,6 +153,7 @@
     </div>
   </div>
 </div>
+
 <ng-template #loggedOut>
   <div class="alert alert-info">Please login first</div>
 </ng-template>
