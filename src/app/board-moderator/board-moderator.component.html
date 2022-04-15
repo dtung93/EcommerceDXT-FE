@@ -2,11 +2,14 @@
   <header class="jumbotron">
     <h3 id="header">MODERATOR PANEL</h3>
   </header>
+  <!-- ADD NEW PRODUCT BUTTON  -->
   <div>
     <button id="add-product" type="button" (click)="openModal()" class="btn btn-primary">
       <span class="bg-white plus"><i class="fa fa-plus"></i></span> ADD NEW PRODUCT
     </button>
   </div>
+
+  <!-- ADD PRODUCT MODAL -->
   <div style="max-height: 70%" class="modal mt-5" tabindex="-1" role="dialog" [ngStyle]="{ display: display }">
     <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
       <div class="modal-content">
@@ -19,6 +22,7 @@
               aria-hidden="true"></span></button>
         </div>
         <div class="modal-body">
+         <!-- PRODUCT FORM -->
           <form [formGroup]="productForm" (ngSubmit)="submitForm()">
             <table [style]="width">
               <tr>
@@ -60,42 +64,6 @@
                   required</label>
               </tr>
             </table>
-            <!-- <form (ngSubmit)="submitForm()" [formGroup]="productForm">
-              <label for="name">Product Name</label>
-              <input type="text" formControlName="name" placeholder="Product Name">
-              <label id="error" *ngIf="productForm.controls['name'].invalid&&isSubmitted">Product name is required, 4-25 characters</label>
-               <br>
-              <label for="img">Image URL</label>
-              <input type="text" pattern="https?://.+" title="Include http://" formControlName="img" placeholder="Image URL">
-              <label id="error" *ngIf="productForm.controls['img'].invalid&&isSubmitted">Invalid url for image</label>
-              <br>
-
-              <label for="country">Category</label>
-              <select formControlName="category" >
-              <option  value={{cat.name}} *ngFor="let cat of categories">{{cat.name}}</option>
-              </select>
-              <label id="error" for="category" *ngIf="productForm.controls['category'].invalid&&isSubmitted">Category required</label>
-              <br>
-
-              <label for="description">Product Description</label>
-              <textarea  formControlName="description"  placeholder="Write product description here" style="height:200px"></textarea>
-              <label for="" id="error" *ngIf="productForm.controls['description'].invalid&&isSubmitted">Description text required</label><br>
-              
-
-              <label for="price">Price:</label><BR>
-              <input type="number" onkeyup="if(this.value<0){this.value= this.value * -1}" min="0" formControlName="price"><BR>
-                <label for="price" id="error" *ngIf="productForm.controls['price'].invalid&&isSubmitted">Price must be set</label><br>
-              
-              <label for="qty">Quantity:</label><br>
-              <input type="number" onkeyup="if(this.value<0){this.value= this.value * -1}"  min="0" formControlName="qty"><br>
-              
-              <div class='buttons' style="float:right;padding-bottom: 10px;">
-              <input style="background-color:#318dca" (click)="submitForm()" type="btn btn submit" class="btn text-white" value="Submit">&nbsp;
-              <button  type="button"  class="btn btn-outline-dark" style="width: 10rem;" (click)="closeModal()" >
-                No
-              </button>
-              </div>
-            </form> -->
             <div class="modal-footer">
               <tr><button id="detail" class='btn btn text-white'
                   style="background-color:#2d80b7;width: 10rem;">Update</button></tr>
@@ -107,6 +75,6 @@
       </div>
     </div>
   </div>
-  <app-home style="margin:0px;font-size:12px"></app-home>
+  <app-home style="font-size:11px" class=""></app-home>
 
 </div>

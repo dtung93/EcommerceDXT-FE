@@ -18,7 +18,7 @@ form:any={
 isSuccessful=false
 isSignedUpFailed=false
 errorMessage=''
-  constructor(private authService:AuthService) { }
+  constructor(private toastr:ToastrService,private authService:AuthService) { }
 
 currentFile: any
 onFileSelected(event:any){
@@ -33,9 +33,10 @@ onFileSelected(event:any){
     const{username,email,password,avatar,phone,address}=this.form
     console.log(this.form)
     this.authService.register(username,password,address,email,phone,avatar).subscribe(res=>{
-      console.log(res)
+      this.toastr.info('Your account has been successfully registered!')
       this.isSuccessful=true
       this.isSignedUpFailed=false
+      setInterval(()=>window.location.href='/login',3000) 
     },error=>{
       this.errorMessage=error.message
       this.isSignedUpFailed=true

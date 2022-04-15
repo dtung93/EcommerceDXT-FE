@@ -180,14 +180,16 @@ export class BoardAdminComponent implements OnInit {
       phone:this.selectedUser.phone,
       roles: [this.roleSelected]
     }
-    if(data.roles.length<1){
+    if(data.roles.length<1||data.roles==null){
       this.toastr.error('Error!','Roles must not be empty. Please select a role')     
     }
     else{
       this.userService.updateUser(data).subscribe((res) => {
-        console.log(res)
         this.display = 'none'
         this.toastr.info("User #" + res.id + " is updated")
+      },error=>{
+          console.log(error.message)
+          this.selectedUser==null
       })
     }
   }

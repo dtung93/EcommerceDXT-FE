@@ -62,29 +62,15 @@ export class LoginComponent implements OnInit {
       //Error message if cannot or fail to communicate with API
       err => {
         if(err.status==401){
-        Swal.fire({
-          icon: 'error',
-          title: 'Error!',
-          color:'red',
-          showConfirmButton:true,
-          confirmButtonColor:"#186192",
-          text: 'Login failed! Wrong username or password',
-          footer: '<a href="">Why is this issue?</a>'
-        })
+    
         this.loginError=true
         this.isLoginFailed = true;
+        this.toastr.error('Login failed! An error has occured!')
       }
       else{
       this.isLoginFailed=true
       this.internetError=true
-      Swal.fire(  {icon: 'error',
-      title: 'Oops...',
-      color:'red',
-      showConfirmButton:true,
-      confirmButtonColor:"#186192",
-      text: 'Login failed! No internet connection',
-      footer: '<a href="">Why is this issue?</a>'
-    })
+      this.toastr.error('Could not establish connection to server')
       }
     }
     );

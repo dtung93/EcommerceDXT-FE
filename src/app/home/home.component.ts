@@ -90,16 +90,7 @@ export class HomeComponent implements OnInit {
       this.count = totalItems
       this.HasProducts = true
       console.log(response)
-    }, error => Swal.fire({
-      icon: 'error',
-      title: 'Oops...',
-      text: 'Products could not be loaded. Please check your connection to the server ',
-      footer: '<a href="">Why is this issue?</a>',
-      showConfirmButton: true,
-      confirmButtonColor: '#2d8bca',
-      color: 'red',
-      timer: 7000
-    }))
+    },error=>{ this.toastr.error('No products could be found')})
   }
   //http service to get and display the array of products with no parameters
   backToResults(): void {
@@ -110,16 +101,9 @@ export class HomeComponent implements OnInit {
       this.count = totalItems
       console.log(response)
       this.keyword = !this.keyword
-    }, error => Swal.fire({
-      icon: 'error',
-      title: 'Oops...',
-      text: 'Cannot get any products. Please check your connection ' + error.message,
-      footer: '<a href="">Why is this issue?</a>',
-      showConfirmButton: true,
-      confirmButtonColor: '#2d8bca',
-      color: 'red',
-      timer: 7000
-    }))
+    }, error => { 
+      this.toastr.error('No products could be found!')
+    })
   }
   getSortParams(page: number, pageSize: number, value: string) {
     let params: any = {}
