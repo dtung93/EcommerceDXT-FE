@@ -51,7 +51,7 @@
           <td>
             <div class="controlbuttons">
               <button class="btn btn text-white" style="background-color: #318dca"
-                (click)="this.userModal(user.id)">View</button>&nbsp;
+                (click)="userModal(user.id)">View</button>&nbsp;
               <button class="btn btn text-white" *ngIf="user.editable" style="background-color: rgb(170, 22, 22);"
                 data-bs-toggle="modal" data-bs-target="#deleteModal" (click)="getUserDetail(user.id)">Delete</button>
             </div>
@@ -94,6 +94,7 @@
             <button type="button" class="btn-close bg-white" (click)="onCloseHandled()"><span
                 aria-hidden="true"></span></button>
           </div>
+          <label for="error" style="color:red" *ngIf="updateError!=''">Update failed! {{updateError}}</label>
           <div class="modal-body bg-light">
             <table [style]="width">
               <td><input type='hidden' [(ngModel)]="selectedUser.id" value={{selectedUser.id}}></td>
@@ -105,9 +106,9 @@
               <tr>
                 <td>Role:</td>
                 <td>
-                  <select [(ngModel)]='roleSelected' (change)="addRole(roleSelected.id)">
+                  <select [(ngModel)]='roleSelected' >
                     <option [id]="role.id" *ngFor="let role of selectedRoles"
-                      [selected]="role.id==selectedUser.roles[0]?.id" [ngValue]="role">{{role.tag}}</option>
+                      [selected]="role.id===roleSelected.id" [ngValue]="role">{{role.tag}}</option>
                   </select>
                   <label style="color:red" *ngIf="this.selectedUser.roles.length==0">Must have at least 1 role</label>
                 </td>

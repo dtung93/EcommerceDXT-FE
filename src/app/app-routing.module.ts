@@ -11,6 +11,7 @@ import { BoardMasterComponent } from './board-master/board-master.component';
 import { FileUpLoadComponent } from './file-up-load/file-up-load.component';
 import {ForgotpasswordComponent} from './forgot-password/forgotpassword.component'
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
+import { VerifiedAccountComponent } from './verified-account/verified-account.component';
 const routes: Routes = [
   { path: 'home', component: HomeComponent },
   { path: 'login', component: LoginComponent },
@@ -24,6 +25,7 @@ const routes: Routes = [
   {path:'file-upload',component:FileUpLoadComponent},
   {path:'forgot-password',component:ForgotpasswordComponent},
   {path:'reset-password',component:ResetPasswordComponent},
+  {path:'verified-account',component:VerifiedAccountComponent},
 ];
 
 @NgModule({

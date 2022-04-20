@@ -22,6 +22,7 @@ import { NgxSpinnerModule } from 'ngx-spinner';
 import { BoardMasterComponent } from './board-master/board-master.component';
 import { ForgotpasswordComponent } from './forgot-password/forgotpassword.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
+import { VerifiedAccountComponent } from './verified-account/verified-account.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -37,6 +38,7 @@ import { ResetPasswordComponent } from './reset-password/reset-password.componen
     BoardMasterComponent,
     ForgotpasswordComponent,
     ResetPasswordComponent,
+    VerifiedAccountComponent,
   ],
   imports: [
     BrowserModule,

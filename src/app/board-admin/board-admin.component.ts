@@ -15,6 +15,7 @@ import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, ValidatorFn,
   styleUrls: ['./board-admin.component.scss']
 })
 export class BoardAdminComponent implements OnInit {
+  updateError=''
   isSubmitted=false
   userForm!: FormGroup 
   isAdmin = false
@@ -156,8 +157,7 @@ export class BoardAdminComponent implements OnInit {
   getUserDetail(id: number) {
     return this.userService.getUser(id).subscribe((res) => {
       this.selectedUser = res
-      this.selectedUser.roles = res.roles
-      console.log(this.selectedUser.roles)
+      this.roleSelected=this.selectedRoles.find((role:any)=>role.id === res.roles[0].id)
     })
   }
 
@@ -166,8 +166,9 @@ export class BoardAdminComponent implements OnInit {
     console.log(this.selectedUser.roles)
   }
   userModal(id: number) {
+   
+    this.getUserDetail(id);
     this.openModal()
-    this.getUserDetail(id)
   }
 
   updateUser(): void {
@@ -188,7 +189,7 @@ export class BoardAdminComponent implements OnInit {
         this.display = 'none'
         this.toastr.info("User #" + res.id + " is updated")
       },error=>{
-          console.log(error.message)
+          this.updateError="Email or phone numbers may already be in use"
           this.selectedUser==null
       })
     }

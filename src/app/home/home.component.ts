@@ -83,7 +83,6 @@ export class HomeComponent implements OnInit {
   //http service to get and display the array of products, paging information from API with parameters category and name, page and page sizee
   getProducts(): void {
     const params = this.getRequestParams(this.category, this.name, this.page, this.pageSize)
-    console.log(params)
     this.userService.getPublicContent(params).subscribe(response => {
       const { products, totalItems } = response
       this.products = products

@@ -9,31 +9,37 @@ import { UserService } from '../service/user.service';
   styleUrls: ['./forgotpassword.component.scss']
 })
 export class ForgotpasswordComponent implements OnInit {
-  resetPasswordToken=''
-  isSubmitted=false
-  emailForm:FormGroup
-  emailError:boolean=false
-  constructor(private userService:UserService,private formBuilder:FormBuilder,private toastr:ToastrService) {
-    this.emailForm=formBuilder.group({
-email:['',[Validators.required,Validators.email]]
+  showButton = false
+  resetPasswordToken = ''
+  isSubmitted = false
+  emailForm: FormGroup
+  emailError: boolean = false
+  constructor(private userService: UserService, private formBuilder: FormBuilder, private toastr: ToastrService) {
+    this.emailForm = formBuilder.group({
+      email: ['', [Validators.required, Validators.email]]
     })
-   }
+  }
 
   ngOnInit(): void {
   }
-sendEmailReset(){
-  this.isSubmitted=true
-  let email=this.emailForm.controls['email'].value
-  if(this.emailForm.valid){
-  this.userService.sendResetPasswordEmail(email).subscribe((res:any) => {
-this.resetPasswordToken=res.message
-window.localStorage.setItem('resetPasswordToken',this.resetPasswordToken)
+  sendEmailReset() {
+    this.isSubmitted = true
+    let email = this.emailForm.controls['email'].value
+    if (this.emailForm.valid) {
+      this.userService.sendResetPasswordEmail(email).subscribe((res: any) => {
+        this.resetPasswordToken = res.message    
+        if (this.resetPasswordToken === 'Could not find any user with the email address') {
+          this.emailError = true
+        }
+        else {    
+          this.showButton = true
+          this.emailError=false
+        }
+      }
+        , err => {
+          this.toastr.error('An error has occured while performing the operations')
+        })
+    }
+    else { }
   }
-  ,err => {
-    this.emailError=true
-    console.log(err.message)
-  })
-}
-else { }
-}
 }

@@ -44,13 +44,17 @@ export class BoardModeratorComponent implements OnInit {
     closeModal(){
       this.display='none'
     }
+    submitSuccess(id:number,name:string,){
+      this.display='none'
+      this.showToast(id,name)
+      setInterval(()=>{window.location.reload()},2000)
+    }
     submitForm(){
       this.isSubmitted=true
       if(this.productForm.valid){
-      var data=this.productForm.value
+      const data=this.productForm.value
       return this.api.addProduct(data).subscribe((res)=>{
-        window.location.reload()
-      this.showToast(res.id,res.name)
+       this.submitSuccess(res.id,res.name)     
       },error=>console.log(error.message))
      }
      else{
