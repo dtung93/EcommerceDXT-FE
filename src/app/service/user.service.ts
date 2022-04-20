@@ -43,8 +43,12 @@ export class UserService {
  return this.http.post(apiURL +'/forgot-password',email)
  }
 sendResetPassword(data:any){
-  return this.http.post(apiURL+'/reset-password',{ data })
+  return this.http.post(apiURL+'/reset-password',data)
 }
+getVerificationStatus(verificationCode:string){
+  return this.http.get(apiURL+`/verify-user/${verificationCode}`)
+}
+
 }
 
 

@@ -54,6 +54,7 @@ export class BoardMasterComponent implements OnInit {
   users: any[] = []
   totalAccounts = 0
   showUserPanel = false
+  updateError=''
   display = 'none'
   @ViewChild('closeAddUser') closeAddUser?: ElementRef 
   @ViewChild('closeDeleteModal') closeDeleteModal?:ElementRef
@@ -198,8 +199,7 @@ export class BoardMasterComponent implements OnInit {
   getUserDetail(id: number) {
     return this.userService.getUser(id).subscribe((res) => {
       this.selectedUser = res
-      this.selectedUser.roles = res.roles
-      this.roleSelected= this.selectedUser.roles[0]
+      this.roleSelected= this.selectedRoles.find((selectedRole:any)=>selectedRole.id===res.roles[0].id)
     })
   }
 
@@ -227,7 +227,7 @@ export class BoardMasterComponent implements OnInit {
         console.log(res)
         this.display = 'none'
         this.toastr.info("User #" + res.id + " is updated")
-      })
+      },error=>{ this.updateError="Mail or phone numbers may already be in use. Please check again"})
   }
   showToast(username: string) {
     this.toastr.error(username+ ' has been deleted')

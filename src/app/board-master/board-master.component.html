@@ -27,6 +27,7 @@
                 <h5 class="modal-title" id="exampleModalLabel">Add A New Account</h5>
                 <button type="button" id="close" class="btn btn-close bg-white" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
+              <label for="error" style="color:red" *ngIf="updateError!=''">Update failed! {{updateError}}</label>
               <div class="modal-body">
                 <form [formGroup]="userForm" (submit)="addUser()">
                 <table width="100%">
@@ -72,7 +73,7 @@
                 </table>
                 <div class="modal-footer">
                   <div style="margin-right: 0;">
-                    <button #closeAddUser  type="submit" class="btn btn text-white control"  style="background-color:#3085bd">Create User</button>
+                    <button #closeAddUser  type="submit" class="btn btn text-white control"  style="background-color:#3085bd;">Create User</button>
                     &nbsp;<button #closeAddUser type="button"  class="btn btn-outline-secondary control" data-bs-dismiss="modal">Close</button>
                     </div>
                 </div>

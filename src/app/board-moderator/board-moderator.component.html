@@ -3,9 +3,9 @@
     <h3 id="header">MODERATOR PANEL</h3>
   </header>
   <!-- ADD NEW PRODUCT BUTTON  -->
-  <div>
+  <div style="text-align:center">
     <button id="add-product" type="button" (click)="openModal()" class="btn btn-primary">
-      <span class="bg-white plus"><i class="fa fa-plus"></i></span> ADD NEW PRODUCT
+      <span class="bg-white plus"><i class="fa fa-plus mt-2"></i></span> ADD NEW PRODUCT
     </button>
   </div>
 
@@ -44,14 +44,14 @@
               </tr>
               <tr>
                 <td>Price: </td>
-                <input type='number' formControlName="price" onkeyup="if(this.value<0){this.value= this.value * -1}"
+                <input type='number' formControlName="price" oninput="validity.valid||(value='')"
                   [style]="width" min="0">
                 <label for="price" id="error" *ngIf="productForm.controls['price'].invalid&&isSubmitted">Price must be
                   set</label><br>
               </tr>
               <tr>
                 <td>Quantity:</td>
-                <input formControlName="qty" onkeyup="if(this.value<0){this.value= this.value * -1}" type='number'
+                <input formControlName="qty" oninput="validity.valid||(value='')" type='number'
                   [style]="width" min="0">
               </tr>
               <tr>
@@ -75,6 +75,6 @@
       </div>
     </div>
   </div>
-  <app-home style="font-size:11px" class=""></app-home>
+  <app-home style="font-size:13px" class=""></app-home>
 
 </div>
