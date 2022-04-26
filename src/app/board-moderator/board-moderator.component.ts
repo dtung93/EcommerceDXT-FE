@@ -20,6 +20,7 @@ export class BoardModeratorComponent implements OnInit {
     {name:'Home'},{name:'Clothing'},{name:'Sports'},{name:'Grocery'},{name:"Kids"},{name:"Automotive"},{name:"Toys"},
     {name:'Movies'},{name:'Grocery'}
     ]
+  
   productForm:FormGroup
   productPanel=false
   openProductPanel(){

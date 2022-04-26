@@ -5,14 +5,21 @@ import { UserService } from '../service/user.service';
 import Swal from 'sweetalert2';
 import { User } from '../model/user.model';
 import { ConsoleLogger } from '@angular/compiler-cli';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { confirmField } from '../service/validator';
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.scss']
 })
 export class ProfileComponent implements OnInit {
+  username:string=''
+  isSubmitted=false
+  changePasswordForm:FormGroup
+  passwordError:string=''
   roleSelected :any=null
   display = 'none'
+  isDisabled=false
   isAdmin = false
   isModerator = false
   isUser=false
@@ -24,11 +31,19 @@ export class ProfileComponent implements OnInit {
     { id: 1, name: 'ROLE_USER', tag: 'User' },
     { id: 2, name: 'ROLE_MODERATOR', tag: 'Moderator' }, { id: 3, name: "ROLE_ADMIN", tag: 'Admin' }
   ]
-  constructor(private token: TokenStorageService, private userService: UserService, private toastr: ToastrService) { }
+  constructor(private fb:FormBuilder,private token: TokenStorageService, private userService: UserService, private toastr: ToastrService) {
+this.changePasswordForm=this.fb.group({
+oldPassword:['',[Validators.required]],
+newPassword:['',[Validators.required,Validators.minLength(6),Validators.maxLength(50)]],
+confirmNewPassword:['',[Validators.required,Validators.minLength(6),Validators.maxLength(50)]]
+},{ validator:confirmField('newPassword','confirmNewPassword')})
+
+   }
   @ViewChild('closeUpdateModal') closeUpdateModal?: ElementRef 
   ngOnInit():void {
     if (this.token.getToken()) {
       this.selectedUser = this.token.getUser()
+      if(this.selectedUser.enabled==true){
     if(this.selectedUser.roles.find((element)=>element=='ROLE_MASTER'))
       this.isMaster=true
     if(this.selectedUser.roles.find(element=>element=='ROLE_ADMIN'))
@@ -36,6 +51,18 @@ export class ProfileComponent implements OnInit {
     if(this.selectedUser.roles.find(element=>element=='ROLE_MODERATOR'))
       this.isModerator=true
     }
+    else {
+      this.isDisabled=true
+      console.log(this.isDisabled)
+     Swal.fire({
+       icon:'info',
+       showConfirmButton:true,
+       background:'snow',
+      confirmButtonColor:"#2d8bca",
+      text:'Account is not activated yet!'    
+     })
+    }
+  }
   }
   getUserDetail(id: number) {
     this.userService.getUser(id).subscribe((res) => {
@@ -80,7 +107,8 @@ setInterval(
       password: this.selectedUser.password,
       address:this.selectedUser.address,
       phone:this.selectedUser.phone,
-      roles:[this.selectedUser.roles[0]]
+      roles:[this.selectedUser.roles[0]],
+      enabled:this.selectedUser.enabled
     }
       this.userService.updateUser(data).subscribe((res) => {
         console.log(res)
@@ -118,6 +146,28 @@ setInterval(
       name: roleUpdate.name
     }
     this.selectedUser.roles = [roleParam];
+  }
+  submitChangePasswordForm(){
+    this.isSubmitted=true
+    if(this.changePasswordForm.invalid){
+      this.passwordError="Error when updating password"
+    }
+    else{
+     const data={
+       username:this.selectedUser.username,
+       oldPassword:this.changePasswordForm.controls['oldPassword'].value,
+      newPassword:this.changePasswordForm.controls['newPassword'].value
+     }
+    this.userService.changePassword(data).subscribe((res)=>{
+      this.toastr.info('Your password has changed successfully! Please login again')
+      setInterval(
+        () =>{
+          window.location.href='/login',1000
+          this.token.signOut()
+        }
+      )
+    },error=>{ this.passwordError="You have entered a wrong password"})
+    }
   }
 updatePassword(){
   this.toastr.info('A confirmation link for password change was sent to your email address')

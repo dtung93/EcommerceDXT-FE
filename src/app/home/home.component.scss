@@ -6,6 +6,21 @@ ul li{list-style-type: none;}
     min-height: 100%;
     object-fit: cover;
 }
+input[type=text],input[type=number], select, textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-top:14px;
+    margin-bottom:14px;
+  }
+label#error{
+    margin-top:-15px;
+    display:block;
+    font-size:15px;
+    font-style:italic;
+  }
+
 input#filter-control{
    margin:5px;
     width:50%;
@@ -28,7 +43,19 @@ input#filter-control{
     margin-bottom: 15px; 
     transition: .3s;
 }
-
+span.plus{
+    height: 25px;
+    width: 25px;
+    border-radius: 50%;
+    display: inline-block;
+    color:#318dca
+  }
+  h3#header{
+    background-color:#e9f6fe;
+    text-align: center;
+    color:grey
+  }
+.row{margin:10px;background-color:#f9fbfd}
 .product-item:hover .product-image a {
     background: rgba(63, 105, 170, .5);
 }
@@ -133,4 +160,7 @@ button#search,#remove{height:45px;width:6.7rem;margin:5px}
 a{text-decoration: none;}
 .modal-header{background-color: #2d80b8;;}
 button#delete,button#view{margin:5px;width:5rem}
+button#add-product{
+    background-color: #026eb6;padding:5px;font-size:15px;width:14rem;height:45px
+  }
 

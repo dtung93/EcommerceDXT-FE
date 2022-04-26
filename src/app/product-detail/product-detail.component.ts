@@ -28,7 +28,7 @@ export class ProductDetailComponent implements OnInit {
     this.getProduct(this.route.snapshot.params['id'])
     if(this.token.getToken()){
       this.roles=this.token.getUser().roles
-     if(this.roles.includes("ROLE_MODERATOR")||this.roles.includes("ROLE_ADMIN")){
+     if(this.roles.includes("ROLE_MODERATOR")||this.roles.includes("ROLE_ADMIN")||this.roles.includes('ROLE_MASTER')){
        this.showButton=true
      }
      else{this.showButton=false}

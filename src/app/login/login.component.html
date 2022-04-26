@@ -17,7 +17,7 @@
         <form *ngIf="!isLoggedIn" name="form" (ngSubmit)="f.form.valid && onSubmit()" #f="ngForm" novalidate
           style="width: 100%">
           <div class="form-group">
-            <div style="color:red" *ngIf="f.submitted && isLoginFailed && loginError">
+            <div class="text-danger" *ngIf="f.submitted && isLoginFailed && loginError">
               Login failed: Please check your username and password again {{errorMessage}}
             </div>
           </div>
@@ -25,7 +25,7 @@
             <label for="username">Username</label>
             <input type="text" placeholder="Enter your username" minlength="4" maxlength="15" class="form-control" name="username" [(ngModel)]="form.username" required
               #username="ngModel" />
-            <div class="alert alert-danger" *ngIf="username.errors && f.submitted">
+            <div class="text-danger" *ngIf="username.errors && f.submitted">
              <div *ngIf="username.errors['required']"> Username is required!</div>
              <div *ngIf="username.errors['minlength']">Username must have minimum 4 characters</div>
              <div *ngIf="username.errors['maxlength']">Username must have maximum 15 characters</div>
@@ -36,7 +36,7 @@
             <label for="password">Password</label>
             <input type="password" placeholder="Enter your password"class="form-control" name="password" [(ngModel)]="form.password" required
               minlength="6" #password="ngModel" />
-            <div class="alert alert-danger" role="alert" *ngIf="password.errors && f.submitted">
+            <div class="text-danger" role="alert" *ngIf="password.errors && f.submitted">
               <div *ngIf="password.errors['required']">Password is required</div>
               <div *ngIf="password.errors['minlength']">
                 Password must be at least 6 characters

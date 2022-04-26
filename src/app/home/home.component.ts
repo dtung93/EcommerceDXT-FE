@@ -5,6 +5,7 @@ import { ToastrService } from 'ngx-toastr';
 import { ProductService } from '../service/product.service';
 import { TokenStorageService } from '../service/token-storage.service';
 import Swal from 'sweetalert2';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-home',
@@ -12,6 +13,10 @@ import Swal from 'sweetalert2';
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
+  isSubmitted = false;
+  width="width:100%"
+  productForm:FormGroup
+  notUser=false
   paginationStyle = "color:red,background-color:green"
   isAdminOrMod = false
   sortValue: any
@@ -37,12 +42,27 @@ export class HomeComponent implements OnInit {
     { id: 1, name: 'Sort by ascending price', value: 'ascending' },
     { id: 2, name: 'Sort by descending price', value: 'descending' }
   ]
+  categories:any=[
+    {name:'Shoes'},{name:'Cars'},{name:'Health'},
+    {name:'Computers'},{name:'Garden'},{name:'Beauty'},
+    {name:'Home'},{name:'Clothing'},{name:'Sports'},{name:'Grocery'},{name:"Kids"},{name:"Automotive"},{name:"Toys"},
+    {name:'Movies'},{name:'Grocery'}
+    ]
   sortedOptions(value: string) {
     this.sortValue = this.sortOptions.find(x => x.value == value)?.value
     this.sortProducts()
   }
-  constructor(private userService: UserService, private token: TokenStorageService, private toastr: ToastrService, private productService: ProductService) { }
-  showToast(productname: string) {
+  constructor(private fb:FormBuilder,private userService: UserService, private token: TokenStorageService, private toastr: ToastrService, private productService: ProductService) {
+    this.productForm=this.fb.group({
+      name:['',[Validators.required,Validators.minLength(4),Validators.maxLength(25)]],
+      img:[''],
+      category:['',[Validators.required]],
+      description:['',[Validators.required]],
+      price:['',[Validators.required]],
+      qty:['']
+      })
+   }
+  showDeleteToast(productname: string) {
     this.toastr.error(productname, 'Notice')
   }
   openModal(product: Product) {
@@ -57,12 +77,33 @@ export class HomeComponent implements OnInit {
     this.getProducts()
     if (this.token.getToken()) {
       this.roles = this.token.getUser().roles;
-      if (this.roles?.includes("ROLE_ADMIN") || this.roles?.includes("ROLE_MODERATOR")) {
-        this.isAdminOrMod = true
+      if (this.roles?.includes("ROLE_ADMIN") || this.roles?.includes("ROLE_MODERATOR")||this.roles?.includes("ROLE_MASTER")) {
+       this.notUser=true
       }
     }
   }
-
+  showToast(id:number,name:string){
+    this.toastr.info(
+      "Product id="+id+" "+name+" is succesfully added to the inventory"
+    )
+    }
+  submitSuccess(id:number,name:string,){
+    this.isSubmitted=false
+    this.productForm.reset()
+    this.showToast(id,name)
+    setInterval(()=>{window.location.reload()},1000)
+  }
+  submitProductForm(){
+    this.isSubmitted=true
+    if(this.productForm.valid){
+    const data=this.productForm.value
+    return this.productService.addProduct(data).subscribe((res)=>{
+     this.submitSuccess(res.id,res.name)     
+    },error=>console.log(error.message))
+   }
+   else{
+   return this.toastr.error('Failed to add product','Please check the fields again')
+   }}
   getRequestParams(category: string, searchTitle: string, page: number, pageSize: number): any {
     let params: any = {}
     if (searchTitle) {
@@ -83,7 +124,7 @@ export class HomeComponent implements OnInit {
   //http service to get and display the array of products, paging information from API with parameters category and name, page and page sizee
   getProducts(): void {
     const params = this.getRequestParams(this.category, this.name, this.page, this.pageSize)
-    this.userService.getPublicContent(params).subscribe(response => {
+    this.productService.getProducts(params).subscribe(response => {
       const { products, totalItems } = response
       this.products = products
       this.count = totalItems
@@ -94,7 +135,7 @@ export class HomeComponent implements OnInit {
   //http service to get and display the array of products with no parameters
   backToResults(): void {
     const params = this.getRequestParams(this.name = '', this.category = '', this.page, this.pageSize)
-    this.userService.getPublicContent(params).subscribe(response => {
+    this.productService.getProducts(params).subscribe(response => {
       const { products, totalItems } = response
       this.products = products //array of products
       this.count = totalItems
@@ -152,7 +193,7 @@ export class HomeComponent implements OnInit {
       this.products = this.products.filter(x => x.id != id)
       console.log(selectedProduct)
       this.display = 'none'
-      this.showToast(selectedProduct?.name + ' is deleted')
+      this.showDeleteToast(selectedProduct?.name + ' is deleted')
     }, error => {
       this.display = 'none'
     })

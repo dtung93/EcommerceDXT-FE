@@ -15,6 +15,7 @@ body {
   .component-title{
     text-align: center;background-color: #2d80b8;;
   }
+  label{font-style: italic;font-size:15px;}
   span.plus{
     height: 25px;
     width: 25px;
@@ -24,20 +25,19 @@ body {
     padding: 3px;
   }
   button.add-user{
-    background-color:#026eb6;height:50px
+    background-color:#026eb6;height:50px;width:12rem
   }
   input[type="text"],
-  input[type="number"],
-  select,
-  textarea {
+  input[type="number"],input[type="password"],
+  select
+{
     width: 100%;
     padding: 12px;
     border: 1px solid rgb(19, 18, 18);
     border-radius: 4px;
-    box-sizing: border-box;
-    margin-top: 6px;
-    margin-bottom: 16px;
-    resize: vertical;
+  }
+ tr td{
+    padding-bottom:15px
   }
   .rolebox {
     padding: 0px;
@@ -108,3 +108,4 @@ body {
   button.control{
     width:10em
   }
+  th,tr{margin:15px}

@@ -13,6 +13,7 @@ import Swal from 'sweetalert2';
   styleUrls: ['./board-master.component.scss']
 })
 export class BoardMasterComponent implements OnInit {
+  errorMessage: string=''
  addUserRole={id:1,
   name:'ROLE_USER',
   tag:'User'}
@@ -22,8 +23,9 @@ export class BoardMasterComponent implements OnInit {
   isMaster = false
   currentUserRole = '';
   currentUsername: any
-  username: any
+  usernameoremail:string=''
   roleSelected={id:null, name:''}
+  noUserError:string=''
   font = 'font-family:optima'
   padding = 'padding:5'
   info = 'background-color:#97C5E3 ;margin:10px 15px 10px 5px;text-align:center;color:snow;font-size:25px'
@@ -44,6 +46,9 @@ export class BoardMasterComponent implements OnInit {
     { id: 1, name: 'ROLE_USER', tag: 'User' },
     { id: 2, name: 'ROLE_MODERATOR', tag: 'Moderator' }, { id: 3, name: "ROLE_ADMIN", tag: 'Admin' },
     {id:4,name:'ROLE_MASTER',tag:'Master'}
+  ]
+  optionRoles:any=[
+ "user","mod","admin","master"
   ]
   role: any[] = []
   page = 1
@@ -74,14 +79,14 @@ export class BoardMasterComponent implements OnInit {
         password: this.userForm.controls['password'].value,
         address:this.userForm.controls['address'].value,
         phone:this.userForm.controls['phone'].value,
-        roles:this.findByRoleId(this.userForm.controls['role'].value)
+        // roles:this.findByRoleId(this.userForm.controls['role'].value)
+        role:[this.userForm.controls['role'].value]
       }
 
-    this.userService.updateUser(data).subscribe((res)=>{
-      console.log(res)
-      this.closeAddUser?.nativeElement.click()
-      this.toastr.info("New user is successfully added to the list")
-    })
+this.userService.addUser(data).subscribe((res)=>{
+this.closeAddUser?.nativeElement.click()
+this.toastr.info("New account is successfully added")
+},error=>{this.errorMessage=error.error.message })
     }
   }
   findByRoleId(id: any) {
@@ -92,10 +97,10 @@ export class BoardMasterComponent implements OnInit {
   getValueSelected(event: any) {
     this.roleSelected = event
   }
-  getRequestParams(username: string, page: number, pageSize: number) {
+  getRequestParams(usernameoremail: string, page: number, pageSize: number) {
     let params: any = {}
-    if (username)
-      params[`username`] = username
+    if (usernameoremail)
+      params[`usernameoremail`] = usernameoremail
     params[`page`] = page - 1
     if (pageSize)
       params[`size`] = pageSize
@@ -127,7 +132,7 @@ export class BoardMasterComponent implements OnInit {
     return hasModeratorRole
   }
   getUsers() {
-    const params = this.getRequestParams(this.username, this.page, this.pageSize)
+    const params = this.getRequestParams(this.usernameoremail, this.page, this.pageSize)
     this.userService.getUsers(params).subscribe((res) => {
       this.totalAccounts = res.totalItems
       this.count = res.totalItems
@@ -136,7 +141,7 @@ export class BoardMasterComponent implements OnInit {
         return { ...user, editable: this.checkRoleCondition(user) }
       })
       console.log(this.users)
-    })
+    },()=>{ this.noUserError='No users could be found'})
   }
   checkRoleCondition(user: any) {
     const hasRole = user.roles.some((r: any) => r.name === 'ROLE_ADMIN' || r.name === 'ROLE_MASTER')
@@ -176,7 +181,7 @@ export class BoardMasterComponent implements OnInit {
       username: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(20)]],
       password: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(50)]],
       address:[],
-      role:[1],
+      role:['user'],
       confirmPassword: ['', [Validators.minLength(6), Validators.maxLength(50)]],
       phone:['',[Validators.required,Validators.maxLength(15)]],
       email: ['', [Validators.email, Validators.required, Validators.minLength(8)]]
@@ -216,7 +221,8 @@ export class BoardMasterComponent implements OnInit {
       password: this.selectedUser.password,
       address:this.selectedUser.address,
       phone:this.selectedUser.phone,
-      roles: [this.roleSelected]
+      roles: [this.roleSelected],
+      enabled:this.selectedUser.enabled
     }
     console.log(data);
     if (data.roles.length === 0 || data.roles.length == null) {
@@ -227,7 +233,7 @@ export class BoardMasterComponent implements OnInit {
         console.log(res)
         this.display = 'none'
         this.toastr.info("User #" + res.id + " is updated")
-      },error=>{ this.updateError="Mail or phone numbers may already be in use. Please check again"})
+      },()=>{ this.updateError="Mail or phone numbers may already be in use. Please check again"})
   }
   showToast(username: string) {
     this.toastr.error(username+ ' has been deleted')

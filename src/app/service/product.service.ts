@@ -7,6 +7,10 @@ const apiURL="http://localhost:8080/api"
   providedIn: 'root'
 })
 export class ProductService {
+  getProducts(params:any): Observable<any> {
+    return this.http.get(apiURL + '/products', { params });
+  }
+
  getProductDetail(id:any):Observable<Product>{
    return this.http.get<Product>(apiURL + `/product/${id}`)
  }

@@ -9,9 +9,6 @@ const apiURL="http://localhost:8080/api"
 export class UserService {
 
   constructor(private http:HttpClient) { }
-  getPublicContent(params:any): Observable<any> {
-    return this.http.get(apiURL + '/products', { params });
-  }
   getUserBoard(token:any): Observable<any> {
     return this.http.get(apiURL + '/user',  {responseType: 'text' });
   }
@@ -33,6 +30,9 @@ export class UserService {
   updateUser(data:any):Observable<User>{
     return this.http.put<User>(apiURL+'/user/update',data)
   }
+  addUser(data:any):Observable<User>{
+    return this.http.post<User>(apiURL+'/auth/add-user',data)
+  }
   deleteUser(id:number):Observable<void>{
     return this.http.delete<void>(`${apiURL}/admin/delete/${id}`)
   }
@@ -47,6 +47,9 @@ sendResetPassword(data:any){
 }
 getVerificationStatus(verificationCode:string){
   return this.http.get(apiURL+`/verify-user/${verificationCode}`)
+}
+changePassword(data:any){
+  return this.http.put(apiURL+`/user/change-password`,data)
 }
 
 }

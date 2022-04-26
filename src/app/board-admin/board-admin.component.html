@@ -4,7 +4,7 @@
       <h3 id="header">ADMIN CONTROL PANEL</h3>
     <div class="row">
       <div class="col-md-3">
-        <input type="text" class="form-control" placeholder="Search by username" [(ngModel)]="username">
+        <input type="text" class="form-control" placeholder="Search by username or email" [(ngModel)]="usernameoremail">
       </div>
       <div class="col-md-6 pt-2">
         <button class="btn text-white" id='search' (click)="searchUsername()">Search</button>
@@ -23,13 +23,13 @@
         </table>
       </div>
     </div>
-    <table class="table table p-0.5">
+    <table id='users'class="table table p-0.5">
       <thead class="text-white" style="background-color: #2d80b8;">
         <tr>
-          <th>User Name</th>
-          <th>Email</th>
-          <th>Role</th>
-          <th>Action</th>
+          <th style="width:15%">User Name</th>
+          <th style="width:20%">Email</th>
+          <th style="width:15%">Role</th>
+          <th style="width:20%"class="text-center">Action</th>
         </tr>
       </thead>
       <tbody class="px-5">
@@ -49,7 +49,7 @@
 
           </td>
           <td>
-            <div class="controlbuttons">
+            <div class="controlbuttons text-center">
               <button class="btn btn text-white" style="background-color: #318dca"
                 (click)="userModal(user.id)">View</button>&nbsp;
               <button class="btn btn text-white" *ngIf="user.editable" style="background-color: rgb(170, 22, 22);"

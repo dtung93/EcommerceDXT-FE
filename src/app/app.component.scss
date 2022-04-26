@@ -6,22 +6,48 @@ $arial: Arial, Helvetica, sans-serif;
 
 a{color:whitesmoke;}
 
-a:hover{opacity: 0.4;}
+a#item:hover{opacity: 0.4;}
   body {
     display: flex;
     flex-direction: column;
   }
 .push-menu{
-  margin-left:14rem;
+  margin-left:6rem;
   overflow: hidden;
-}
-.push-footer{
-  margin-left:14rem;
 }
 .footer{max-height: 30%}
   button#close:hover{opacity:0.7}
   nav a:hover{cursor: pointer;text-decoration: none;color:white}
-  .offcanvas{background-color: #2179B3;width: 15rem;padding:5px}
   ul li#board{text-decoration: none;list-style-type: none;padding:5px;font-size: 18px;}
   .offcanvas ul li a{color:snow;text-decoration: none;}
   .active{opacity:0.7;color:rgb(250, 251, 252);font-weight: bold;transform: scale(1.1);}
+
+
+
+  .sidenav {
+    height: 100%;
+    width: 0;
+    position:fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color:#1782ca;
+    overflow-x: hidden;
+    transition: 0.1s;
+    margin-top:0.35rem;
+   
+  }
+  
+  .sidenav a {
+    padding: 8px 8px 8px 32px;
+    text-decoration: none;
+    font-size: 18px;
+    color:snow;
+    display: block;
+    transition: 0.3s;
+  }
+  .hasWidth{width:14rem}
+  .sidenav a:hover {
+    color: #f1f1f1;
+  }
+  

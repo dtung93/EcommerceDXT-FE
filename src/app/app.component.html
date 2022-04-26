@@ -1,8 +1,8 @@
 <div id="app">
   <nav class="navbar navbar-expand-lg">
     <div class="container-fluid">
-      <a class="navbar-brand"> <button class="btn btn-default bg-white" (click)="openSideMenu()"
-          *ngIf="isLoggedIn&&showAdminBoard||showModeratorBoard" type="button" data-bs-toggle="offcanvas" 
+      <a class="navbar-brand"> <button class="btn btn-default bg-white" (click)="openNavButton()"
+         #openSideBar *ngIf="isLoggedIn&&(showAdminBoard||showModeratorBoard||showMasterBoard)" type="button" data-bs-toggle="offcanvas" 
           data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling"
           style="font-weight: bolder;font-size: 15px;"><i class="fa fa-gear"></i></button></a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo02"
@@ -10,8 +10,8 @@
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
-        <ul [ngClass]=" showSideMenu?'push-menu':' '" class="navbar-nav me-auto mb-2 mb-lg-0">
-          <li class="nav-item">
+        <ul  class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item" *ngIf="!isLoggedIn||(!showAdminBoard&&!showModeratorBoard&&!showMasterBoard)">
             <a href="/home" class="nav-link" routerLinkActive="active" routerLink="home">Home </a>
           </li>
           <li class="nav-item" *ngIf="!isLoggedIn">
@@ -24,7 +24,7 @@
         <form class="d-flex">
           <a href="/login" *ngIf="!isLoggedIn" class="nav-link" routerLinkActive="active" routerLink="login">Login</a>
           <a href="/profile" *ngIf="isLoggedIn" class="nav-link" routerLinkActive="active" routerLink="profile">Hello,
-            {{ username }} <img src='' style="width:20;height:20px;border-radius: 50%;" onerror="this.src='/assets/img/noimage.jpg'"></a>
+            {{ username }} <img src='' style="width:20px;height:20px;border-radius: 50%;margin-bottom:5px" onerror="this.src='/assets/img/noimage.jpg'"></a>
           <a *ngIf="isLoggedIn" href class="nav-link" (click)="logOut()">LogOut</a>
         </form>
       </div>
@@ -35,25 +35,40 @@
 
 
 <router-outlet></router-outlet>
-<app-footer style="max-height:25%" class="fixed-bottom" [ngClass]="showFooter?'push-footer':''" ></app-footer>
+<app-footer style="max-height:25%" class="fixed-bottom" ></app-footer>
 
 
-<div class="offcanvas offcanvas-start " data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1"
-  id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
+<!-- SIDE-MENU -->
+<!-- <div class="offcanvas offcanvas-start " data-bs-scroll="true" data-bs-backdrop="false" 
+  id="offcanvasScrolling">
   <div class="offcanvas-header">
-    <h5 class="offcanvas-title" id="offcanvasScrollingLabel" style="color:snow">Control Panel</h5>
+    <h5 class="offcanvas-title" id="offcanvasScrollingLabel" style="color:snow;font-size:25px">Control Panel</h5>
     <button type="button" (click)="openSideMenu()" class="btn-close text-reset bg-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
   </div>
   <div class="offcanvas-body">
     <ul>
+      <li id="board" class="nav-item">
+        <a href="/home"  routerLinkActive="active" routerLink="home">Home </a>
+      </li>
       <li id="board" *ngIf="showAdminBoard">
         <a href="/admin" routerLinkActive="active" routerLink="admin">Admin Board</a>
       </li>
       <li id="board" *ngIf="showModeratorBoard"><a routerLinkActive="active" href="/mod" routerLink="mod">Moderator
           Board</a></li>
       <li id="board" *ngIf="showMasterBoard">
-        <a  style="margin-left: -0.5rem;"href="/master" class="nav-link" routerLinkActive="active" routerLink="master">Master Board</a>
+        <a  href="/master"routerLinkActive="active" routerLink="master">Master Board</a>
       </li>
     </ul>
   </div>
+</div> -->
+
+<div id="mySidenav" [ngClass]="hasWidth?'hasWidth':''" class="sidenav">
+ <div style="background-color:#3dacf6" class="row">
+  <a style="font-size:20px" disabled>Control Panel<button style="margin-left:50px" type="button" (click)="openNavButton()" class="btn-close text-reset bg-white" ></button></a>
+</div>
+           <a id="item" href="/profile" *ngIf="isLoggedIn" class="nav-link" routerLinkActive="active" routerLink="profile">Your Profile</a>
+ <a id="item" href="/home" class="nav-link" routerLinkActive="active" routerLink="home">Product Panel </a>
+ <a id="item" href="/register" *ngIf="!isLoggedIn" class="nav-link" routerLinkActive="active" routerLink="register">Sign Up</a>
+ <a id="item" href="/admin" *ngIf="showAdminBoard" class="nav-link" routerLinkActive="active" routerLink="admin">Admin Panel</a>
+ <a  id="item" href="/master" *ngIf="showMasterBoard" class='nav-link'routerLinkActive="active" routerLink="master">Master Panel</a>
 </div>
