@@ -22,7 +22,7 @@ export class BoardAdminComponent implements OnInit {
   isMaster = false
   currentUserRole = '';
   currentUsername: any
-  username: any
+  usernameoremail:string=''
   roleSelected={id:null,name:''}
   font = 'font-family:optima'
   padding = 'padding:5'
@@ -61,10 +61,10 @@ export class BoardAdminComponent implements OnInit {
   getValueSelected(event: any) {
     this.roleSelected = event
   }
-  getRequestParams(username: string, page: number, pageSize: number) {
+  getRequestParams(usernameoremail: string, page: number, pageSize: number) {
     let params: any = {}
-    if (username)
-      params[`username`] = username
+    if (usernameoremail)
+      params[`usernameoremail`] = usernameoremail
     params[`page`] = page - 1
     if (pageSize)
       params[`size`] = pageSize
@@ -96,7 +96,7 @@ export class BoardAdminComponent implements OnInit {
     return hasModeratorRole
   }
   getUsers() {
-    const params = this.getRequestParams(this.username, this.page, this.pageSize)
+    const params = this.getRequestParams(this.usernameoremail, this.page, this.pageSize)
     this.userService.getUsers(params).subscribe((res) => {
       this.totalAccounts = res.totalItems
       this.count = res.totalItems
@@ -179,7 +179,8 @@ export class BoardAdminComponent implements OnInit {
       password: this.selectedUser.password,
       address:this.selectedUser.address,
       phone:this.selectedUser.phone,
-      roles: [this.roleSelected]
+      roles: [this.roleSelected],
+      enabled:this.selectedUser.enabled
     }
     if(data.roles.length<1||data.roles==null){
       this.toastr.error('Error!','Roles must not be empty. Please select a role')     

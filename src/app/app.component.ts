@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { TokenStorageService } from './service/token-storage.service';
 import { Subscription } from 'rxjs';
 import { EventBusService } from './service/event-bus.service';
@@ -8,6 +8,7 @@ import { EventBusService } from './service/event-bus.service';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit, OnDestroy {
+  hasWidth=false
   private roles:string[]=[]
   avatar?=''
   isLoggedIn=false
@@ -18,6 +19,7 @@ export class AppComponent implements OnInit, OnDestroy {
   eventBusSub?:Subscription
   showSideMenu=false
   showMasterBoard=false;
+  @ViewChild('openSideBar') openSideBar?: ElementRef 
   constructor(private tokenStorageService:TokenStorageService,private eventBusService:EventBusService){}
   ngOnInit(): void {
     this.isLoggedIn = !!this.tokenStorageService.getToken();
@@ -27,8 +29,11 @@ export class AppComponent implements OnInit, OnDestroy {
       this.roles = user.roles;
       this.showMasterBoard=this.roles.includes("ROLE_MASTER")
       this.showAdminBoard = this.roles.includes('ROLE_ADMIN')
-      this.showModeratorBoard = this.roles.includes('ROLE_MODERATOR')||this.roles.includes('ROLE_ADMIN')||this.roles.includes('ROLE_MASTER');
       this.username = user.username;
+      if(this.showAdminBoard||this.showMasterBoard){
+      this.openNavButton()
+}
+      else{}
     }
     this.eventBusSub = this.eventBusService.on('logOut', () => {
       this.logOut();
@@ -38,12 +43,9 @@ export class AppComponent implements OnInit, OnDestroy {
     if (this.eventBusSub)
       this.eventBusSub.unsubscribe();
   }
-  openSideMenu(){
-    this.showSideMenu=!this.showSideMenu
-    this.showFooter=!this.showFooter
-  }
-  
- 
+openNavButton(){
+  this.hasWidth=!this.hasWidth
+}
   logOut(): void {
     this.tokenStorageService.signOut();
     this.isLoggedIn = false;

@@ -1,7 +1,91 @@
 <div class="container">
-  <div class="row sticky-top" *ngIf="HasProducts">
+  <header class="jumbotron" *ngIf="notUser">
+    <h3 id="header">MANAGE PRODUCTS</h3>
+  </header>
+  <div class="row" style="background-color:#f9fbfd" *ngIf="notUser">
+    <table>
+      <tr>
+        <td style="padding-left:10px">
+          <h4 style="color:grey">ADD NEW PRODUCT</h4>
+        </td>
+        <td style="float:right;margin-right:20px;"> <button id="add-product" type="button" class="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#productModal">
+            <span class="bg-white plus"><i class="fa fa-plus mt-1"></i></span> ADD NEW PRODUCT
+          </button></td>
+      </tr>
+    </table>
 
-    <!-- FILTER AND SEARCH -->
+
+    <!-- ADD NEW PRODUCT-MODAL -->
+    <div style="max-height: 70%" class="modal mt-5" id="productModal" aria-labelledby="productModal" tabindex="-1" role="dialog">
+      <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header text-white " style="background-color:'#308dca'">
+            <h3 class="modal-title">
+              Add A New Product
+            </h3>
+            <button style="width: 2rem;
+              height: 2rem;" type="button" class="btn-close bg-white" data-bs-dismiss="modal"><span
+                aria-hidden="true" ></span></button>
+          </div>
+          <div class="modal-body">
+           <!-- PRODUCT FORM -->
+            <form [formGroup]="productForm" (ngSubmit)="submitProductForm()">
+              <table [style]="width">
+                <tr>
+                  <td>Product name</td>
+                  <input type='text' [style]="width" formControlName="name" placeholder="Product name">
+                  <br><label id="error" class="text-danger" *ngIf="productForm.controls['name'].invalid&&isSubmitted">Product name is
+                    required, 4-25 characters</label>
+                </tr>
+                <tr>
+                  <td>Image URL</td>
+                  <input type='text' formControlName="img" [style]="width" placeholder="Product image url"><br>
+                  <label id="error" class="text-danger" *ngIf="productForm.controls['img'].invalid&&isSubmitted">Invalid url for image</label>
+                </tr>
+                <tr>
+                  <td>Product Description</td>
+                  <textarea [style]="width" formControlName="description"></textarea>
+                  <label for="" id="error" class="text-danger" *ngIf="productForm.controls['description'].invalid&&isSubmitted">Description
+                    text required</label>
+                </tr>
+                <tr>
+                  <td>Price </td>
+                  <input type='number' formControlName="price" oninput="validity.valid||(value='')" placeholder="Price"
+                    [style]="width" min="0">
+                  <label for="price" id="error" class="text-danger" *ngIf="productForm.controls['price'].invalid&&isSubmitted">Price must be
+                    set</label><br>
+                </tr>
+                <tr>
+                  <td>Quantity</td>
+                  <input formControlName="qty" oninput="validity.valid||(value='')" type='number' placeholder="Quantity"
+                    [style]="width" min="0">
+                </tr>
+                <tr>
+                  <td>Category</td>
+                  <select formControlName="category" placeholder="Select a category">
+                    <option>Select</option>
+                    <option [selected]="cat.name==='Shoes'" value={{cat.name}} *ngFor="let cat of categories">{{cat.name}}
+                    </option>
+                  </select><br>
+                  <label class="text-danger" id="error" for="category" *ngIf="productForm.controls['category'].invalid&&isSubmitted">Category
+                    required</label>
+                </tr>
+              </table>
+              <div class="modal-footer">
+                <tr><button id="detail" class='btn btn text-white'
+                    style="background-color:#2d80b7;width: 10rem;">Update</button></tr>
+                <button type="button" id="close" class="btn btn-outline-secondary" style="width: 10rem;" data-bs-dismiss="modal"
+                 >Cancel</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row" *ngIf="HasProducts">
+
+    <!-- FILTER AND SEARCH  -->
     <input id="filter-control" type="text" class="form-control" placeholder="Search by product name"
       [(ngModel)]="name" />
     <select style="width: fit-content;height:45px;margin-top:5px" [(ngModel)]="category">
@@ -25,21 +109,22 @@
         x.name }}
       </div>
     </div>
-      <button class="btn btn-default" id="search" type="button" (click)="searchTitle()">
-        Search
-      </button>
-      <button id="remove" *ngIf="products?.length !== null" (click)="backToResults()" class="btn btn-secondary">
-        Clear filters
-      </button>
+    <button class="btn btn-default" id="search" type="button" (click)="searchTitle()">
+      Search
+    </button>
+    <button id="remove" *ngIf="products?.length !== null" (click)="backToResults()" class="btn btn-secondary">
+      Clear filters
+    </button>
+    <div *ngIf="keyword && name !== ''; hat" style="color: rgb(202, 45, 45); margin-left: 15px">
+      Search results for '{{ this?.name }}' in
+      <span *ngIf="hasCategory">{{ this?.category }}</span>
+    </div>
   </div>
 
-  <!-- PRODUCT LIST - NORMAL -->
-  <div *ngIf="keyword && name !== ''; hat" style="color: rgb(202, 45, 45); margin-left: 15px">
-    Search results for '{{ this?.name }}' in
-    <span *ngIf="hasCategory">{{ this?.category }}</span>
-  </div>
-  <div class="row" style="padding-top: 20px; ">
-    <div class="row" *ngIf="!isAdminOrMod">
+  <!-- PRODUCT LIST - NORMAL  -->
+
+  <div class="row" style="padding-top: 20px;" >
+    <div class="row" *ngIf="!notUser">
       <div id="{{ x.id }}" *ngFor="
           let x of products
             | paginate
@@ -69,18 +154,18 @@
         </div>
       </div>
     </div>
-    
-    <!--PRODUCT LIST ADMIN & MOD VIEW -->
-    <div class="row" id="table" *ngIf="isAdminOrMod">
-      <table style="padding: 15px" class="table table-striped">
+
+    <!-- PRODUCT LIST-MOD-ADMIN -->
+    <div class="row" id="table" *ngIf="notUser">
+      <table id="product-list-admin-mod" style="padding: 15px" class="table table-striped">
         <thead class="text-white" style="background-color: #2d80b8;">
           <tr>
-            <th><span style="display: none">AccountId</span></th>
-            <th>Image</th>
-            <th>Product Name</th>
-            <th>Price</th>
-            <th>Category</th>
-            <th>Action</th>
+
+            <th style="width:15%">Image</th>
+            <th style="width:25%">Product Name</th>
+            <th style="width:10%">Price</th>
+            <th style="width:10%">Category</th>
+            <th style="width:15%" class="text-center">Action</th>
           </tr>
         </thead>
         <tbody>
@@ -93,7 +178,6 @@
                       totalItems: count
                     }
             ">
-            <td><input type="hidden" value="{{ x.id }}" /></td>
             <td>
               <a routerLink="/product/{{ x.id }}"> <img src="{{ x.img }}" style="width: 200px; height: 150px"
                   onerror="this.src='/assets/img/noimage.jpg'" /></a>
@@ -103,7 +187,7 @@
             <td>
               {{x.category}}
             </td>
-            <td>
+            <td class="text-center">
               <a routerLink="/product/{{ x.id }}"><button id="view" class="btn text-white"
                   style="background-color: #2d8bca">View</button></a>
               <button id="delete" class="btn text-white" style="background-color: rgb(170, 22, 22);"
@@ -113,8 +197,7 @@
         </tbody>
       </table>
     </div>
-    
-    <!-- ERROR NO PRODUCTS -->
+
     <div *ngIf="!HasProducts||this.products.length==0||this.products.length==null"
       class="col-lg-12 col-md-12 col-xl-12">
       <div class="alert alert-danger" role="alert">
@@ -124,7 +207,7 @@
     </div>
   </div>
 
-  <!-- DELETE CONFIRMATION MODAL -->
+  <!-- DELETE CONFIRMATION MODAL  -->
   <div class="modal" id="delete" tabindex="-1" role="dialog" [ngStyle]="{ display: display }">
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">

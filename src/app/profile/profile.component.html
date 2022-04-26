@@ -1,4 +1,10 @@
-<div class="container" *ngIf="selectedUser; else loggedOut">
+<div class="container">
+  <div class="text-danger" *ngIf="isDisabled">
+    You must activate your account first. Please check your email
+  </div>
+</div>
+<div class="container" *ngIf="selectedUser&&selectedUser.enabled==true; else loggedOut">
+
   <div class="row">
     <!-- PROFILE INFO -->
     <h3 style="text-align: center;background-color: #3492d1;" class="text-white">Your profile</h3>
@@ -8,129 +14,129 @@
       logged in as <span *ngIf="isModerator&&!isMaster"><strong>Moderator</strong></span>
       <span *ngIf="isAdmin"><strong>Admin</strong></span> <span *ngIf="isMaster"><strong>Master</strong></span> </span>
   </p>
-  <p>
-    Your username:<strong>{{selectedUser.username}}</strong><img src={{selectedUser.avatar}}>
-  </p>
-  <p>
-    Email:<strong>
-      {{ selectedUser.email }}
-    </strong>
-  </p>
-  <p>Phone number:<strong>{{selectedUser.phone}}</strong></p>
-  <p>Address:<strong>{{selectedUser.address}}</strong></p>
-  <div class="button-row" style="margin-left:-2px">
-  <button *ngIf="isAdmin" class="btn" style="background-color: #3492d1;color: white;" (click)="userModal()">Edit
-    Role</button>
-    &nbsp;
-    <button type="button" (click)="getUserDetail(selectedUser.id)" class="btn btn text-white" data-bs-toggle="modal" data-bs-target="#exampleModal" style="background-color:#3492d1">
-      Edit Profile
-    </button>&nbsp;
-    <button style="background-color:#3492d1" class="btn text-white" data-bs-toggle="modal" data-bs-target="#changePassword" >Change password</button>
-  </div>
 
-  <!-- CHANGE PASSWORD MODAL -->
-  <div class="modal" tabindex="-1" role="dialog" id="changePassword" aria-labelledby="changePassword" aria-hidden="true">
-    <div class=" modal-dialog modal-dialog-centered" role="document">
-      <div class="modal-content">
-        <div class="modal-header text-white" style="background-color:#3492d1">
-          <h4 class="modal-title">Change password</h4>
-          <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Close"><span
-              aria-hidden="true"></span></button>
-        </div>
-        <div class="modal-body bg-light">
-          <table [style]="width">
-            <tr>
-              <td>Current password:</td>
-              <td  style="padding-top: 22px;">
-             <input type='password'>
-              </td>
-            </tr>
-            <tr>
-              <td>New password:</td>
-              <td> <input type='password'></td>
-            </tr>
-            <tr>
-              <td>
-                Confirm new password:
-              </td>
-              <td>
-                <input type="password">
-              </td>
-            </tr>
-          </table>
-        </div>
-        <div class="modal-footer">
-          <tr><button #control class='btn btn text-white control' style="background-color: #2d8bca;"
-              (click)="updatePassword()">Update Password</button></tr>
-          <button type="button"  class="btn btn-outline-secondary control" data-bs-dismiss="modal" arial-label="close">Close</button>
+
+
+
+
+
+
+
+
+
+  <div class="row">
+    <div class="col-xs-12 col-sm-6 col-md-3" style="text-align:center;margin-right:0px">
+      <img src={{selectedUser.avatar}} src="asdasda" onerror="this.src='/assets/img/noimage.jpg'">
+    </div>
+    <div class="col xs-12 col-md-6">
+      <table style="width:70%">
+        <tr>
+          <th>Username:</th>
+          <td id="info">{{selectedUser.username}}</td>
+        </tr>
+        <tr>
+          <th>Address:</th>
+          <td id="info">{{selectedUser.address}}</td>
+        </tr>
+        <tr>
+          <th>Phone:</th>
+          <td id="info">{{selectedUser.phone}}</td>
+        </tr>
+        <tr>
+          <th>Email Address:</th>
+          <td id="info">{{selectedUser.email}}</td>
+        </tr>
+      </table>
+      <!-- <p>
+        Your username:<strong>{{selectedUser.username}}</strong>
+      </p>
+      <p>
+        Email:<strong>
+          {{ selectedUser.email }}
+        </strong>
+      </p>
+      <p>Phone number:<strong>{{selectedUser.phone}}</strong></p>
+      <p>Address:<strong>{{selectedUser.address}}</strong></p> -->
+      <div class="button-row mt-3" style="margin-left:-2px">
+        <button *ngIf="isAdmin" class="btn text-white profile" (click)="userModal()">Edit
+          Role</button>
+        &nbsp;
+        <button type="button" (click)="getUserDetail(selectedUser.id)" class="btn btn text-white profile"
+          data-bs-toggle="modal" data-bs-target="#exampleModal">
+          Edit Profile
+        </button>&nbsp;
+        <button class="btn text-white profile" data-bs-toggle="modal" data-bs-target="#changePassword"
+          (click)="getUserDetail(selectedUser.id)">Change password</button>
+      </div>
+
+      <!-- CHANGE PASSWORD MODAL -->
+      <div class="modal" tabindex="-1" role="dialog" id="changePassword" aria-labelledby="changePassword"
+        aria-hidden="true">
+        <div class=" modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header text-white" style="background-color:#3492d1">
+              <h4 class="modal-title">Change password</h4>
+              <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Close"><span
+                  aria-hidden="true"></span></button>
+            </div>
+            <div class="text-danger" style="text-align:center" *ngIf="isSubmitted&&(this.passwordError!=='')">An error has occurred. {{passwordError}}</div>
+            <div class="modal-body bg-light">
+              <form [formGroup]="changePasswordForm" (submit)="submitChangePasswordForm()">
+              <table id="change-password" [style]="width">
+                <tr>
+                  <td>Current password:</td>
+                  <td>
+                    <input type='password'placeholder='Your current password'formControlName="oldPassword">
+                    <div class="text-danger" *ngIf="isSubmitted&&this.changePasswordForm.controls['oldPassword'].invalid">Please enter your current password</div>
+                  </td>               
+                </tr>
+                <tr>
+                  <td>New password:</td>
+                  <td> <input type='password' placeholder="Your new password" formControlName="newPassword">
+                    <div class="text-danger" *ngIf="isSubmitted&&this.changePasswordForm.controls['newPassword'].invalid">Please enter new password, minimum 6 characters</div></td>
+                </tr>
+                <tr>
+                  <td>
+                    Confirm new password:
+                  </td>
+                  <td>
+                    <input type="password" placeholder="Confirm new password"formControlName="confirmNewPassword">
+                    <div class="text-danger" *ngIf="isSubmitted&&this.changePasswordForm.controls['confirmNewPassword'].invalid">Password does not match</div>
+                  </td>
+                </tr>
+              </table>
+              <div class="modal-footer">
+                <tr><button type="submit" #control class='btn btn text-white control' style="background-color: #2d8bca;"
+                    >Update Password</button></tr>
+                <button type="button" class="btn btn-outline-secondary control" data-bs-dismiss="modal"
+                  arial-label="close">Close</button>
+              </div>
+              </form>
+            </div>
+   
+          </div>
+
         </div>
       </div>
 
-    </div>
-  </div>
 
+      <!-- Edit Profile Modal -->
+      <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+          <div class="modal-content">
+            <div class="modal-header text-white" style="background-color: #3492d1;">
+              <h5 class="modal-title" id="exampleModalLabel">Edit Profile</h5>
+              <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <table [style]="width">
+                <td><input type='hidden' [ngModel]="selectedUser.id" value={{selectedUser.id}}></td>
+                <tr>
+                  <td>Username:</td>
 
-    <!-- Edit Profile Modal -->
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content">
-          <div class="modal-header text-white" style="background-color: #3492d1;">
-            <h5 class="modal-title" id="exampleModalLabel">Edit Profile</h5>
-            <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <table [style]="width">
-              <td><input type='hidden' [ngModel]="selectedUser.id" value={{selectedUser.id}}></td>
-              <tr>
-                <td>Username:</td>
-  
-                <div style="font-weight: bold;font-size: 20px;">{{selectedUser.username}}</div>
-              </tr>
-              <!-- <tr *ngIf="isAdmin||isMaster">
-                <td>Role:</td>
-                <td  style="padding-top: 22px;">
-                  <select (change)="onChangeRole($event)">
-                    <option  [id]="role.id" *ngFor="let role of selectedRoles" [selected]="role.name===selectedUser.roles[0]" [value]="role.id">{{role.tag}}</option>
-                  </select>&nbsp;
-  
-                </td>
-  
-              </tr> -->
-              <tr>
-                <td>Email:</td>
-                <input type='text' [style]="width" [(ngModel)]="selectedUser.email" value={{selectedUser.email}}>
-              </tr>
-              <tr>
-                <td>Phone Numbers:</td>
-                <input type='text' [style]="width" [(ngModel)]="selectedUser.phone" value={{selectedUser.phone}}>
-              </tr>
-              <tr>
-                <td>Address:</td>
-                <input type='text' [style]="width" [(ngModel)]="selectedUser.address" value={{selectedUser.address}}>
-              </tr>
-            </table>
-          </div>
-          <div class="modal-footer">
-            <button  (click)="updateUser()"type="button" class="btn btn-primary control" style="background-color:#2d8bca">Update Profile</button>
-            <button #closeUpdateModal type="button" class="btn btn-outline-secondary control" data-bs-dismiss="modal">Close</button>
-          
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Edit Role Modal -->
-  <div class="modal" tabindex="-1" role="dialog" [ngStyle]="{'display':display}">
-    <div class=" modal-dialog modal-dialog-centered modal-lg" role="document">
-      <div class="modal-content">
-        <div class="modal-header text-white" style="background-color:#3492d1">
-          <h4 class="modal-title">Edit Role</h4>
-          <button type="button" class="btn-close bg-white" (click)="closeModal()"><span
-              aria-hidden="true"></span></button>
-        </div>
-        <div class="modal-body bg-light">
-          <table [style]="width">
-            <tr *ngIf="isAdmin">
+                  <div style="font-weight: bold;font-size: 20px;">{{selectedUser.username}}</div>
+                </tr>
+                <!-- <tr *ngIf="isAdmin||isMaster">
               <td>Role:</td>
               <td  style="padding-top: 22px;">
                 <select (change)="onChangeRole($event)">
@@ -139,19 +145,71 @@
 
               </td>
 
-            </tr>
+            </tr> -->
+                <tr>
+                  <td>Email:</td>
+                  <input type='text' [style]="width" [(ngModel)]="selectedUser.email" value={{selectedUser.email}}>
+                </tr>
+                <tr>
+                  <td>Phone Numbers:</td>
+                  <input type='text' [style]="width" [(ngModel)]="selectedUser.phone" value={{selectedUser.phone}}>
+                </tr>
+                <tr>
+                  <td>Address:</td>
+                  <input type='text' [style]="width" [(ngModel)]="selectedUser.address" value={{selectedUser.address}}>
+                </tr>
+              </table>
+            </div>
+            <div class="modal-footer">
+              <button (click)="updateUser()" type="button" class="btn btn-primary control"
+                style="background-color:#2d8bca">Update Profile</button>
+              <button #closeUpdateModal type="button" class="btn btn-outline-secondary control"
+                data-bs-dismiss="modal">Close</button>
 
-          </table>
-        </div>
-        <div class="modal-footer">
-          <tr><button #control class='btn btn text-white control' style="background-color: #2d8bca;"
-              (click)="updateRole()">Update Role</button></tr>
-          <button type="button"  class="btn btn-outline-secondary control" (click)="closeModal()">Close</button>
+            </div>
+          </div>
         </div>
       </div>
 
+      <!-- Edit Role Modal -->
+      <div class="modal" tabindex="-1" role="dialog" [ngStyle]="{'display':display}">
+        <div class=" modal-dialog modal-dialog-centered modal-lg" role="document">
+          <div class="modal-content">
+            <div class="modal-header text-white" style="background-color:#3492d1">
+              <h4 class="modal-title">Edit Role</h4>
+              <button type="button" class="btn-close bg-white" (click)="closeModal()"><span
+                  aria-hidden="true"></span></button>
+            </div>
+            <div class="modal-body bg-light">
+              <table [style]="width">
+                <tr *ngIf="isAdmin">
+                  <td>Role:</td>
+                  <td style="padding-top: 22px;">
+                    <select (change)="onChangeRole($event)">
+                      <option [id]="role.id" *ngFor="let role of selectedRoles"
+                        [selected]="role.name===selectedUser.roles[0]" [value]="role.id">{{role.tag}}</option>
+                    </select>&nbsp;
+
+                  </td>
+
+                </tr>
+
+              </table>
+            </div>
+            <div class="modal-footer">
+              <tr><button #control class='btn btn text-white control' style="background-color: #2d8bca;"
+                  (click)="updateRole()">Update Role</button></tr>
+              <button type="button" class="btn btn-outline-secondary control" (click)="closeModal()">Close</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
     </div>
   </div>
+
+
+
 </div>
 
 <ng-template #loggedOut>

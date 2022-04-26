@@ -9,25 +9,29 @@ import { UserService } from '../service/user.service';
   styleUrls: ['./verified-account.component.scss']
 })
 export class VerifiedAccountComponent implements OnInit {
-  verifyToken:any=''
-  isVerified=false
-  verifyMessage=''
-  constructor(private activatedRoute:ActivatedRoute,private userService: UserService) { 
-  
+  verifyToken: any = ''
+  isVerified :boolean=false
+  verifyMessage = ''
+  test:any={}
+  constructor(private activatedRoute: ActivatedRoute, private userService: UserService) {
+
   }
 
-  ngOnInit(): void {
- this.getVerifyToken()
+ngOnInit(): void {
+   this.getVerifyToken()
   }
 
- getVerifyToken(){
-  this.verifyToken= this.activatedRoute.snapshot.queryParamMap.get('verify-code')
-  return this.userService.getVerificationStatus(this.verifyToken).subscribe((res)=>{
-    this.isVerified = true
-  },error=>{
-    this.isVerified=false
-    console.log(error)
-    this.verifyMessage=error.message.toString()
-  })
+ getVerifyToken() {
+    this.verifyToken = this.activatedRoute.snapshot.queryParamMap.get('verify-code')
+ this.userService.getVerificationStatus(this.verifyToken).subscribe((res) => {
+ if(JSON.stringify(res).includes("successfully")){
+   this.isVerified=true
  }
+ if(JSON.stringify(res).includes("Invalid")){
+   this.isVerified=false
+ }
+   }
+   ,error=>{console.log(error.error.message);})
+
+  }
 }

@@ -22,6 +22,7 @@ select {
   background-color: #f2f2f2;
   padding: 20px;
 }
+img{border-radius: 50%;height:160px;margin-right:0}
 ul li {
   list-style-type: none;
   float: left;
@@ -55,3 +56,12 @@ i:hover {
   background-color: #ddecf7;
   font-size: 18px;
 }
+button.profile{
+  background-color:#3492d1;width:10rem
+}
+table#change-password tr td{
+width:100%;
+padding-bottom:15px
+}
+
+

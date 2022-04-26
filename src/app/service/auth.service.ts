@@ -26,11 +26,6 @@ export class AuthService {
     }, httpOptions)
 
   }
- addUser(username:string,password:string,email:string,roles:[]):Observable<any>{
-   const data={username,password,email,roles}
- return this.http.put('http://localhost:8080/api/user/update',data)
- }
-
   register(username:string,password:string,address:string,email:string,phone:string, avatar:string){
     const data={username,password,email,phone,avatar,address}
     return this.http.post(apiURL + 'signup',data,
