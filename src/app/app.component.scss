@@ -3,7 +3,6 @@ $arial: Arial, Helvetica, sans-serif;
     font-size: 17px;
 }
 .navbar{background-color:#318dca}
-
 a{color:whitesmoke;}
 
 a#item:hover{opacity: 0.4;}
@@ -11,9 +10,20 @@ a#item:hover{opacity: 0.4;}
     display: flex;
     flex-direction: column;
   }
+ .fa-shopping-cart{font-size:20px}
 .push-menu{
   margin-left:6rem;
   overflow: hidden;
+}
+span.circle{
+  margin-left:2px;
+  border-radius: 50%;
+   border:1px solid black;
+   padding:5px;
+   text-align:center;
+   font-size:15px;
+   background-color:white;
+   color:red
 }
 .footer{max-height: 30%}
   button#close:hover{opacity:0.7}

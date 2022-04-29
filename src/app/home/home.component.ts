@@ -6,6 +6,7 @@ import { ProductService } from '../service/product.service';
 import { TokenStorageService } from '../service/token-storage.service';
 import Swal from 'sweetalert2';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { CartService } from '../service/cart.service';
 
 @Component({
   selector: 'app-home',
@@ -52,7 +53,7 @@ export class HomeComponent implements OnInit {
     this.sortValue = this.sortOptions.find(x => x.value == value)?.value
     this.sortProducts()
   }
-  constructor(private fb:FormBuilder,private userService: UserService, private token: TokenStorageService, private toastr: ToastrService, private productService: ProductService) {
+  constructor(private cartService: CartService,private fb:FormBuilder,private userService: UserService, private token: TokenStorageService, private toastr: ToastrService, private productService: ProductService) {
     this.productForm=this.fb.group({
       name:['',[Validators.required,Validators.minLength(4),Validators.maxLength(25)]],
       img:[''],

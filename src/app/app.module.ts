@@ -23,6 +23,10 @@ import { BoardMasterComponent } from './board-master/board-master.component';
 import { ForgotpasswordComponent } from './forgot-password/forgotpassword.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { VerifiedAccountComponent } from './verified-account/verified-account.component';
+import { CartComponent } from './cart/cart.component';
+import { OrderDetailsComponent } from './order-details/order-details.component';
+import { OrdersComponent } from './orders/orders.component';
+import { AuthGuardService } from './service/auth-guard.service';
 @NgModule({
   declarations: [
     AppComponent,
@@ -39,6 +43,9 @@ import { VerifiedAccountComponent } from './verified-account/verified-account.co
     ForgotpasswordComponent,
     ResetPasswordComponent,
     VerifiedAccountComponent,
+    CartComponent,
+    OrderDetailsComponent,
+    OrdersComponent,
   ],
   imports: [
     BrowserModule,
@@ -56,7 +63,7 @@ import { VerifiedAccountComponent } from './verified-account/verified-account.co
    })
   ],
   schemas:[CUSTOM_ELEMENTS_SCHEMA],
-  providers: [authInterceptorProviders],
+  providers: [authInterceptorProviders,AuthGuardService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
