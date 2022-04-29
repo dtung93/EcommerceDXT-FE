@@ -12,15 +12,20 @@ import { FileUpLoadComponent } from './file-up-load/file-up-load.component';
 import {ForgotpasswordComponent} from './forgot-password/forgotpassword.component'
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { VerifiedAccountComponent } from './verified-account/verified-account.component';
+import { CartComponent } from './cart/cart.component';
+import { OrderDetailsComponent } from './order-details/order-details.component';
+import { AuthGuardService } from './service/auth-guard.service';
 const routes: Routes = [
   { path: 'home', component: HomeComponent },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
-  { path: 'profile', component: ProfileComponent },
-  { path: 'mod', component: BoardModeratorComponent },
-  { path: 'admin', component: BoardAdminComponent },
+  { path: 'profile', component: ProfileComponent,canActivate:[AuthGuardService] },
+  { path: 'mod', component: BoardModeratorComponent,canActivate:[AuthGuardService] },
+  { path: 'admin', component: BoardAdminComponent,canActivate:[AuthGuardService] },
   { path: '', redirectTo: 'home', pathMatch: 'full' },
   {path:'product/:id',component:ProductDetailComponent},
+  {path:'cart',component:CartComponent,canActivate:[AuthGuardService]},
+  {path:'order-details/:id',component:OrderDetailsComponent},
   {path:'master',component:BoardMasterComponent},
   {path:'file-upload',component:FileUpLoadComponent},
   {path:'forgot-password',component:ForgotpasswordComponent},

@@ -1,0 +1,38 @@
+<div class="container">
+    <div class="container bg-light" style="text-align:center;">
+          <h5 class="header" style="color:rgb(83, 82, 82)">Your cart</h5>
+<table style="width:100%" class="table table-striped">
+        <thead>
+<tr>
+<th style="width:10%">Product SKU</th>
+<th style="width:5%">Image</th>
+<th style="width:15%">Product name</th>
+<th style="width:5%">Price</th>
+<th style="width:5%">Quantity</th>
+<th style="width:5%">Total</th>
+<th style="width:5%">Action</th>
+</tr>
+        </thead>
+        <tbody>
+<tr *ngFor="let item of items">{{item.product.productcode}}
+<td><img onerror="this.src='/assets/img/noimage.jpg'" style="width:130px;height:90px" src={{item.product.img}}></td>
+<td>{{item.product.name}}</td>
+<td>{{item.product.price}}</td>
+<td><input min="0" (change)="setItemQuantity($event,item)" style="width:50%" type="number" value={{item.quantity}}></td>
+<td>{{item.total}}</td>
+<td>
+    <div>
+        <i class="fa fa-edit btn btn-sm"></i>
+        <i class="fa fa-trash btn btn-sm" (click)="removeItemFromCart(item)"></i>
+    </div>
+</td>
+</tr>
+<tr>
+    <td colspan="4">Total:</td>
+    <td><strong>{{totalItems}} items</strong></td>
+    <td><strong>{{grandTotal}}</strong></td>
+</tr>
+        </tbody>
+
+</table>
+</div>

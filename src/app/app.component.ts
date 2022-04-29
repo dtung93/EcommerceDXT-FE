@@ -2,12 +2,15 @@ import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/co
 import { TokenStorageService } from './service/token-storage.service';
 import { Subscription } from 'rxjs';
 import { EventBusService } from './service/event-bus.service';
+import { CartService } from './service/cart.service';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit, OnDestroy {
+  cart:any
+ totalItems=0
   hasWidth=false
   private roles:string[]=[]
   avatar?=''
@@ -20,11 +23,15 @@ export class AppComponent implements OnInit, OnDestroy {
   showSideMenu=false
   showMasterBoard=false;
   @ViewChild('openSideBar') openSideBar?: ElementRef 
-  constructor(private tokenStorageService:TokenStorageService,private eventBusService:EventBusService){}
+  static totalItems: any;
+  constructor(private cartService: CartService,private tokenStorageService:TokenStorageService,private eventBusService:EventBusService){}
   ngOnInit(): void {
     this.isLoggedIn = !!this.tokenStorageService.getToken();
     if (this.isLoggedIn) {
       const user = this.tokenStorageService.getUser(); 
+     this.cartService.getCart().subscribe((res)=>{
+       this.totalItems=res.totalItems;
+     })
       this.avatar=user.avatar
       this.roles = user.roles;
       this.showMasterBoard=this.roles.includes("ROLE_MASTER")
@@ -35,9 +42,10 @@ export class AppComponent implements OnInit, OnDestroy {
 }
       else{}
     }
+    else{
     this.eventBusSub = this.eventBusService.on('logOut', () => {
       this.logOut();
-    });
+    });}
   }
   ngOnDestroy(): void {
     if (this.eventBusSub)

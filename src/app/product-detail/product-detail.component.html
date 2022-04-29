@@ -9,6 +9,10 @@
             <h5 [style]="price">Price: {{product.price}}</h5>
             <i id="editbutton" class="btn fa fa-pencil" (click)="openModal()" *ngIf="showButton" [style]="edit"><span
                     style="margin-left:12px">Edit</span></i>
+                <br><br>
+                <div>
+            <i (click)="addProductToCart()" [style]="addtocart" class="btn text-white fa fa-shopping-cart"><span style="margin-left:10px">Add To Cart</span></i>
+            </div>
         </div>
     </div>
 
@@ -38,12 +42,12 @@
                         </tr>
                         <tr>
                             <td>Price: </td>
-                            <input type='number' onkeyup="if(this.value<0){this.value= this.value * -1}" [style]="width"
+                            <input type='number' oninput="validity.valid||(value='')" [style]="width"
                                 min="0" [(ngModel)]="product.price">
                         </tr>
                         <tr>
                             <td>Quantity:</td>
-                            <input onkeyup="if(this.value<0){this.value= this.value * -1}" type='number' [style]="width"
+                            <input oninput="validity.valid||(value='')" type='number' [style]="width"
                                 min="0" [(ngModel)]="product.qty">
                         </tr>
                         <tr>

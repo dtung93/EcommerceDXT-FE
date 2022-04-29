@@ -4,14 +4,15 @@ import { ToastrService } from 'ngx-toastr';
 import { ActivatedRoute } from '@angular/router';
 import { ProductService } from '../service/product.service';
 import { TokenStorageService } from '../service/token-storage.service';
+import { CartService } from '../service/cart.service';
 @Component({
   selector: 'app-product-detail',
   templateUrl: './product-detail.component.html',
   styleUrls: ['./product-detail.component.scss']
 })
 export class ProductDetailComponent implements OnInit {
-@Input() product=new Product()
-  constructor(private toastr:ToastrService, private api:ProductService,private route:ActivatedRoute,private token:TokenStorageService) { }
+product=new Product()
+  constructor(private cartService:CartService,private toastr:ToastrService, private api:ProductService,private route:ActivatedRoute,private token:TokenStorageService) { }
   font='font-family:optima'
   padding='padding:5'
   info='background-color:#2d8bca ;margin:10px 15px 10px 5px;text-align:center;color:snow;font-size:25px'
@@ -20,6 +21,7 @@ export class ProductDetailComponent implements OnInit {
   description='color:grey;font-weight:bold;font-size:15px;text-align:left'
   price='color:smoke;font-weight:bolder;font-size:2rem'
   edit='color:white;font-size:20px;width:100%;background-color:#318dca'
+  addtocart='color:white;font-size:20px;width:100%;background-color:#239beb;'
   width='width:100%'
   isLoggedIn=false
   showButton=false
@@ -72,5 +74,17 @@ this.api.updateProduct(data).subscribe((res)=>{
   this.display='none'
   this.showToast(res.id);
 })
+}
+addProductToCart(){
+  if(!this.token.getToken()){
+    this.toastr.info('Please sign in to use this service')
+  }
+  else{
+    const productId={id:this.product.id}
+  this.cartService.addToCart(productId).subscribe((res)=>{
+    this.cartService.updateCartTotal(res.totalItems)
+  console.log('success')
+  })
+  }
 }
 }

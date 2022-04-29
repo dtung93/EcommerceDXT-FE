@@ -13,6 +13,7 @@ import { confirmField } from '../service/validator';
   styleUrls: ['./profile.component.scss']
 })
 export class ProfileComponent implements OnInit {
+  pushBottom=false
   username:string=''
   isSubmitted=false
   changePasswordForm:FormGroup
@@ -151,8 +152,10 @@ setInterval(
     this.isSubmitted=true
     if(this.changePasswordForm.invalid){
       this.passwordError="Error when updating password"
+      this.pushBottom=true
     }
     else{
+      this.pushBottom=false
      const data={
        username:this.selectedUser.username,
        oldPassword:this.changePasswordForm.controls['oldPassword'].value,
@@ -169,7 +172,4 @@ setInterval(
     },error=>{ this.passwordError="You have entered a wrong password"})
     }
   }
-updatePassword(){
-  this.toastr.info('A confirmation link for password change was sent to your email address')
-}
 }

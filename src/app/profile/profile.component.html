@@ -3,7 +3,7 @@
     You must activate your account first. Please check your email
   </div>
 </div>
-<div class="container" *ngIf="selectedUser&&selectedUser.enabled==true; else loggedOut">
+<div class="container" *ngIf="selectedUser&&selectedUser.enabled==true;">
 
   <div class="row">
     <!-- PROFILE INFO -->
@@ -84,19 +84,21 @@
               <form [formGroup]="changePasswordForm" (submit)="submitChangePasswordForm()">
               <table id="change-password" [style]="width">
                 <tr>
-                  <td>Current password:</td>
+                  <td [ngClass]="pushBottom?'push-bottom':' '">Current password</td>
                   <td>
                     <input type='password'placeholder='Your current password'formControlName="oldPassword">
                     <div class="text-danger" *ngIf="isSubmitted&&this.changePasswordForm.controls['oldPassword'].invalid">Please enter your current password</div>
                   </td>               
                 </tr>
+                <br>
                 <tr>
-                  <td>New password:</td>
+                  <td [ngClass]="pushBottom?'push-bottom':' '">New password:</td>
                   <td> <input type='password' placeholder="Your new password" formControlName="newPassword">
                     <div class="text-danger" *ngIf="isSubmitted&&this.changePasswordForm.controls['newPassword'].invalid">Please enter new password, minimum 6 characters</div></td>
                 </tr>
+                <br>
                 <tr>
-                  <td>
+                  <td [ngClass]="pushBottom?'push-bottom2':' '">
                     Confirm new password:
                   </td>
                   <td>
@@ -104,6 +106,7 @@
                     <div class="text-danger" *ngIf="isSubmitted&&this.changePasswordForm.controls['confirmNewPassword'].invalid">Password does not match</div>
                   </td>
                 </tr>
+                
               </table>
               <div class="modal-footer">
                 <tr><button type="submit" #control class='btn btn text-white control' style="background-color: #2d8bca;"
@@ -212,6 +215,3 @@
 
 </div>
 
-<ng-template #loggedOut>
-  <div class="alert alert-info">Please login first</div>
-</ng-template>
