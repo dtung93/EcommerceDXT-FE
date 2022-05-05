@@ -59,7 +59,7 @@ export class HomeComponent implements OnInit {
       img:[''],
       category:['',[Validators.required]],
       description:['',[Validators.required]],
-      price:['',[Validators.required]],
+      price:['',[Validators.required,Validators.min(0)]],
       qty:['']
       })
    }
@@ -92,7 +92,7 @@ export class HomeComponent implements OnInit {
     this.isSubmitted=false
     this.productForm.reset()
     this.showToast(id,name)
-    setInterval(()=>{window.location.reload()},1000)
+    setInterval(()=>{this.getProducts()},1000)
   }
   submitProductForm(){
     this.isSubmitted=true
@@ -199,4 +199,12 @@ export class HomeComponent implements OnInit {
       this.display = 'none'
     })
   }
+  addProductToCart(id:number){
+    const productId={id:id}
+    this.cartService.addToCart(productId).subscribe((res)=>{
+      this.toastr.info('Product successfully added to cart')
+      this.cartService.updateCartTotal(res.totalItems)
+    },error=>{console.log(error.error.message)})
+  }
+  
 }

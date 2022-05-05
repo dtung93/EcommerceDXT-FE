@@ -25,8 +25,8 @@ getCart():Observable<any>{
   deleteFromCart(data:any):Observable<any>{
     return this.http.post(this.apiURL+'remove-item',data)
   }
-  emptyCart(data:any):Observable<any>{
-  return this.http.post(this.apiURL+'empty-cart',data)
+  emptyCart():Observable<any>{
+    return this.http.delete(this.apiURL+'empty-cart')
   }
  setItemQuantity(data:any):Observable<any>{
    return this.http.post(this.apiURL+'set-item-quantity',data)

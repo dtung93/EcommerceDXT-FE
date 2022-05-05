@@ -81,8 +81,10 @@ addProductToCart(){
   }
   else{
     const productId={id:this.product.id}
+    const productName=this.product.name
   this.cartService.addToCart(productId).subscribe((res)=>{
     this.cartService.updateCartTotal(res.totalItems)
+    this.toastr.info(productName+' added to cart')
   console.log('success')
   })
   }

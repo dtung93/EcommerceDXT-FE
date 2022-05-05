@@ -30,13 +30,5 @@ export class AuthService {
     const data={username,password,email,phone,avatar,address}
     return this.http.post(apiURL + 'signup',data,
      httpOptions);
-    // const formData:FormData = new FormData();
-    // formData.append('username',username);
-    // formData.append('avatar',avatar);
-    // formData.append('email',email);
-    // formData.append('password',password);
-    // formData.append('address',address)
-    // formData.append('phone',phone);
-    // return this.http.post(apiURL+ 'signup', formData, httpOptions)
   }
 }

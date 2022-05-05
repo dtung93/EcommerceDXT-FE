@@ -27,6 +27,7 @@ import { CartComponent } from './cart/cart.component';
 import { OrderDetailsComponent } from './order-details/order-details.component';
 import { OrdersComponent } from './orders/orders.component';
 import { AuthGuardService } from './service/auth-guard.service';
+import { OrderFormComponent } from './order-form/order-form.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -46,6 +47,7 @@ import { AuthGuardService } from './service/auth-guard.service';
     CartComponent,
     OrderDetailsComponent,
     OrdersComponent,
+    OrderFormComponent,
   ],
   imports: [
     BrowserModule,
