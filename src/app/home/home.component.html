@@ -50,7 +50,7 @@
                 </tr>
                 <tr>
                   <td>Price </td>
-                  <input type='number' formControlName="price" oninput="validity.valid||(value='')" placeholder="Price"
+                  <input type='number' formControlName="price" placeholder="Price"
                     [style]="width" min="0">
                   <label for="price" id="error" class="text-danger" *ngIf="productForm.controls['price'].invalid&&isSubmitted">Price must be
                     set</label><br>
@@ -73,7 +73,7 @@
               </table>
               <div class="modal-footer">
                 <tr><button id="detail" class='btn btn text-white'
-                    style="background-color:#2d80b7;width: 10rem;">Update</button></tr>
+                    style="background-color:#2d80b7;width: 10rem;">Save</button></tr>
                 <button type="button" id="close" class="btn btn-outline-secondary" style="width: 10rem;" data-bs-dismiss="modal"
                  >Cancel</button>
               </div>
@@ -142,7 +142,7 @@
             </a>
             <div class="product-action">
               <a routerLink="/product/{{ x.id }}"><i class="fa fa-info"></i></a>
-              <a><i class="fa fa-shopping-cart"></i></a>
+              <a><i class="fa fa-shopping-cart" (click)="addProductToCart(x.id)"></i></a>
               <a *ngIf="showButton"><i class="fa fa-trash" (click)="openModal(x)"></i></a>
             </div>
           </div>
@@ -192,7 +192,7 @@
               <a routerLink="/product/{{ x.id }}"><button id="view" class="btn text-white"
                   style="background-color: #2d8bca">View</button></a>
               <button id="delete" class="btn text-white" style="background-color: rgb(170, 22, 22);"
-                (click)="this.openModal(x)">Delete</button>
+                (click)="openModal(x)">Delete</button>
             </td>
           </tr>
         </tbody>
