@@ -158,6 +158,8 @@
 
     <!-- PRODUCT LIST-MOD-ADMIN -->
     <div class="row" id="table" *ngIf="notUser">
+      <pagination-controls *ngIf="HasProducts" previousLabel="Prev" nextLabel="Next" [responsive]="true" 
+      (pageChange)="handlePageChange($event)" style="float:right;margin-left:-50px" class="my-pagination"></pagination-controls>
       <table id="product-list-admin-mod" style="padding: 15px" class="table table-striped">
         <thead class="text-white" style="background-color: #2d80b8;">
           <tr>

@@ -28,6 +28,7 @@ product=new Product()
   nameError=false
   quantityError=false
   priceError=false
+  showCart=false
   roles:string[]=[]
   ngOnInit(): void {
     this.getProduct(this.route.snapshot.params['id'])
@@ -35,8 +36,10 @@ product=new Product()
       this.roles=this.token.getUser().roles
      if(this.roles.includes("ROLE_MODERATOR")||this.roles.includes("ROLE_ADMIN")||this.roles.includes('ROLE_MASTER')){
        this.showButton=true
+ 
      }
-     else{this.showButton=false}
+     else{this.showButton=false
+    this.showCart=true}
     }
     console.log(this.product);
   }

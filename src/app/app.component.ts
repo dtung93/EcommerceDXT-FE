@@ -3,6 +3,7 @@ import { TokenStorageService } from './service/token-storage.service';
 import { Subscription } from 'rxjs';
 import { EventBusService } from './service/event-bus.service';
 import { CartService } from './service/cart.service';
+import { roleName } from './model/role.model';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -10,6 +11,7 @@ import { CartService } from './service/cart.service';
 })
 export class AppComponent implements OnInit, OnDestroy {
   cart:any
+  showCart=false
  totalItems=0
   hasWidth=false
   private roles:string[]=[]
@@ -29,13 +31,16 @@ export class AppComponent implements OnInit, OnDestroy {
     this.isLoggedIn = !!this.tokenStorageService.getToken();
     if (this.isLoggedIn) {
       const user = this.tokenStorageService.getUser(); 
+     if(user.roles.includes(roleName.u)){
+       this.showCart=true
      this.cartService.getCart().subscribe((res)=>{
        this.totalItems=res.totalItems;
      })
+    }
       this.avatar=user.avatar
       this.roles = user.roles;
-      this.showMasterBoard=this.roles.includes("ROLE_MASTER")
-      this.showAdminBoard = this.roles.includes('ROLE_ADMIN')
+      this.showMasterBoard=this.roles.includes(roleName.ma)
+      this.showAdminBoard = this.roles.includes(roleName.a)
       this.username = user.username;
       if(this.showAdminBoard||this.showMasterBoard){
       this.openNavButton()

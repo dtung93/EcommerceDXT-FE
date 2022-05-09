@@ -212,11 +212,24 @@ export class HomeComponent implements OnInit {
     })
   }
   addProductToCart(id:number){
+ if(this.roles?.includes(roleName.u)){
     const productId={id:id}
     this.cartService.addToCart(productId).subscribe((res)=>{
       this.toastr.info('Product successfully added to cart')
       this.cartService.updateCartTotal(res.totalItems)
     },error=>{console.log(error.error.message)})
+  }
+  else{
+    Swal.fire({title: 'Login required',
+        text: 'You need to be signed-in to use this function',
+        icon:'error',
+        color:'red',
+        background:'#FDFEFE',
+        showConfirmButton:true,
+        confirmButtonColor:'#186192',
+        width:'26rem'
+      })
+  }
   }
   
 }

@@ -77,7 +77,7 @@
 <tr>
   <td colspan="5"></td>
     <td><button *ngIf="items.length!==0" class="btn btn-secondary" id="empty" data-bs-toggle="modal" data-bs-target="#emptyCart" >Empty Cart</button></td>
-    <td><button *ngIf="items.length!==0" class="btn btn-primary" id="checkout">Checkout</button></td>
+    <td><button *ngIf="items.length!==0" class="btn btn-primary" id="checkout" routerLink="/order-form">Checkout</button></td>
 </tr>
         </tbody>
 </table>

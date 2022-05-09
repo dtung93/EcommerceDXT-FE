@@ -5,7 +5,6 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { User } from '../model/user.model';
 import { ToastrService } from 'ngx-toastr';
 import { ConsoleLogger } from '@angular/compiler-cli/private/localize';
-import { collapseTextChangeRangesAcrossMultipleVersions } from 'typescript';
 import Swal from 'sweetalert2'
 import { TokenStorageService } from '../service/token-storage.service';
 import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';

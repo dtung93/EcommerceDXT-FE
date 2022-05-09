@@ -11,7 +11,7 @@
                     style="margin-left:12px">Edit</span></i>
                 <br><br>
                 <div>
-            <i (click)="addProductToCart()" [style]="addtocart" class="btn text-white fa fa-shopping-cart"><span style="margin-left:10px">Add To Cart</span></i>
+            <i (click)="addProductToCart()" *ngIf="showCart" [style]="addtocart" class="btn text-white fa fa-shopping-cart"><span style="margin-left:10px">Add To Cart</span></i>
             </div>
         </div>
     </div>
