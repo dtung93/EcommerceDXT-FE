@@ -25,6 +25,9 @@ product=new Product()
   width='width:100%'
   isLoggedIn=false
   showButton=false
+  nameError=false
+  quantityError=false
+  priceError=false
   roles:string[]=[]
   ngOnInit(): void {
     this.getProduct(this.route.snapshot.params['id'])
@@ -59,6 +62,8 @@ isOpen(){
   this.isOpened=!this.isOpened
 }
 
+
+
 updateProduct():void{
   const data={
 id:this.product.id,
@@ -69,11 +74,28 @@ category:this.product.category,
 price:this.product.price,
 qty:this.product.qty
   }
+if(data.qty==null||data.price==null||data.name==''){
+  this.toastr.error('Failed to update. Please check your inputs again')
+ if(data.name==''){
+   this.nameError=true
+ }
+ if(data.qty==null){
+  this.quantityError=true
+ }
+ if(data.price==null){
+    this.priceError=true
+ }
+}
+else{
 this.api.updateProduct(data).subscribe((res)=>{
   console.log(res)
   this.display='none'
   this.showToast(res.id);
+  this.nameError=false
+  this.quantityError=false
+  this.priceError=false
 })
+}
 }
 addProductToCart(){
   if(!this.token.getToken()){

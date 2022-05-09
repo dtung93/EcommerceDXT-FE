@@ -1,1 +1,42 @@
-<p>order-form works!</p>
+<!-- <form action='localhost:8080/api/payment/charge' method='POST' id='checkout-form' (submit)="submitForm($event)">
+    <input type='hidden' value='3000' name='amount' />
+    <label>Price:<span></span></label>
+    <script
+       src='https://checkout.stripe.com/checkout.js' 
+       class='stripe-button'
+       data-key='pk_test_51JFBFKHgGsHX8q4pcYLqgFcyHR6tsosAJv50MqSW2UCGKpz0OYpQygeEdmLLGo6MhHODKIbV7xnFpad4Jzy2hSvm00moGR3xZa'
+       data-amount='3000'
+       data-currency='USD'
+       data-name='Baeldung'
+       data-description='Spring course checkout'
+       data-image
+         ='https://www.baeldung.com/wp-content/themes/baeldung/favicon/android-chrome-192x192.png'
+       data-locale='auto'
+       data-zip-code='false'>
+   </script>
+  </form> -->
+  <div class="container">
+      <div class="row"></div>
+      <div class="row">
+      <form>
+            <table>
+     <tr>
+         <td>Full Name</td>
+         <td><input type="text"></td>
+     </tr>
+     <tr>
+        <td>Delivery address</td>
+        <td><input type='text'></td>
+     </tr>
+     <tr>
+        <td>Phone numbers</td>
+        <td><input type="text"></td>
+     </tr>
+            </table>
+      </form>
+     
+      </div>
+      <button class="btn btn-primary" [disabled]="disabled" (click)="initializePayment(amount)" >Pay Now</button>
+    </div>
+
+

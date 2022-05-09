@@ -7,16 +7,40 @@ import { TokenStorageService } from '../service/token-storage.service';
 import Swal from 'sweetalert2';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CartService } from '../service/cart.service';
-
+import { roleName } from '../model/role.model';
+import { Paging } from '../model/page.model';
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
+  constructor(private cartService: CartService,private fb:FormBuilder,private userService: UserService, private token: TokenStorageService, private toastr: ToastrService, private productService: ProductService) {
+    this.productForm=this.fb.group({
+      name:['',[Validators.required,Validators.minLength(4),Validators.maxLength(25)]],
+      img:[''],
+      category:['',[Validators.required]],
+      description:['',[Validators.required]],
+      price:['',[Validators.required,Validators.min(0)]],
+      qty:['']
+      })
+   }
+  ngOnInit(): void {
+    //API call to get array of products
+    this.getProducts()
+    if (this.token.getToken()) {
+      this.roles = this.token.getUser().roles;
+      if (this.roles?.includes(roleName.a) || this.roles?.includes(roleName.mo)||this.roles?.includes(roleName.ma)) {
+       this.notUser=true
+      }
+    }
+  }
+  productForm:FormGroup
+  products: Product[] = []
+  selectedProduct?: Product
+  currentUser: any
   isSubmitted = false;
   width="width:100%"
-  productForm:FormGroup
   notUser=false
   paginationStyle = "color:red,background-color:green"
   isAdminOrMod = false
@@ -24,8 +48,7 @@ export class HomeComponent implements OnInit {
   hasCategory = false
   HasProducts: boolean = false
   content?: string
-  products: Product[] = []
-  selectedProduct?: Product
+
   isLoggedIn = false
   showButton = false
   display = 'none'
@@ -38,7 +61,7 @@ export class HomeComponent implements OnInit {
   category = ''
   keyword: boolean = false
   roles?: any[] = []
-  currentUser: any
+ 
   sortOptions = [
     { id: 1, name: 'Sort by ascending price', value: 'ascending' },
     { id: 2, name: 'Sort by descending price', value: 'descending' }
@@ -53,16 +76,7 @@ export class HomeComponent implements OnInit {
     this.sortValue = this.sortOptions.find(x => x.value == value)?.value
     this.sortProducts()
   }
-  constructor(private cartService: CartService,private fb:FormBuilder,private userService: UserService, private token: TokenStorageService, private toastr: ToastrService, private productService: ProductService) {
-    this.productForm=this.fb.group({
-      name:['',[Validators.required,Validators.minLength(4),Validators.maxLength(25)]],
-      img:[''],
-      category:['',[Validators.required]],
-      description:['',[Validators.required]],
-      price:['',[Validators.required,Validators.min(0)]],
-      qty:['']
-      })
-   }
+ 
   showDeleteToast(productname: string) {
     this.toastr.error(productname, 'Notice')
   }
@@ -73,16 +87,7 @@ export class HomeComponent implements OnInit {
   onCloseHandled() {
     this.display = 'none'
   }
-  ngOnInit(): void {
-    //API call to get array of products
-    this.getProducts()
-    if (this.token.getToken()) {
-      this.roles = this.token.getUser().roles;
-      if (this.roles?.includes("ROLE_ADMIN") || this.roles?.includes("ROLE_MODERATOR")||this.roles?.includes("ROLE_MASTER")) {
-       this.notUser=true
-      }
-    }
-  }
+ 
   showToast(id:number,name:string){
     this.toastr.info(
       "Product id="+id+" "+name+" is succesfully added to the inventory"
@@ -122,9 +127,15 @@ export class HomeComponent implements OnInit {
     }
     return params
   }
+  getPage(){
+    const page=sessionStorage.getItem(Paging.PAGE_HOME)
+    this.page = page ? +page : 1
+    return this.page
+  }
   //http service to get and display the array of products, paging information from API with parameters category and name, page and page sizee
   getProducts(): void {
-    const params = this.getRequestParams(this.category, this.name, this.page, this.pageSize)
+   
+    const params = this.getRequestParams(this.category, this.name,this.getPage(), this.pageSize)
     this.productService.getProducts(params).subscribe(response => {
       const { products, totalItems } = response
       this.products = products
@@ -171,6 +182,7 @@ export class HomeComponent implements OnInit {
   }
   handlePageChange(event: number): void {
     this.page = event
+    sessionStorage.setItem(Paging.PAGE_HOME,JSON.stringify(event))
     if (this.sortValue == null)
       this.getProducts();
     else {

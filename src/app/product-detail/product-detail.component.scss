@@ -11,7 +11,13 @@ input[type=text],input[type=number], select, textarea {
   margin-bottom: 16px;
   resize: vertical;
 }
-
+label#error{
+  font-style: italic;
+  font-size:15px;
+  margin-top:-15px;
+  margin-bottom:20px
+}
+tr td{padding-bottom:15px}
 input[type=submit] {
   background-color: rgb(46, 113, 189);
   color: white;

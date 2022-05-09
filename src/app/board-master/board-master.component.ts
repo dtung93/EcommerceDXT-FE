@@ -7,25 +7,32 @@ import { TokenStorageService } from '../service/token-storage.service';
 import { confirmField } from '../service/validator';
 import { AuthService } from '../service/auth.service';
 import Swal from 'sweetalert2';
+import { roleName } from '../model/role.model';
+import { Paging } from '../model/page.model';
 @Component({
   selector: 'app-board-master',
   templateUrl: './board-master.component.html',
   styleUrls: ['./board-master.component.scss']
 })
 export class BoardMasterComponent implements OnInit {
-  errorMessage: string=''
- addUserRole={id:1,
-  name:'ROLE_USER',
-  tag:'User'}
+  @ViewChild('closeAddUser') closeAddUser?: ElementRef
+  @ViewChild('closeDeleteModal') closeDeleteModal?: ElementRef
+  @ViewChild('adduser') adduser?: ElementRef
+  errorMessage: string = ''
+  addUserRole = {
+    id: 1,
+    name: 'ROLE_USER',
+    tag: 'User'
+  }
   isSubmitted = false;
   userForm!: FormGroup
   isAdmin = false
   isMaster = false
   currentUserRole = '';
   currentUsername: any
-  usernameoremail:string=''
-  roleSelected={id:null, name:''}
-  noUserError:string=''
+  usernameoremail: string = ''
+  roleSelected = { id: null, name: '' }
+  noUserError: string = ''
   font = 'font-family:optima'
   padding = 'padding:5'
   info = 'background-color:#97C5E3 ;margin:10px 15px 10px 5px;text-align:center;color:snow;font-size:25px'
@@ -45,10 +52,10 @@ export class BoardMasterComponent implements OnInit {
   selectedRoles: any = [
     { id: 1, name: 'ROLE_USER', tag: 'User' },
     { id: 2, name: 'ROLE_MODERATOR', tag: 'Moderator' }, { id: 3, name: "ROLE_ADMIN", tag: 'Admin' },
-    {id:4,name:'ROLE_MASTER',tag:'Master'}
+    { id: 4, name: 'ROLE_MASTER', tag: 'Master' }
   ]
-  optionRoles:any=[
- "user","mod","admin","master"
+  optionRoles: any = [
+    "user", "mod", "admin", "master"
   ]
   role: any[] = []
   page = 1
@@ -59,43 +66,45 @@ export class BoardMasterComponent implements OnInit {
   users: any[] = []
   totalAccounts = 0
   showUserPanel = false
-  updateError=''
+  updateError = ''
   display = 'none'
-  @ViewChild('closeAddUser') closeAddUser?: ElementRef 
-  @ViewChild('closeDeleteModal') closeDeleteModal?:ElementRef
+
   addUserPanel() {
     this.showUserPanel = !this.showUserPanel
     console.log(this.showUserPanel)
   }
   addUser() {
     this.isSubmitted = true
-    if (this.userForm.invalid) { 
-     this.toastr.error('Failed to add new user, Please check your input fields again')
+    if (this.userForm.invalid) {
+      this.toastr.error('Failed to add new user, Please check your input fields again')
     }
     else {
       const data = {
         username: this.userForm.get('username')?.value,
         email: this.userForm.get('email')?.value,
         password: this.userForm.controls['password'].value,
-        address:this.userForm.controls['address'].value,
-        phone:this.userForm.controls['phone'].value,
+        address: this.userForm.controls['address'].value,
+        phone: this.userForm.controls['phone'].value,
         // roles:this.findByRoleId(this.userForm.controls['role'].value)
-        role:[this.userForm.controls['role'].value]
+        role: [this.userForm.controls['role'].value]
       }
 
-this.userService.addUser(data).subscribe((res)=>{
-this.closeAddUser?.nativeElement.click()
-this.toastr.info("New account is successfully added")
-},error=>{this.errorMessage=error.error.message })
+      this.userService.addUser(data).subscribe((res) => {
+        this.closeAddUser?.nativeElement.click()
+        this.toastr.info("New account is successfully added")
+      }, error => { this.errorMessage = error.error.message })
     }
   }
   findByRoleId(id: any) {
-    const roleItem = this.selectedRoles.find((role:any)=>+role.id===+id)
-    return ( roleItem ) ? [roleItem] : null
+    const roleItem = this.selectedRoles.find((role: any) => +role.id === +id)
+    return (roleItem) ? [roleItem] : null
   }
 
   getValueSelected(event: any) {
     this.roleSelected = event
+  }
+  logForm(){
+    console.log(this.userForm)
   }
   getRequestParams(usernameoremail: string, page: number, pageSize: number) {
     let params: any = {}
@@ -109,7 +118,7 @@ this.toastr.info("New account is successfully added")
   checkMasterRole(role: any) {
     let hasMasterRole = false;
     role.forEach((x: any) => {
-      if (x.name === 'ROLE_MASTER')
+      if (x.name === roleName.ma)
         hasMasterRole = true
     })
     return hasMasterRole
@@ -117,7 +126,7 @@ this.toastr.info("New account is successfully added")
   checkAdminRole(role: any) {
     let hasAdminRole = false
     role.forEach((x: any) => {
-      if (x.name === "ROLE_ADMIN")
+      if (x.name === roleName.a)
         hasAdminRole = true
     })
     return hasAdminRole
@@ -126,13 +135,18 @@ this.toastr.info("New account is successfully added")
   checkModeratorRole(role: any) {
     let hasModeratorRole = false
     role.forEach((x: any) => {
-      if (x.name === "ROLE_MODERATOR")
+      if (x.name === roleName.mo)
         hasModeratorRole = true
     })
     return hasModeratorRole
   }
+  getPage(){
+    const page=sessionStorage.getItem(Paging.PAGE_MASTER_HOME)
+    this.page=page?+page:1
+    return this.page
+  }
   getUsers() {
-    const params = this.getRequestParams(this.usernameoremail, this.page, this.pageSize)
+    const params = this.getRequestParams(this.usernameoremail, this.getPage(), this.pageSize)
     this.userService.getUsers(params).subscribe((res) => {
       this.totalAccounts = res.totalItems
       this.count = res.totalItems
@@ -141,11 +155,11 @@ this.toastr.info("New account is successfully added")
         return { ...user, editable: this.checkRoleCondition(user) }
       })
       console.log(this.users)
-    },()=>{ this.noUserError='No users could be found'})
+    }, () => { this.noUserError = 'No users could be found' })
   }
   checkRoleCondition(user: any) {
-    const hasRole = user.roles.some((r: any) => r.name === 'ROLE_ADMIN' || r.name === 'ROLE_MASTER')
-    if (this.currentUserRole == "ROLE_ADMIN" && hasRole)
+    const hasRole = user.roles.some((r: any) => r.name === roleName.a || r.name === roleName.ma)
+    if (this.currentUserRole == roleName.a && hasRole)
       return false;
     return true;
   }
@@ -175,21 +189,22 @@ this.toastr.info("New account is successfully added")
   isOpen() {
     this.isOpened = !this.isOpened
   }
- 
+
   constructor(private authService: AuthService, private fb: FormBuilder, private userService: UserService, private toastr: ToastrService, private token: TokenStorageService) {
     this.userForm = this.fb.group({
       username: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(20)]],
       password: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(50)]],
-      address:[],
-      role:['user'],
+      address: [],
+      role: ['user'],
       confirmPassword: ['', [Validators.minLength(6), Validators.maxLength(50)]],
-      phone:['',[Validators.required,Validators.maxLength(15)]],
+      phone: ['', [Validators.required, Validators.maxLength(15)]],
       email: ['', [Validators.email, Validators.required, Validators.minLength(8)]]
     }, {
       validator: confirmField("password", "confirmPassword")
     })
   }
   ngOnInit(): void {
+    
     this.userService.getMasterBoard().subscribe(res => {
       this.content = res
     }, error => { this.content = JSON.parse(error.message) })
@@ -197,14 +212,15 @@ this.toastr.info("New account is successfully added")
     if (this.token.getToken()) {
       this.currentUserRole = this.token.getUser().roles
       this.currentUsername = this.token.getUser().username
-      if (this.currentUserRole == "ROLE_MASTER")
+      if (this.currentUserRole == roleName.ma)
         this.isMaster = true
     }
+  
   }
   getUserDetail(id: number) {
     return this.userService.getUser(id).subscribe((res) => {
       this.selectedUser = res
-      this.roleSelected= this.selectedRoles.find((selectedRole:any)=>selectedRole.id===res.roles[0].id)
+      this.roleSelected = this.selectedRoles.find((selectedRole: any) => selectedRole.id === res.roles[0].id)
     })
   }
 
@@ -219,10 +235,10 @@ this.toastr.info("New account is successfully added")
       email: this.selectedUser.email,
       username: this.selectedUser.username,
       password: this.selectedUser.password,
-      address:this.selectedUser.address,
-      phone:this.selectedUser.phone,
+      address: this.selectedUser.address,
+      phone: this.selectedUser.phone,
       roles: [this.roleSelected],
-      enabled:this.selectedUser.enabled
+      enabled: this.selectedUser.enabled
     }
     console.log(data);
     if (data.roles.length === 0 || data.roles.length == null) {
@@ -233,10 +249,10 @@ this.toastr.info("New account is successfully added")
         console.log(res)
         this.display = 'none'
         this.toastr.info("User #" + res.id + " is updated")
-      },()=>{ this.updateError="Mail or phone numbers may already be in use. Please check again"})
+      }, () => { this.updateError = "Mail or phone numbers may already be in use. Please check again" })
   }
   showToast(username: string) {
-    this.toastr.error(username+ ' has been deleted')
+    this.toastr.error(username + ' has been deleted')
   }
   deleteUser(id: number) {
     this.userService.deleteUser(id).subscribe((res: any) => {
@@ -255,6 +271,7 @@ this.toastr.info("New account is successfully added")
     this.getUsers()
   }
   handlePageChange(event: number): void {
+    sessionStorage.setItem(Paging.PAGE_MASTER_HOME,JSON.stringify(event))
     this.page = event
     this.getUsers()
   }

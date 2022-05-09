@@ -57,7 +57,10 @@
 <td><a routerLink="/product/{{item.product.id}}"><img onerror="this.src='/assets/img/noimage.jpg'" style="width:130px;height:90px" src={{item.product.img}}></a></td>
 <td><a routerLink="/product/{{item.product.id}}">{{item.product.name}}</a></td>
 <td>{{item.product.price}}</td>
-<td><i class="fa fa-minus" id="minus" (click)="decreaseQuantityByOne(item.product.id,item)"></i><input id="quantity"  min="0" (change)="setItemQuantity($event,item)" style="width:30%;height:60%" type="number" value={{item.quantity}}><i (click)="increaseQuantityByOne(item.product.id,item)" class="fa fa-plus" id="plus"></i></td>
+<td><i class="fa fa-minus" id="minus" (click)="decreaseQuantityByOne(item.product.id,item)"></i><input id="quantity"  min="0" (change)="setItemQuantity($event,item)" style="width:30%;height:60%" type="number" value={{item.quantity}}><i (click)="increaseQuantityByOne(item.product.id,item)" class="fa fa-plus" id="plus"></i>
+<br><span *ngIf="item.outOfStock" style='font-size:13px'class="text-danger">Maximum quantity reached</span></td>
+
+
 <td>{{roundUpNumber(item.total)}}</td>
 <td>
     <div>
@@ -68,8 +71,8 @@
 </tr>
 <tr>
     <td colspan="4">Total:</td>
-    <td><strong>{{totalItems}} items</strong></td>
-    <td><strong>{{roundUpNumber(grandTotal)}}</strong></td>
+    <td><strong style="font-size:18px">{{totalItems}} items</strong></td>
+    <td><strong style="font-size:18px">{{roundUpNumber(grandTotal)}}</strong></td>
 </tr>
 <tr>
   <td colspan="5"></td>

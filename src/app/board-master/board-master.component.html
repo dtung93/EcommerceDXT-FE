@@ -11,9 +11,9 @@
           <button class="btn text-white" style="background-color:#3895d3" id='search' (click)="searchUsername()">Search</button>
         </div>
         <div class="col-md-3 pt-2">
-          <button type="button" class="btn btn text-white add-user"
+          <button (click)="logForm()" type="button" class="btn btn text-white add-user"
            data-bs-toggle="modal" data-bs-target="#exampleModal">
-            <span class="bg-white plus"><i class="fa fa-plus"></i></span> Add New User
+            <span class="bg-white plus"><i class="fa fa-plus" ></i></span> Add New User
           </button>
         </div>
       </div>
