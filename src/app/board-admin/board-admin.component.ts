@@ -9,12 +9,30 @@ import { collapseTextChangeRangesAcrossMultipleVersions } from 'typescript';
 import Swal from 'sweetalert2'
 import { TokenStorageService } from '../service/token-storage.service';
 import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { roleName } from '../model/role.model';
+import { Paging } from '../model/page.model';
 @Component({
   selector: 'app-board-admin',
   templateUrl: './board-admin.component.html',
   styleUrls: ['./board-admin.component.scss']
 })
 export class BoardAdminComponent implements OnInit {
+  constructor(private fb:FormBuilder,private userService: UserService, private toastr: ToastrService, private token: TokenStorageService) {
+  }
+  ngOnInit(): void {
+    this.userService.getAdminBoard().subscribe(res => {
+      this.content = res
+    }, error => { this.content = JSON.parse(error.error).message })
+    this.getUsers()
+    if (this.token.getToken()) {
+      this.currentUserRole = this.token.getUser().roles
+      this.currentUsername = this.token.getUser().username
+      if (this.currentUserRole == roleName.ma)
+        this.isMaster = true
+      if (this.currentUserRole == roleName.a)
+        this.isAdmin = true
+    }
+  }
   updateError=''
   isSubmitted=false
   userForm!: FormGroup 
@@ -73,7 +91,7 @@ export class BoardAdminComponent implements OnInit {
   checkMasterRole(role: any) {
     let hasMasterRole = false;
     role.forEach((x: any) => {
-      if (x.name === 'ROLE_MASTER')
+      if (x.name ==roleName.ma)
         hasMasterRole = true
     })
     return hasMasterRole
@@ -81,7 +99,7 @@ export class BoardAdminComponent implements OnInit {
   checkAdminRole(role: any) {
     let hasAdminRole = false
     role.forEach((x: any) => {
-      if (x.name === "ROLE_ADMIN")
+      if (x.name ===roleName.a)
         hasAdminRole = true
     })
     return hasAdminRole
@@ -90,17 +108,21 @@ export class BoardAdminComponent implements OnInit {
   checkModeratorRole(role: any) {
     let hasModeratorRole = false
     role.forEach((x: any) => {
-      if (x.name === "ROLE_MODERATOR")
+      if (x.name === roleName.mo)
         hasModeratorRole = true
     })
     return hasModeratorRole
   }
+  getPage(){
+   const page= sessionStorage.getItem(Paging.PAGE_ADMIN_HOME)
+   this.page=page?+page:1
+   return this.page
+  }
   getUsers() {
-    const params = this.getRequestParams(this.usernameoremail, this.page, this.pageSize)
+    const params = this.getRequestParams(this.usernameoremail,this.getPage(), this.pageSize)
     this.userService.getUsers(params).subscribe((res) => {
       this.totalAccounts = res.totalItems
       this.count = res.totalItems
-      console.log(this.currentUserRole)
       this.users = res.users?.map((user: any) => {
         return { ...user, editable: this.checkRoleCondition(user) }
       })
@@ -108,8 +130,8 @@ export class BoardAdminComponent implements OnInit {
     })
   }
   checkRoleCondition(user: any) {
-    const hasRole = user.roles.some((r: any) => r.name === 'ROLE_ADMIN' || r.name === 'ROLE_MASTER')
-    if (this.currentUserRole == "ROLE_ADMIN" && hasRole)
+    const hasRole = user.roles.some((r: any) => r.name === roleName.a || r.name === roleName.ma)
+    if (this.currentUserRole == roleName.a && hasRole)
       return false;
     return true;
   }
@@ -138,22 +160,8 @@ export class BoardAdminComponent implements OnInit {
   isOpen() {
     this.isOpened = !this.isOpened
   }
-  constructor(private fb:FormBuilder,private userService: UserService, private toastr: ToastrService, private token: TokenStorageService) {
-  }
-  ngOnInit(): void {
-    this.userService.getAdminBoard().subscribe(res => {
-      this.content = res
-    }, error => { this.content = JSON.parse(error.error).message })
-    this.getUsers()
-    if (this.token.getToken()) {
-      this.currentUserRole = this.token.getUser().roles
-      this.currentUsername = this.token.getUser().username
-      if (this.currentUserRole == "ROLE_MASTER")
-        this.isMaster = true
-      if (this.currentUserRole == "ROLE_ADMIN")
-        this.isAdmin = true
-    }
-  }
+ 
+  
   getUserDetail(id: number) {
     return this.userService.getUser(id).subscribe((res) => {
       this.selectedUser = res
@@ -215,6 +223,7 @@ export class BoardAdminComponent implements OnInit {
     this.getUsers()
   }
   handlePageChange(event: number): void {
+    sessionStorage.setItem(Paging.PAGE_ADMIN_HOME,JSON.stringify(event))
     this.page = event
     this.getUsers()
   }

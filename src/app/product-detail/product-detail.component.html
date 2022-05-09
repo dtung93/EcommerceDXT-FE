@@ -31,6 +31,7 @@
                         <tr>
                             <td>Name:</td>
                             <input type='text' [style]="width" [(ngModel)]="product.name" value={{product.name}}>
+                            <label *ngIf="nameError" class="text-danger" id="error">Product name is required</label>
                         </tr>
                         <tr>
                             <td>Image URL:</td>
@@ -44,11 +45,13 @@
                             <td>Price: </td>
                             <input type='number'   [style]="width"
                                 min="0" [(ngModel)]="product.price">
+                                <label *ngIf="priceError" class="text-danger" id="error">Price is required</label>
                         </tr>
                         <tr>
                             <td>Quantity:</td>
-                            <input oninput="validity.valid||(value='')" type='number' [style]="width"
+                            <input oninput="validity.valid||(value='')" type='number' [style]="width" required
                                 min="0" [(ngModel)]="product.qty">
+                                <label *ngIf="quantityError" class="text-danger" id="error">Quantity must be set</label>
                         </tr>
                         <tr>
                             <td>Category:</td>
@@ -73,7 +76,7 @@
                 </div>
                 <div class="modal-footer">
                     <tr><button id="detail" class='btn btn text-white' style="background-color:#2d80b7;width: 10rem;"
-                            (click)='updateProduct()'>Update</button></tr>
+                            (click)='updateProduct()' >Update</button></tr>
                     <button type="button" id="close" class="btn btn-outline-secondary" style="width: 10rem;"
                         (click)="onCloseHandled()">Cancel</button>
                 </div>

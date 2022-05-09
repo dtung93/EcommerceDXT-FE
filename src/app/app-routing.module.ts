@@ -15,6 +15,7 @@ import { VerifiedAccountComponent } from './verified-account/verified-account.co
 import { CartComponent } from './cart/cart.component';
 import { OrderDetailsComponent } from './order-details/order-details.component';
 import { AuthGuardService } from './service/auth-guard.service';
+import { OrderFormComponent } from './order-form/order-form.component';
 const routes: Routes = [
   { path: 'home', component: HomeComponent },
   { path: 'login', component: LoginComponent },
@@ -31,6 +32,7 @@ const routes: Routes = [
   {path:'forgot-password',component:ForgotpasswordComponent},
   {path:'reset-password',component:ResetPasswordComponent},
   {path:'verified-account',component:VerifiedAccountComponent},
+  {path:'order-form',component:OrderFormComponent},
 ];
 
 @NgModule({
