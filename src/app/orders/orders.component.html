@@ -1,1 +1,29 @@
-<p>orders works!</p>
+<div class="container">
+    <h3 class="header" style="margin-top:10px;color:rgb(83, 82, 82);text-align: center;background-color: #f1f8fd;">Your order history</h3>
+    <table style="width:90%">
+        <thead>
+<th style="width:10%">Order Id</th>
+<th style="width:25%">Date</th>
+<th style="width:20%">Items</th>
+<th style="width:20%">Total</th>
+<th style="width:15%">Status</th>
+        </thead>
+<tbody>
+<tr *ngFor="let order of orders">
+<td>{{order.id}}</td>
+<td>{{order.date}}</td>
+<td>{{order.cart.totalItems}}</td>
+<td>{{order.cart.grandTotal}}</td>
+<td>PAID</td>
+<td>
+<a routerLink="/order-details/{{order.id}}"><button class="text-white btn" style="background-color:#2d8bca;width:120px">Order Details</button></a>
+
+</td>
+</tr>
+
+
+</tbody>
+
+
+    </table>
+</div>

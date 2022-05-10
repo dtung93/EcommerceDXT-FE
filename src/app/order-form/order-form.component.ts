@@ -1,16 +1,20 @@
 import { Component, OnInit } from '@angular/core';
-import { Form, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { EmailValidator, Form, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CartService } from '../service/cart.service';
 import { CheckOutService } from '../service/check-out.service';
 import { PaymentApiKey } from '../model/paymentApiKey.model';
 import { ToastrService } from 'ngx-toastr';
 import { ProductService } from '../service/product.service';
+import { OrderService } from '../service/order.service';
 @Component({
   selector: 'app-order-form',
   templateUrl: './order-form.component.html',
   styleUrls: ['./order-form.component.scss']
 })
 export class OrderFormComponent implements OnInit {
+  date=new Date()
+  cart:any
+  outOfStock=false
   orderForm!:FormGroup
   disabled = false
   success=false
@@ -20,7 +24,7 @@ export class OrderFormComponent implements OnInit {
   items:any[]=[]
   grandTotal!:number
   totalItems!:number
-  constructor(private productService:ProductService,private toastr:ToastrService,private cartService:CartService,private fb: FormBuilder, private checkOutService: CheckOutService) {
+  constructor(private orderService:OrderService,private productService:ProductService,private toastr:ToastrService,private cartService:CartService,private fb: FormBuilder, private checkOutService: CheckOutService) {
 this.orderForm=this.fb.group({
 name:['',[Validators.required,]],
 address:['',[Validators.required]],
@@ -31,17 +35,22 @@ email:['',[Validators.required,Validators.email]]
  }
   ngOnInit(): void {
     this.cartService.getCart().subscribe((res:any)=>{
+      this.cart=res
       this.amount=res.grandTotal
       this.totalItems=res.totalItems
       this.items=res.items
+      console.log(this.cart)
     })
     this.invokeStripe()
   }
   
   checkProductQuantity(){
     this.cartService.getCart().subscribe((res:any)=>{
-     this.items=res.items.map((item:any)=>{
-       let outStock=item.quantity<=item.product.qty
+      this.cart=res
+     this.items=res.items.sort(function(a:any,b:any){
+       return parseFloat(a.product.id)-parseFloat(b.product.id)
+     }).map((item:any)=>{
+       let outStock=item.quantity>item.product.qty
        return{...item,outOfStock:outStock}
      })
     })
@@ -55,6 +64,9 @@ submitForm(){
     this.checkProductQuantity()
    if( this.items.every((item:any)=>item.quantity<=item.product.qty)){
      return this.initializePayment(this.amount)
+   }
+   else{
+     this.outOfStock=true
    }
   }
 }
@@ -80,10 +92,25 @@ submitForm(){
         stripeToken:stripeToken.id,
         stripTokenType:stripeToken.type
       }
+      const orderDetails={
+        name:this.orderForm.controls['name'].value,
+        date:this.date,
+        cart:this.cart,
+        email:this.orderForm.controls['email'].value,
+        address:this.orderForm.controls['address'].value,
+        phone:this.orderForm.controls['phone'].value
+   }
+   console.log(orderDetails)
+     
       this.checkOutService.checkout(params).subscribe((data: any) => {
         console.log(data);
-        if (data.data === "success") {
-          this.success = true
+       
+        if (data.status === 'succeeded') {
+          this.cartService.updateCartTotal(0)
+          this.orderService.newOrder(orderDetails).subscribe((res)=>{
+            console.log(res)
+          })
+      
         }
         else {
           this.failure = true
@@ -102,17 +129,6 @@ submitForm(){
     });
   }
   
-  submitCheckout(stripeToken:any){
-    const data={
-      amount:this.paymentHandler.amount,
-      currency:this.paymentHandler.currency,
-      description:this.paymentHandler.description,
-      stripeEmail:stripeToken.email,
-      stripeToken:stripeToken.id,
-      stripTokenType:stripeToken.type
-    }
-    this.checkOutService.checkout(data).subscribe(()=>{console.log('success')})
-  }
   invokeStripe() {
     if (!window.document.getElementById('stripe-script')) {
       const script = window.document.createElement("script");

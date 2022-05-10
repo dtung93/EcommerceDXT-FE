@@ -23,7 +23,8 @@
         </ul>
         <form class="d-flex">
           <a id="item"  href="/login" *ngIf="!isLoggedIn" class="nav-link" routerLinkActive="active" routerLink="login">Login</a>
-          <a id="item"  href="" class="nav-link" routerLinkActive="active" routerLink="/cart"><i *ngIf="showCart" class="fa fa-shopping-cart"><span id="cart-total" class="circle">{{totalItems}}</span></i></a>
+          <a id="item" *ngIf="showCart"  class="nav-link" routerLinkActive="active" routerLink="/cart"><i class="fa fa-shopping-cart"><span id="cart-total" class="circle">{{totalItems}}</span></i></a>
+          <a id="item" *ngIf="showCart" class="nav-link" routerLink="/my-orders" routerLinkActive="active" ><i class="fa fa-file"><span style="margin-left:5px">My Orders</span></i></a>
           <a id="item" href="/profile" *ngIf="isLoggedIn" class="nav-link" routerLinkActive="active" routerLink="profile">Hello,
             {{ username }} <img src='' style="width:20px;height:20px;border-radius: 50%;margin-bottom:5px" onerror="this.src='/assets/img/noimage.jpg'"></a>
           <a id="item"  *ngIf="isLoggedIn" href class="nav-link" (click)="logOut()">LogOut</a>
@@ -36,7 +37,7 @@
 
 
 <router-outlet></router-outlet>
-<app-footer style="max-height:25%"></app-footer>
+<app-footer style="max-height:25%" class="fixed-bottom"></app-footer>
 
 
 <div id="mySidenav" [ngClass]="hasWidth?'hasWidth':''" class="sidenav">

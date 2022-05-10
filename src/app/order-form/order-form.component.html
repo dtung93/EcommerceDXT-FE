@@ -40,17 +40,21 @@
 
   </div>
   <table style="width:50%" class="bg-light pb-5">
-    <tr  *ngFor="let item of items">
+    <tr [ngClass]="{'out-of-stock':item.outOfStock}" *ngFor="let item of items">
       <td>{{item.product.name}}</td>
-      <td>In stock:{{item.product.qty}}</td>
+      <td *ngIf="item.outOfStock">In stock:{{item.product.qty}}</td>
       <td>{{item.quantity}}</td>
       <td>{{item.total}}</td>
+
     </tr>
     <tr>
       <td></td>
-      <td></td>
       <td>{{totalItems}}</td>
       <td><strong>{{amount}}</strong></td>
+    </tr>
+    <tr class="text-danger" *ngIf="outOfStock">
+      Some products in your cart is out of stock
+
     </tr>
       </table>
 </div>

@@ -21,6 +21,7 @@ export class CartComponent implements OnInit {
   ngOnInit(): void {
 
     this.cartService.getCart().subscribe((res) => {
+      console.log(res)
       this.cartService.updateCartTotal(res.totalItems)
       this.items = res.items.sort(function (a: any, b: any) {
         return parseFloat(a.product.id) - parseFloat(b.product.id)
