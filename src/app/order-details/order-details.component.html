@@ -1,1 +1,53 @@
-<p>order-details works!</p>
+<div class="container">
+    <h3 style="background-color:#f5f8f9">Order Details</h3>
+   <table style="width:60%">
+    <tr>
+        <td id="header">Order Id</td>
+        <td>{{order.id}}</td>
+    </tr>
+       <tr>
+           <td id="header">Name</td>
+           <td><span>{{order.name}}</span></td>
+       </tr>
+       <tr>
+        <td id="header">Email</td>
+        <td><span>{{order.email}}</span></td>
+    </tr>
+    <tr>
+        <td id="header">Address</td>
+           <td><span>{{order.address}}</span></td>
+    </tr>
+    <tr>
+        <td id="header">Phone</td>
+        <td><span>{{order.phone}}</span></td>
+    </tr>
+    <tr>
+        <td id="header">Name</td>
+        <td><span>{{order.name}}</span></td>
+    </tr>
+    <tr>
+        <td id="header">Status</td>
+        <td>PAID</td>
+    </tr>
+    <br>
+    <table style="width:100%">
+     <tr>
+       <h3>Order summary</h3>
+     </tr>
+    <tr *ngFor="let item of items">
+        <td style="width:30%">product Id:{{item.product.id}}</td>
+        <td style="width:10%"><img src={{item.product.img}} style="width:50px;height:40px"></td>
+        <td style="width:40%">{{item.product.name}}</td>
+         <td>{{item.quantity}}</td>
+         <td>{{item.total}}</td>
+    </tr>
+    <tr>
+        <td></td>
+        <td></td>
+        <td><strong>{{order.cart.totalItems}}</strong> items</td>
+        <td><strong>${{order.cart.grandTotal}}</strong></td>
+    </tr>
+    </table>
+   </table>
+
+</div>
