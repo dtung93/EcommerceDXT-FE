@@ -34,7 +34,7 @@ const routes: Routes = [
   {path:'reset-password',component:ResetPasswordComponent},
   {path:'verified-account',component:VerifiedAccountComponent},
   {path:'order-form',component:OrderFormComponent},
-  {path:'my-orders',component:OrdersComponent}
+  {path:'my-orders',component:OrdersComponent,canActivate:[AuthGuardService]}
 ];
 
 @NgModule({

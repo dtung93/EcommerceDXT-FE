@@ -11,6 +11,7 @@ import { confirmField } from '../service/validator';
   styleUrls: ['./reset-password.component.scss']
 })
 export class ResetPasswordComponent implements OnInit {
+  invalidToken=false
   resetToken:any
   resetPassword:any
   isSubmitted=false
@@ -46,14 +47,13 @@ updatePassword(){
   this.resetPassword=this.passwordForm.controls['password'].value
   const params=this.getParams(this.resetToken,this.resetPassword)
   return this.userService.sendResetPassword(params).subscribe((res)=>{
+    console.log(res)
     this.toastr.info('Your password has been successfully updated! Please login again')
-    window.localStorage.removeItem('resetPasswordToken')
-    setInterval(()=>window.location.href='/login',1000)
   },err=>{
-    console.log(err.message)
-    this.toastr.error('Password update has failed. Please check the fields and try again')
+    console.log(err.error.message)
+    this.invalidToken=true
+    this.toastr.error('Invalid or expired token')
   })
-  
   }
   return 
 }

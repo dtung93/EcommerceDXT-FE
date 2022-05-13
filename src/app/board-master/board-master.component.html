@@ -5,10 +5,10 @@
       </div>
       <div class="row">
         <div class="col-md-3">
-          <input type="text" class="form-control" placeholder="Search by username or email" [(ngModel)]="usernameoremail">
+          <input type="text" class="form-control" placeholder="Search by username or email" [(ngModel)]="username">
         </div>
         <div class="col-md-6 ">
-          <button class="btn text-white" style="background-color:#3895d3" id='search' (click)="searchUsername()">Search</button>
+          <button class="btn text-white" style="background-color:#3895d3" id='search' (click)="searchUser()">Search</button>
         </div>
         <div class="col-md-3 pt-2">
           <button (click)="logForm()" type="button" class="btn btn text-white add-user"
@@ -30,8 +30,8 @@
              
               <div class="modal-body">
                 <form [formGroup]="userForm" (submit)="addUser()">
-                <table width="100%">
-                  <label for="error" class="text-danger" *ngIf="isSubmitted">Create User failed! {{errorMessage}}</label>
+                <table id="add-user" width="100%">
+                  <label for="error" class="text-danger" *ngIf="isSubmitted">Add user failed! {{errorMessage}}</label>
                   <tr>
                     <td>Username</td>
                     <td><input type='text' formControlName="username" placeholder="Enter a username">
@@ -41,17 +41,6 @@
                     <td>Email</td>
                     <td ><input type='text' pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" formControlName="email" placeholder="Enter an email">
                       <label  class="text-danger" for="email"  *ngIf="userForm.controls['email'].invalid&&isSubmitted">Please enter a valid email address</label>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>Address</td>
-                    <td ><input type='text' formControlName="address" placeholder="Enter a phone address">
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>Phone</td>
-                    <td ><input type='text' pattern='^[0-9]+$' formControlName="phone" placeholder="Enter a phone number">
-                      <label class="text-danger" for="phone" *ngIf="userForm.controls['phone'].invalid&&isSubmitted">Please enter a valid phone numbers</label>
                     </td>
                   </tr>
                   <tr>
@@ -172,11 +161,12 @@
           <div class="modal-content">
             <div class="modal-header text-white" style="background-color:#3085bd">
               <h4 class="modal-title">Edit Information</h4>
-              <div class="text-danger">{{updateError}}</div>
+             
               <button type="button" id="close" class="btn-close bg-white" (click)="onCloseHandled()"><span
                   aria-hidden="true"></span></button>
             </div>
             <div class="modal-body bg-light">
+              <div class="text-danger" *ngIf="updateError!=''">Update failed!. {{updateError}}</div>
               <table [style]="width">
                 <td><input type='hidden' [(ngModel)]="selectedUser.id" value={{selectedUser.id}}></td>
                 <tr class="mb-3">

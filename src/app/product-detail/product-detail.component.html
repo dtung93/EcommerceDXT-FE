@@ -1,4 +1,5 @@
 <div class="container" [style.font-family]='font' style="padding:15px;margin-bottom:15px">
+    <a routerLink="/home"><button class="btn btn text-white" style="background-color: #026eb6;"><i class="fa fa-arrow-left" style="margin-right:5px"></i><span>Back to Products</span></button></a>
     <div class="header" [style]='info'>Product Information</div>
     <div class="row">
         <div class="col"><img src={{product.img}} onerror="this.src='/assets/img/noimage.jpg'"></div>
@@ -7,6 +8,7 @@
             <h4 [style]="title" class="title">{{product.name}}</h4>
             <h5 [style]="description">{{product.description}}</h5>
             <h5 [style]="price">Price: {{product.price}}</h5>
+            <h5 *ngIf="smallStock||showButton" class="text-danger">Stock: {{product.qty}}</h5>
             <i id="editbutton" class="btn fa fa-pencil" (click)="openModal()" *ngIf="showButton" [style]="edit"><span
                     style="margin-left:12px">Edit</span></i>
                 <br><br>
@@ -43,13 +45,13 @@
                         </tr>
                         <tr>
                             <td>Price: </td>
-                            <input type='number'   [style]="width"
-                                min="0" [(ngModel)]="product.price">
+                            <input type='tel'   [style]="width"
+                                min="0" [(ngModel)]="product.price" oninput="this.value = this.value.replace(/^([^0-9]*)$/,'')">
                                 <label *ngIf="priceError" class="text-danger" id="error">Price is required</label>
                         </tr>
                         <tr>
                             <td>Quantity:</td>
-                            <input oninput="validity.valid||(value='')" type='number' [style]="width" required
+                            <input oninput="validity.valid||(value='')"  type='number' [style]="width" required
                                 min="0" [(ngModel)]="product.qty">
                                 <label *ngIf="quantityError" class="text-danger" id="error">Quantity must be set</label>
                         </tr>

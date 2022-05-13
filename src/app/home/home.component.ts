@@ -9,39 +9,43 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CartService } from '../service/cart.service';
 import { roleName } from '../model/role.model';
 import { Paging } from '../model/page.model';
+import { ConsoleLogger } from '@angular/compiler-cli';
+import { parseMappings } from '@angular/compiler-cli/src/ngtsc/sourcemaps/src/source_file';
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
-  constructor(private cartService: CartService,private fb:FormBuilder,private userService: UserService, private token: TokenStorageService, private toastr: ToastrService, private productService: ProductService) {
-    this.productForm=this.fb.group({
-      name:['',[Validators.required,Validators.minLength(4),Validators.maxLength(25)]],
-      img:[''],
-      category:['',[Validators.required]],
-      description:['',[Validators.required]],
-      price:['',[Validators.required,Validators.min(0)]],
-      qty:['']
-      })
-   }
+  constructor(private cartService: CartService, private fb: FormBuilder, private userService: UserService, private token: TokenStorageService, private toastr: ToastrService, private productService: ProductService) {
+    this.productForm = this.fb.group({
+      name: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(25)]],
+      img: [''],
+      category: ['', [Validators.required]],
+      description: ['', [Validators.required]],
+      price: ['', [Validators.required, Validators.min(0)]],
+      qty: ['']
+    })
+  }
   ngOnInit(): void {
     //API call to get array of products
-    this.getProducts()
     if (this.token.getToken()) {
       this.roles = this.token.getUser().roles;
-      if (this.roles?.includes(roleName.a) || this.roles?.includes(roleName.mo)||this.roles?.includes(roleName.ma)) {
-       this.notUser=true
+      if (this.roles?.includes(roleName.a) || this.roles?.includes(roleName.mo) || this.roles?.includes(roleName.ma)) {
+        this.notUser = true
       }
     }
+    this.getProducts()
+
   }
-  productForm:FormGroup
+  productName=''
+  productForm: FormGroup
   products: Product[] = []
   selectedProduct?: Product
   currentUser: any
   isSubmitted = false;
-  width="width:100%"
-  notUser=false
+  width = "width:100%"
+  notUser = false
   paginationStyle = "color:red,background-color:green"
   isAdminOrMod = false
   sortValue: any
@@ -61,22 +65,22 @@ export class HomeComponent implements OnInit {
   category = ''
   keyword: boolean = false
   roles?: any[] = []
- 
+
   sortOptions = [
     { id: 1, name: 'Sort by ascending price', value: 'ascending' },
     { id: 2, name: 'Sort by descending price', value: 'descending' }
   ]
-  categories:any=[
-    {name:'Shoes'},{name:'Cars'},{name:'Health'},
-    {name:'Computers'},{name:'Garden'},{name:'Beauty'},
-    {name:'Home'},{name:'Clothing'},{name:'Sports'},{name:'Grocery'},{name:"Kids"},{name:"Automotive"},{name:"Toys"},
-    {name:'Movies'},{name:'Grocery'}
-    ]
+  categories: any = [
+    { name: 'Shoes' }, { name: 'Cars' }, { name: 'Health' },
+    { name: 'Computers' }, { name: 'Garden' }, { name: 'Beauty' },
+    { name: 'Home' }, { name: 'Clothing' }, { name: 'Sports' }, { name: 'Grocery' }, { name: "Kids" }, { name: "Automotive" }, { name: "Toys" },
+    { name: 'Movies' }, { name: 'Grocery' }
+  ]
   sortedOptions(value: string) {
     this.sortValue = this.sortOptions.find(x => x.value == value)?.value
     this.sortProducts()
   }
- 
+
   showDeleteToast(productname: string) {
     this.toastr.error(productname, 'Notice')
   }
@@ -87,29 +91,30 @@ export class HomeComponent implements OnInit {
   onCloseHandled() {
     this.display = 'none'
   }
- 
-  showToast(id:number,name:string){
+
+  showToast(id: number, name: string) {
     this.toastr.info(
-      "Product id="+id+" "+name+" is succesfully added to the inventory"
+      "Product id=" + id + " " + name + " is succesfully added to the inventory"
     )
-    }
-  submitSuccess(id:number,name:string,){
-    this.isSubmitted=false
-    this.productForm.reset()
-    this.showToast(id,name)
-    setInterval(()=>{this.getProducts()},1000)
   }
-  submitProductForm(){
-    this.isSubmitted=true
-    if(this.productForm.valid){
-    const data=this.productForm.value
-    return this.productService.addProduct(data).subscribe((res)=>{
-     this.submitSuccess(res.id,res.name)     
-    },error=>console.log(error.message))
-   }
-   else{
-   return this.toastr.error('Failed to add product','Please check the fields again')
-   }}
+  submitSuccess(id: number, name: string,) {
+    this.isSubmitted = false
+    this.productForm.reset()
+    this.showToast(id, name)
+    setInterval(() => { this.getProducts() }, 1000)
+  }
+  submitProductForm() {
+    this.isSubmitted = true
+    if (this.productForm.valid) {
+      const data = this.productForm.value
+      return this.productService.addProduct(data).subscribe((res) => {
+        this.submitSuccess(res.id, res.name)
+      }, error => console.log(error.message))
+    }
+    else {
+      return this.toastr.error('Failed to add product', 'Please check the fields again')
+    }
+  }
   getRequestParams(category: string, searchTitle: string, page: number, pageSize: number): any {
     let params: any = {}
     if (searchTitle) {
@@ -127,25 +132,49 @@ export class HomeComponent implements OnInit {
     }
     return params
   }
-  getPage(){
-    const page=sessionStorage.getItem(Paging.PAGE_HOME)
+  getSearchParams(category:string,productName:string){
+    let params:any={}
+    if (productName) {
+      params[`name`] = productName
+    }
+    if (category) {
+      params[`category`] = category
+      this.hasCategory = true
+    }
+    return params
+  }
+  getPage() {
+    const page = sessionStorage.getItem(Paging.PAGE_HOME)
     this.page = page ? +page : 1
     return this.page
   }
   //http service to get and display the array of products, paging information from API with parameters category and name, page and page sizee
   getProducts(): void {
-   
-    const params = this.getRequestParams(this.category, this.name,this.getPage(), this.pageSize)
+    const params = this.getRequestParams(this.category, this.name, this.getPage(), this.pageSize)
     this.productService.getProducts(params).subscribe(response => {
       const { products, totalItems } = response
       this.products = products
       this.count = totalItems
       this.HasProducts = true
       console.log(response)
-    },error=>{ this.toastr.error('No products could be found')})
+    }, error => { this.toastr.error('No products could be found') })
   }
+  searchProducts(){
+    this.page=1
+    const params = this.getSearchParams(this.category,this.productName)
+    console.log(params)
+    this.productService.getProducts(params).subscribe(response => {
+      const { products, totalItems } = response
+      this.products = products
+      this.count = totalItems
+      this.HasProducts = true
+      console.log(response)
+    }, error => { this.toastr.error('No products could be found') })
+  }
+
   //http service to get and display the array of products with no parameters
   backToResults(): void {
+    this.name==null
     const params = this.getRequestParams(this.name = '', this.category = '', this.page, this.pageSize)
     this.productService.getProducts(params).subscribe(response => {
       const { products, totalItems } = response
@@ -153,7 +182,7 @@ export class HomeComponent implements OnInit {
       this.count = totalItems
       console.log(response)
       this.keyword = !this.keyword
-    }, error => { 
+    }, error => {
       this.toastr.error('No products could be found!')
     })
   }
@@ -181,8 +210,9 @@ export class HomeComponent implements OnInit {
     }, error => console.log(error))
   }
   handlePageChange(event: number): void {
+
     this.page = event
-    sessionStorage.setItem(Paging.PAGE_HOME,JSON.stringify(event))
+    sessionStorage.setItem(Paging.PAGE_HOME, JSON.stringify(event))
     if (this.sortValue == null)
       this.getProducts();
     else {
@@ -191,12 +221,7 @@ export class HomeComponent implements OnInit {
   }
   handlePageSizeChange(event: any): void {
     this.pageSize = event.target.value
-    this.page = 1
-    this.getProducts()
-  }
-  searchTitle(): void {
-    this.page = 1;
-    this.keyword = true
+    this.page = this.page
     this.getProducts()
   }
   delete(id: any): void {
@@ -208,28 +233,31 @@ export class HomeComponent implements OnInit {
       this.display = 'none'
       this.showDeleteToast(selectedProduct?.name + ' is deleted')
     }, error => {
+      this.toastr.error('You dont have the right or permission to do this action')
       this.display = 'none'
     })
   }
-  addProductToCart(id:number){
- if(this.roles?.includes(roleName.u)){
-    const productId={id:id}
-    this.cartService.addToCart(productId).subscribe((res)=>{
-      this.toastr.info('Product successfully added to cart')
-      this.cartService.updateCartTotal(res.totalItems)
-    },error=>{console.log(error.error.message)})
-  }
-  else{
-    Swal.fire({title: 'Login required',
+  addProductToCart(id: number) {
+    if (this.roles?.includes(roleName.u)) {
+      const productId = { id: id }
+      this.cartService.addToCart(productId).subscribe((res) => {
+        console.log(res)
+        this.toastr.info('Product successfully added to cart')
+        this.cartService.updateCartTotal(res.totalItems)
+      }, error => { console.log(error.error.message) })
+    }
+    else {
+      Swal.fire({
+        title: 'Login required',
         text: 'You need to be signed-in to use this function',
-        icon:'error',
-        color:'red',
-        background:'#FDFEFE',
-        showConfirmButton:true,
-        confirmButtonColor:'#186192',
-        width:'26rem'
+        icon: 'error',
+        color: 'red',
+        background: '#FDFEFE',
+        showConfirmButton: true,
+        confirmButtonColor: '#186192',
+        width: '26rem'
       })
+    }
   }
-  }
-  
+
 }

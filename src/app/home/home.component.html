@@ -16,8 +16,8 @@
 
 
     <!-- ADD NEW PRODUCT-MODAL -->
-    <div style="max-height: 70%" class="modal mt-5" id="productModal" aria-labelledby="productModal" tabindex="-1" role="dialog">
-      <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div  class="modal mt-5" id="productModal" aria-labelledby="productModal" tabindex="-1" role="dialog">
+      <div class="modal-dialog  modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
           <div class="modal-header text-white " style="background-color:'#308dca'">
             <h3 class="modal-title">
@@ -51,7 +51,7 @@
                 <tr>
                   <td>Price </td>
                   <input type='number' formControlName="price" placeholder="Price"
-                    [style]="width" min="0">
+                    [style]="width" min="0" >
                   <label for="price" id="error" class="text-danger" *ngIf="productForm.controls['price'].invalid&&isSubmitted">Price must be
                     set</label><br>
                 </tr>
@@ -86,8 +86,8 @@
   <div class="row" *ngIf="HasProducts">
 
     <!-- FILTER AND SEARCH  -->
-    <input id="filter-control" type="text" class="form-control" placeholder="Search by product name"
-      [(ngModel)]="name" />
+    <input id="filter-control" name="search" type="text" class="form-control" placeholder="Search by product name"
+    [(ngModel)]='productName'/>
     <select style="width: fit-content;height:45px;margin-top:5px" [(ngModel)]="category">
       <option value="" selected hidden disabled>Filter By Category</option>
       <option value="">All categories</option>
@@ -109,7 +109,7 @@
         x.name }}
       </div>
     </div>
-    <button class="btn btn-default" id="search" type="button" (click)="searchTitle()">
+    <button class="btn btn-default" id="search" type="button" (click)="searchProducts()">
       Search
     </button>
     <button id="remove" *ngIf="products?.length !== null" (click)="backToResults()" class="btn btn-secondary">
@@ -161,7 +161,7 @@
       <pagination-controls *ngIf="HasProducts" previousLabel="Prev" nextLabel="Next" [responsive]="true" 
       (pageChange)="handlePageChange($event)" style="float:right;margin-left:-50px" class="my-pagination"></pagination-controls>
       <table id="product-list-admin-mod" style="padding: 15px" class="table table-striped">
-        <thead class="text-white" style="background-color: #2d80b8;">
+        <thead class="text-white" style="background-color: #3895d3;">
           <tr>
 
             <th style="width:15%">Image</th>
@@ -182,7 +182,7 @@
                     }
             ">
             <td>
-              <a routerLink="/product/{{ x.id }}"> <img src="{{ x.img }}" style="width: 200px; height: 150px"
+              <a routerLink="/product/{{ x.id }}"> <img src="{{ x.img }}" style="width: 150px; height: 100px"
                   onerror="this.src='/assets/img/noimage.jpg'" /></a>
             </td>
             <td><a style="font-weight:bold;color:black" routerLink="/product/{{ x.id }}">{{ x.name }}</a></td>

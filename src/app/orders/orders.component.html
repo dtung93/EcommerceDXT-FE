@@ -1,17 +1,21 @@
 <div class="container">
-    <h3 class="header" style="margin-top:10px;color:rgb(83, 82, 82);text-align: center;background-color: #f1f8fd;">Your order history</h3>
+    <h3 class="header" *ngIf="!isAdmin" style="margin-top:10px;color:rgb(83, 82, 82);text-align: center;background-color: #f1f8fd;">Your order history</h3>
+    <h3 class="header" *ngIf="isAdmin" style="margin-top:10px;color:rgb(83, 82, 82);text-align: center;background-color: #f1f8fd;">Order list</h3>
     <table style="width:90%">
-        <thead>
+        <thead  style="background-color: #3895d3;color:snow">
 <th style="width:10%">Order Id</th>
 <th style="width:25%">Date</th>
+<th style="width:15%" *ngIf="isAdmin" >Username</th>
 <th style="width:20%">Items</th>
 <th style="width:20%">Total</th>
 <th style="width:15%">Status</th>
+<th></th>
         </thead>
 <tbody>
 <tr *ngFor="let order of orders">
 <td>{{order.id}}</td>
 <td>{{order.date}}</td>
+<td *ngIf="isAdmin" >{{order.cart.username}}</td>
 <td>{{order.cart.totalItems}}</td>
 <td>{{order.cart.grandTotal}}</td>
 <td>PAID</td>

@@ -1,13 +1,22 @@
-<div class="container bg-light" style="text-align:center;">
- 
-  <table style="width:100%" class="table">
-    <thead>
+<div class="container" *ngIf="items.length==0">
+
+ <div><h5>Your cart is empty. Start <a class="text-primary" routerLink="/home">shopping</a> now</h5></div>
+</div>
+
+<div class="container bg-light" *ngIf="items.length!=0">
+  <div class="container text-white" style="background-color: #2d8bca;">
+    <h3 id="header" style="text-align: center">Your Cart</h3>
+  </div>
+ <a routerLink="/home"><button  class="btn btn text-white" style="background-color: #026eb6;"><i class="fa fa-arrow-left" style="margin-right:5px"></i><span>Back to Products</span></button></a>
+  <div class="table-responsive">
+ <table style="width:100%;" class="table mt-1">
+    <thead class="text-white" style="background-color: #2d8bca">
       <tr>
         <th style="width:10%">Product SKU</th>
         <th style="width:5%">Image</th>
         <th style="width:15%">Product name</th>
         <th style="width:5%">Price</th>
-        <th style="width:5%">Quantity</th>
+        <th style="width:10%">Quantity</th>
         <th style="width:5%">Total</th>
         <th style="width:5%">Action</th>
       </tr>
@@ -29,7 +38,7 @@
                 Empty your cart?
               </div>
               <div class="modal-footer">
-                <button type="button" class="btn btn-primary" (click)="emptyCart()">Yes</button>
+                <button type="button" style="background-color:#2d8bca;width:50px" class="btn btn-primary" (click)="emptyCart()">Yes</button>
                 <button type="button" #closeEmptyCart class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
               </div>
             </div>
@@ -50,7 +59,7 @@
                 Do you want to remove <strong> {{selectedItem?.product.name}}</strong> from your cart?
               </div>
               <div class="modal-footer">
-                <button type="button" class="btn btn-primary" (click)="removeItemFromCart(selectedItem)">Yes</button>
+                <button type="button" class="btn btn text-white" style="background-color:#2d8bca;width:50px" (click)="removeItemFromCart(selectedItem)">Yes</button>
                 <button type="button" #closeRemoveModal class="btn btn-secondary" data-bs-dismiss="modal"
                   (click)="nullItem()">Close</button>
               </div>
@@ -62,10 +71,11 @@
               style="width:130px;height:90px" src={{item.product.img}}></a></td>
         <td><a routerLink="/product/{{item.product.id}}">{{item.product.name}}</a></td>
         <td>{{item.product.price}}</td>
-        <td><i class="fa fa-minus" id="minus" (click)="decreaseQuantityByOne(item.product.id,item)"></i><input
+        <td><div class="row">
+          <i class="fa fa-minus" id="minus" (click)="decreaseQuantityByOne(item.product.id,item)"></i><input
             id="quantity" min="0" (change)="setItemQuantity($event,item)" style="width:30%;height:60%" type="number"
             value={{item.quantity}}><i (click)="increaseQuantityByOne(item.product.id,item)" class="fa fa-plus"
-            id="plus"></i>
+            id="plus"></i></div>
           <br><span *ngIf="item.outOfStock" style='font-size:13px' class="text-danger">Maximum quantity reached</span>
         </td>
 
@@ -73,8 +83,7 @@
         <td>{{roundUpNumber(item.total)}}</td>
         <td>
           <div>
-            <a routerLink="/product/{{item.product.id}}"><i class="fa fa-edit btn btn-sm"></i></a>
-            <i class="fa fa-trash btn btn-sm" (click)="getItem(item)" data-bs-toggle="modal"
+            <i class="fa fa-trash" (click)="getItem(item)" data-bs-toggle="modal"
               data-bs-target="#removeItem"></i>
           </div>
         </td>
@@ -82,15 +91,16 @@
       <tr>
         <td colspan="4">Total:</td>
         <td><strong style="font-size:18px">{{totalItems}} items</strong></td>
-        <td><strong style="font-size:18px">{{roundUpNumber(grandTotal)}}</strong></td>
+        <td><strong style="font-size:18px">${{roundUpNumber(grandTotal)}}</strong></td>
       </tr>
       <tr>
         <td colspan="5"></td>
         <td><button *ngIf="items.length!==0" class="btn btn-secondary" id="empty" data-bs-toggle="modal"
             data-bs-target="#emptyCart">Empty Cart</button></td>
-        <td><button *ngIf="items.length!==0" class="btn btn-primary" id="checkout"
+        <td><button *ngIf="items.length!==0" class="btn btn text-white" style="background-color: #2d8bca;"id="checkout"
             routerLink="/order-form">Checkout</button></td>
       </tr>
     </tbody>
   </table>
+  </div>
 </div>

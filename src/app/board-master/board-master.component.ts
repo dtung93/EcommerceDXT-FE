@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { AbstractControl, EmailValidator, FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { UserService } from '../service/user.service';
 import { ToastrService } from 'ngx-toastr';
 import { User } from '../model/user.model';
@@ -15,6 +15,32 @@ import { Paging } from '../model/page.model';
   styleUrls: ['./board-master.component.scss']
 })
 export class BoardMasterComponent implements OnInit {
+  ngOnInit(): void {
+
+    this.userService.getMasterBoard().subscribe(res => {
+      this.content = res
+    }, error => { this.content = JSON.parse(error.message) })
+    this.getUsers()
+    if (this.token.getToken()) {
+      this.currentUserRole = this.token.getUser().roles
+      this.currentUsername = this.token.getUser().username
+      if (this.currentUserRole == roleName.ma)
+        this.isMaster = true
+    }
+
+  }
+  
+  constructor(private authService: AuthService, private fb: FormBuilder, private userService: UserService, private toastr: ToastrService, private token: TokenStorageService) {
+    this.userForm = this.fb.group({
+      username: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(20)]],
+      password: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(50)]],
+      role: ['user'],
+      confirmPassword: ['', [Validators.minLength(6), Validators.maxLength(50)]],
+      email: ['', [Validators.email, Validators.required, Validators.minLength(8)]]
+    }, {
+      validator: confirmField("password", "confirmPassword")
+    })
+  }
   @ViewChild('closeAddUser') closeAddUser?: ElementRef
   @ViewChild('closeDeleteModal') closeDeleteModal?: ElementRef
   @ViewChild('adduser') adduser?: ElementRef
@@ -24,6 +50,7 @@ export class BoardMasterComponent implements OnInit {
     name: 'ROLE_USER',
     tag: 'User'
   }
+  username=''
   isSubmitted = false;
   userForm!: FormGroup
   isAdmin = false
@@ -83,8 +110,6 @@ export class BoardMasterComponent implements OnInit {
         username: this.userForm.get('username')?.value,
         email: this.userForm.get('email')?.value,
         password: this.userForm.controls['password'].value,
-        address: this.userForm.controls['address'].value,
-        phone: this.userForm.controls['phone'].value,
         // roles:this.findByRoleId(this.userForm.controls['role'].value)
         role: [this.userForm.controls['role'].value]
       }
@@ -92,7 +117,9 @@ export class BoardMasterComponent implements OnInit {
       this.userService.addUser(data).subscribe((res) => {
         this.closeAddUser?.nativeElement.click()
         this.toastr.info("New account is successfully added")
-      }, error => { this.errorMessage = error.error.message })
+      }, error => { 
+        console.log(error.error.message)
+        this.errorMessage = error.error.message })
     }
   }
   findByRoleId(id: any) {
@@ -103,7 +130,7 @@ export class BoardMasterComponent implements OnInit {
   getValueSelected(event: any) {
     this.roleSelected = event
   }
-  logForm(){
+  logForm() {
     console.log(this.userForm)
   }
   getRequestParams(usernameoremail: string, page: number, pageSize: number) {
@@ -114,6 +141,20 @@ export class BoardMasterComponent implements OnInit {
     if (pageSize)
       params[`size`] = pageSize
     return params
+  }
+  getSearchParams(usernameoremail:string){
+    let params:any={}
+    if(usernameoremail)
+    params[`usernameoremail`]=usernameoremail
+    return params
+  }
+  searchUser(){
+    this.page=1
+    const data=this.getSearchParams(this.username)
+    return this.userService.getUsers(data).subscribe((res:any)=>{
+      this.users=res.users
+     console.log(this.users)
+    })
   }
   checkMasterRole(role: any) {
     let hasMasterRole = false;
@@ -140,9 +181,9 @@ export class BoardMasterComponent implements OnInit {
     })
     return hasModeratorRole
   }
-  getPage(){
-    const page=sessionStorage.getItem(Paging.PAGE_MASTER_HOME)
-    this.page=page?+page:1
+  getPage() {
+    const page = sessionStorage.getItem(Paging.PAGE_MASTER_HOME)
+    this.page = page ? +page : 1
     return this.page
   }
   getUsers() {
@@ -190,33 +231,7 @@ export class BoardMasterComponent implements OnInit {
     this.isOpened = !this.isOpened
   }
 
-  constructor(private authService: AuthService, private fb: FormBuilder, private userService: UserService, private toastr: ToastrService, private token: TokenStorageService) {
-    this.userForm = this.fb.group({
-      username: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(20)]],
-      password: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(50)]],
-      address: [],
-      role: ['user'],
-      confirmPassword: ['', [Validators.minLength(6), Validators.maxLength(50)]],
-      phone: ['', [Validators.required, Validators.maxLength(15)]],
-      email: ['', [Validators.email, Validators.required, Validators.minLength(8)]]
-    }, {
-      validator: confirmField("password", "confirmPassword")
-    })
-  }
-  ngOnInit(): void {
-    
-    this.userService.getMasterBoard().subscribe(res => {
-      this.content = res
-    }, error => { this.content = JSON.parse(error.message) })
-    this.getUsers()
-    if (this.token.getToken()) {
-      this.currentUserRole = this.token.getUser().roles
-      this.currentUsername = this.token.getUser().username
-      if (this.currentUserRole == roleName.ma)
-        this.isMaster = true
-    }
-  
-  }
+ 
   getUserDetail(id: number) {
     return this.userService.getUser(id).subscribe((res) => {
       this.selectedUser = res
@@ -241,15 +256,16 @@ export class BoardMasterComponent implements OnInit {
       enabled: this.selectedUser.enabled
     }
     console.log(data);
-    if (data.roles.length === 0 || data.roles.length == null) {
+    if (data.roles.length === 0 || data.roles.length == null
+      || data.email == '') {
       this.toastr.error("Role must not be empty")
     }
     else
       this.userService.updateUser(data).subscribe((res: any) => {
         console.log(res)
         this.display = 'none'
-        this.toastr.info("User #" + res.id + " is updated")
-      }, () => { this.updateError = "Mail or phone numbers may already be in use. Please check again" })
+        this.toastr.info("User #" + res.data.user.id + " is updated")
+      }, (error) => { this.updateError = error.error.errorMessage })
   }
   showToast(username: string) {
     this.toastr.error(username + ' has been deleted')
@@ -266,12 +282,12 @@ export class BoardMasterComponent implements OnInit {
     })
   }
   searchUsername() {
-    this.page = this.page
+    this.page = 1
     this.keyword = true
     this.getUsers()
   }
   handlePageChange(event: number): void {
-    sessionStorage.setItem(Paging.PAGE_MASTER_HOME,JSON.stringify(event))
+    sessionStorage.setItem(Paging.PAGE_MASTER_HOME, JSON.stringify(event))
     this.page = event
     this.getUsers()
   }

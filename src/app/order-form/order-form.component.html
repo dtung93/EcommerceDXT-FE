@@ -34,27 +34,36 @@
      <tr>
 
      </tr>
-     <tr><td><button id="checkout" class="btn btn-primary" type="submit">Pay Now</button></td></tr>
+     <tr><td><button id="checkout" class="btn btn text-white" style="background-color:#2d8bca" type="submit">Pay Now</button></td></tr>
       </table>
     </form>
 
   </div>
-  <table style="width:50%" class="bg-light pb-5">
-    <tr [ngClass]="{'out-of-stock':item.outOfStock}" *ngFor="let item of items">
+  <table style="width:60%;  border-collapse: separate;
+  border-spacing: 5px" class="bg-light pb-5">
+    <h4 style="color:gray">Order Review</h4>
+      <tr>
+        <th scope="col">Product name</th>
+        <th scope="col">Quantity</th>
+        <th scope="col">Price</th>
+        <th *ngIf="isClicked">Stock</th>
+      </tr>
+    <tbody> <tr [ngClass]="{'out-of-stock':item.outOfStock}" *ngFor="let item of items">
       <td>{{item.product.name}}</td>
-      <td *ngIf="item.outOfStock">In stock:{{item.product.qty}}</td>
-      <td>{{item.quantity}}</td>
+      <td >{{item.quantity}}</td>
       <td>{{item.total}}</td>
-
+      <td *ngIf="!item.outOfStock&&isClicked"><i class="fa fa-check text-success">In Stock</i></td>
+      <td *ngIf="item.outOfStock" class="text-danger">Stock: {{item.product.qty}} </td>
     </tr>
     <tr>
       <td></td>
-      <td>{{totalItems}}</td>
-      <td><strong>{{amount}}</strong></td>
+      <td>{{totalItems}} items</td>
+      <td><strong>Total: ${{amount}}</strong></td>
     </tr>
     <tr class="text-danger" *ngIf="outOfStock">
-      Some products in your cart is out of stock
+      Some products in your cart is out of stock. Please update your <a routerLink="/cart">cart</a>
 
-    </tr>
+    </tr></tbody>
+  
       </table>
 </div>

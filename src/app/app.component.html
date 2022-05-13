@@ -1,11 +1,14 @@
-<div id="app">
+<!-- <div id="app">
+
+
+  
   <nav class="navbar navbar-expand-lg">
     <div class="container-fluid">
       <a class="navbar-brand"> <button class="btn btn-default bg-white" (click)="openNavButton()"
          #openSideBar *ngIf="isLoggedIn&&(showAdminBoard||showModeratorBoard||showMasterBoard)" type="button" data-bs-toggle="offcanvas" 
           data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling"
           style="font-weight: bolder;font-size: 15px;"><i class="fa fa-gear"></i></button></a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo02"
+      <button class="navbar-toggler" style="background-color: #cfeafc" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo02"
         aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -25,6 +28,7 @@
           <a id="item"  href="/login" *ngIf="!isLoggedIn" class="nav-link" routerLinkActive="active" routerLink="login">Login</a>
           <a id="item" *ngIf="showCart"  class="nav-link" routerLinkActive="active" routerLink="/cart"><i class="fa fa-shopping-cart"><span id="cart-total" class="circle">{{totalItems}}</span></i></a>
           <a id="item" *ngIf="showCart" class="nav-link" routerLink="/my-orders" routerLinkActive="active" ><i class="fa fa-file"><span style="margin-left:5px">My Orders</span></i></a>
+          <a id="item" *ngIf="showMasterBoard||showAdminBoard" class="nav-link" routerLink="/my-orders" routerLinkActive="active" ><i class="fa fa-file"><span style="margin-left:5px">Manage Orders</span></i></a>
           <a id="item" href="/profile" *ngIf="isLoggedIn" class="nav-link" routerLinkActive="active" routerLink="profile">Hello,
             {{ username }} <img src='' style="width:20px;height:20px;border-radius: 50%;margin-bottom:5px" onerror="this.src='/assets/img/noimage.jpg'"></a>
           <a id="item"  *ngIf="isLoggedIn" href class="nav-link" (click)="logOut()">LogOut</a>
@@ -32,11 +36,14 @@
       </div>
     </div>
   </nav>
-
 </div>
 
 
 <router-outlet></router-outlet>
+
+
+
+
 <app-footer style="max-height:25%" class="fixed-bottom"></app-footer>
 
 
@@ -45,8 +52,68 @@
   <a style="font-size:20px" disabled>Control Panel<button style="margin-left:50px" type="button" (click)="openNavButton()" class="btn-close text-reset bg-white" ></button></a>
 </div>
            <a id="item" href="/profile" *ngIf="isLoggedIn" class="nav-link" routerLinkActive="active" routerLink="profile">Your Profile</a>
+           <a id="item" *ngIf="showMasterBoard||showAdminBoard" class="nav-link" routerLink="/my-orders" routerLinkActive="active" ><i class="fa fa-file"><span style="margin-left:5px">Order Panel</span></i></a>
  <a id="item" href="/home" class="nav-link" routerLinkActive="active" routerLink="home">Product Panel </a>
  <a id="item" href="/register" *ngIf="!isLoggedIn" class="nav-link" routerLinkActive="active" routerLink="register">Sign Up</a>
  <a id="item" href="/admin" *ngIf="showAdminBoard" class="nav-link" routerLinkActive="active" routerLink="admin">Admin Panel</a>
  <a  id="item" href="/master" *ngIf="showMasterBoard" class='nav-link'routerLinkActive="active" routerLink="master">Master Panel</a>
+</div> -->
+
+
+
+<div id="app">
+  <div class="row">
+<div class="container-fluid"> <nav class="navbar navbar-expand-lg">
+  <div class="container-fluid">
+    <button class="navbar-toggler" style="background-color: #cfeafc" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo02"
+      aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+      <ul  class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item" *ngIf="!isLoggedIn||(!showAdminBoard&&!showModeratorBoard&&!showMasterBoard)">
+          <a  id="item"  href="/home" class="nav-link" routerLinkActive="active" routerLink="home">Home </a>
+        </li>
+        <li class="nav-item" *ngIf="!isLoggedIn">
+          <a id="item"  href="/register" class="nav-link" routerLinkActive="active" routerLink="register">Sign Up</a>
+        </li>
+        <li class="nav-item">
+
+        </li>
+      </ul>
+      <form class="d-flex">
+        <a id="item"  href="/login" *ngIf="!isLoggedIn" class="nav-link" routerLinkActive="active" routerLink="login">Login</a>
+        <a id="item" *ngIf="showCart"  class="nav-link" routerLinkActive="active" routerLink="/cart"><i class="fa fa-shopping-cart"><span id="cart-total" class="circle">{{totalItems}}</span></i></a>
+        <a id="item" *ngIf="showCart" class="nav-link" routerLink="/my-orders" routerLinkActive="active" ><i class="fa fa-file"><span style="margin-left:5px">My Orders</span></i></a>
+        <a id="item" *ngIf="showMasterBoard||showAdminBoard" class="nav-link" routerLink="/my-orders" routerLinkActive="active" ><i class="fa fa-file"><span style="margin-left:5px">Manage Orders</span></i></a>
+        <a id="item" href="/profile" *ngIf="isLoggedIn" class="nav-link" routerLinkActive="active" routerLink="profile">Hello,
+          {{ username }} <img src='' style="width:20px;height:20px;border-radius: 50%;margin-bottom:5px" onerror="this.src='/assets/img/noimage.jpg'"></a>
+        <a id="item"  *ngIf="isLoggedIn" href class="nav-link" (click)="logOut()">LogOut</a>
+      </form>
+    </div>
+  </div>
+</nav></div>
+
+  </div>
+  <div class="row">
+    <div class="col-sm-2" *ngIf="isLoggedIn&&!showCart">
+      <div id="mySidenav"   [ngClass]="hasWidth?'hasWidth':''" class="sidenav sticky-top">
+        <div style="background-color:#3dacf6" class="row">
+         <a style="font-size:20px" disabled>Control Panel</a>
+       </div>
+                  <a id="item" href="/profile" *ngIf="isLoggedIn" class="nav-link" routerLinkActive="active" routerLink="profile"><i class="fa fa-user-circle-o" aria-hidden="true"></i>Your Profile</a>
+                  <a id="item" *ngIf="showMasterBoard||showAdminBoard" class="nav-link" routerLink="/my-orders" routerLinkActive="active" ><i class="fa fa-file"><span style="margin-left:5px">Order Panel</span></i></a>
+        <a id="item" href="/home" class="nav-link" routerLinkActive="active" routerLink="home"><i class="fa fa-book" aria-hidden="true"></i>Product Panel </a>
+        <a id="item" href="/register" *ngIf="!isLoggedIn" class="nav-link" routerLinkActive="active" routerLink="register">Sign Up</a>
+        <a id="item" href="/admin" *ngIf="showAdminBoard" class="nav-link" routerLinkActive="active" routerLink="admin"><i class="fa fa-list-alt" style="margin-right:5px"></i>Admin Panel</a>
+        <a  id="item" href="/master" *ngIf="showMasterBoard" class='nav-link'routerLinkActive="active" routerLink="master"><i class="fa fa-list-alt" style="margin-right:5px"></i>Master Panel</a>
+       </div>
+
+    </div>
+    <div class="col-sm-1" *ngIf="(isLoggedIn&&showCart)||!isLoggedIn"></div>
+    <div class="col-sm-1" *ngIf="(isLoggedIn&&showCart)||!isLoggedIn"></div>
+    <div class="col-sm-8" ><router-outlet></router-outlet>
+    </div>
+  </div>
+
 </div>
