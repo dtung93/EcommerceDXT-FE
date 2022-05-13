@@ -32,6 +32,7 @@ export class BoardAdminComponent implements OnInit {
         this.isAdmin = true
     }
   }
+  username=''
   updateError=''
   isSubmitted=false
   userForm!: FormGroup 
@@ -116,6 +117,18 @@ export class BoardAdminComponent implements OnInit {
    const page= sessionStorage.getItem(Paging.PAGE_ADMIN_HOME)
    this.page=page?+page:1
    return this.page
+  }
+  getSearchParams(username:string){
+    let params:any={}
+    params[`usernameoremail`]=username
+    return params
+  }
+  searchUser(){
+    const data=this.getSearchParams(this.username)
+    this.userService.getUsers(data).subscribe((res:any)=>{
+      console.log(res)
+      this.users=res.users
+    })
   }
   getUsers() {
     const params = this.getRequestParams(this.usernameoremail,this.getPage(), this.pageSize)
