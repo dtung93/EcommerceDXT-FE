@@ -1,6 +1,6 @@
-<div class="container">
+<div class="container" style="padding-bottom:200px" >
     <h3 style="background-color:#f5f8f9">Order Details</h3>
-   <table style="width:60%">
+   <table class="table table-striped"style="width:40%">
     <tr>
         <td id="header">Order Id</td>
         <td>{{order.id}}</td>
@@ -22,32 +22,32 @@
         <td><span>{{order.phone}}</span></td>
     </tr>
     <tr>
-        <td id="header">Name</td>
-        <td><span>{{order.name}}</span></td>
-    </tr>
-    <tr>
         <td id="header">Status</td>
-        <td>PAID</td>
+        <td><span style="font-weight:bold">PAID</span></td>
     </tr>
-    <br>
-    <table style="width:100%">
-     <tr>
-       <h3>Order summary</h3>
-     </tr>
-    <tr *ngFor="let item of items">
-        <td style="width:30%">product Id:{{item.product.id}}</td>
-        <td style="width:10%"><img src={{item.product.img}} style="width:50px;height:40px"></td>
-        <td style="width:40%">{{item.product.name}}</td>
-         <td>{{item.quantity}}</td>
-         <td>{{item.total}}</td>
+   </table>
+   <table style="width:70%;margin-top:50px">
+    <tr>
+      <h3>Order summary</h3>
     </tr>
     <tr>
-        <td></td>
-        <td></td>
-        <td><strong>{{order.cart.totalItems}}</strong> items</td>
-        <td><strong>${{order.cart.grandTotal}}</strong></td>
+        <td>id</td>
+        <td>image</td>
+        <td>product name</td>
+        <td>quantity</td>
+        <td>total</td>
     </tr>
-    </table>
+   <tr *ngFor="let item of items">
+       <td style="width:30%">product Id:{{item.product.id}}</td>
+       <td style="width:10%"><img src={{item.product.img}} style="width:50px;height:40px"></td>
+       <td style="width:40%">{{item.product.name}}</td>
+        <td style="width:15%">{{item.quantity}}</td>
+        <td>{{item.total}}</td>
+   </tr>
+   <tr>
+       <td colspan="3"></td>
+       <td><strong>{{order.cart.totalItems}}</strong> items</td>
+       <td><strong>${{order.cart.grandTotal}}</strong></td>
+   </tr>
    </table>
-
 </div>

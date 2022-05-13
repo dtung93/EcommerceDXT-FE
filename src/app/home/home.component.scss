@@ -55,7 +55,6 @@ span.plus{
     text-align: center;
     color:grey
   }
-.row{margin:10px;background-color:#f9fbfd}
 .product-item:hover .product-image a {
     background: rgba(63, 105, 170, .5);
 }
@@ -164,4 +163,8 @@ button#delete,button#view{margin:5px;width:5rem}
 button#add-product{
     background-color: #026eb6;padding:5px;font-size:15px;width:14rem;height:45px
   }
+  table#product-list-admin-mod tr:nth-child(even) {
+    background-color:#f1fcf8;
+  }
+ 
 

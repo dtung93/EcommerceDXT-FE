@@ -178,7 +178,7 @@ export class BoardAdminComponent implements OnInit {
     this.openModal()
   }
 
-  updateUser(): void {
+  updateUser(){
     const data = {
       id: this.selectedUser.id,
       email: this.selectedUser.email,
@@ -189,13 +189,14 @@ export class BoardAdminComponent implements OnInit {
       roles: [this.roleSelected],
       enabled:this.selectedUser.enabled
     }
-    if(data.roles.length<1||data.roles==null){
-      this.toastr.error('Error!','Roles must not be empty. Please select a role')     
+    if(data.roles.length<1||data.roles==null||data.email==''){
+      this.toastr.error('Error!',"Email must be set")     
     }
     else{
-      this.userService.updateUser(data).subscribe((res) => {
+      this.userService.updateUser(data).subscribe((res:any) => {
+        console.log(res)
         this.display = 'none'
-        this.toastr.info("User #" + res.id + " is updated")
+        this.toastr.info("User #" + res.data.user.id+" is updated")
       },error=>{
           this.updateError="Email or phone numbers may already be in use"
           this.selectedUser==null

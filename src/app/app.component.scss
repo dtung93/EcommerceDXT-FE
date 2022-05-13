@@ -35,28 +35,23 @@ span.circle{
 
 
   .sidenav {
-    height: 100%;
-    width: 0;
-    position:fixed;
-    z-index: 1;
+    height:100vh;
+    width: 100%;
     top: 0;
     left: 0;
-    background-color:#1782ca;
+    background-color:#5bbaf9;
     overflow-x: hidden;
-    transition: 0.1s;
-    margin-top:0.35rem;
-   
   }
   
   .sidenav a {
     padding: 8px 8px 8px 32px;
     text-decoration: none;
-    font-size: 18px;
+    font-size: 22px;
     color:snow;
     display: block;
     transition: 0.3s;
   }
-  .hasWidth{width:14rem}
+  .hasWidth{width:100%}
   .sidenav a:hover {
     color: #f1f1f1;
   }

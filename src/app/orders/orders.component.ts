@@ -10,6 +10,7 @@ import { TokenStorageService } from '../service/token-storage.service';
 })
 export class OrdersComponent implements OnInit {
   roles:any[]=[]
+  isAdmin=false
   constructor(private token:TokenStorageService,private orderService:OrderService) { }
   orders:any[]=[]
   ngOnInit(): void {
@@ -21,6 +22,7 @@ export class OrdersComponent implements OnInit {
       console.log(this.orders)
     })}
     else{
+      this.isAdmin=true
       this.orderService.getAllOrders().subscribe((res)=>{
         this.orders=res
       })

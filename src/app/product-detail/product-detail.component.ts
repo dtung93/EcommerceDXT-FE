@@ -29,6 +29,7 @@ product=new Product()
   quantityError=false
   priceError=false
   showCart=false
+  smallStock=false
   roles:string[]=[]
   ngOnInit(): void {
     this.getProduct(this.route.snapshot.params['id'])
@@ -50,6 +51,9 @@ product=new Product()
 getProduct(id:number){
   return this.api.getProductDetail(id).subscribe((s)=>{
     this.product=s
+    if(this.product.qty<=5){
+      this.smallStock=true
+    }
     console.log(s)
   })
 }

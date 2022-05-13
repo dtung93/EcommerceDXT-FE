@@ -49,15 +49,16 @@ export class LoginComponent implements OnInit {
   onSubmit(): void {
     const { username, password } = this.form;
     this.authService.login(username, password).subscribe(
-      data => {       
-        this.tokenStorage.saveToken(data.accessToken);//save user access token to storage
+      data => {    
+        console.log(data)   
+        this.tokenStorage.saveToken(data.token);//save user access token to storage
         this.tokenStorage.saveRefreshToken(data.refreshToken)//save refresh token to storage
         this.tokenStorage.saveUser(data);//save user information to storage including tokens
         this.isLoginFailed = false;
         this.isLoggedIn = true;
         this.roles = this.tokenStorage.getUser().roles;//get user roles  
         this.spinner.show()
-        setInterval(()=>window.location.href='/home',1000)   
+        setInterval(()=>location.href='/home',1000)   
       },
       //Error message if cannot or fail to communicate with API
       err => {
