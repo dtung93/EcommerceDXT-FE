@@ -7,6 +7,9 @@ import { ToastrService } from 'ngx-toastr';
   styleUrls: ['./register.component.scss']
 })
 export class RegisterComponent implements OnInit {
+  constructor(private toastr:ToastrService,private authService:AuthService) { }
+  ngOnInit(): void {
+  }
 form:any={
   username:null,
   email:null,
@@ -18,7 +21,7 @@ form:any={
 isSuccessful=false
 isSignedUpFailed=false
 errorMessage=''
-  constructor(private toastr:ToastrService,private authService:AuthService) { }
+
 
 currentFile: any
 onFileSelected(event:any){
@@ -32,8 +35,7 @@ signUpSuccessful(){
   this.toastr.info('Your account has been successfully registered!')
   setInterval(()=>window.location.href='/login',3000) 
 }
-  ngOnInit(): void {
-  }
+
   onSubmit():void{
     const{username,email,password,avatar,phone,address}=this.form
     this.authService.register(username,password,address,email,phone,avatar).subscribe(res=>{

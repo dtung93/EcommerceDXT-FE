@@ -9,7 +9,8 @@ import { ProfileComponent } from './profile/profile.component';
 import { HomeComponent } from './home/home.component';
 import { BoardAdminComponent } from './board-admin/board-admin.component';
 import { BoardModeratorComponent } from './board-moderator/board-moderator.component';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { NgHttpLoaderModule } from 'ng-http-loader';
 import { authInterceptorProviders } from './service/auth.interceptor';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrModule } from 'ngx-toastr';
@@ -28,6 +29,10 @@ import { OrderDetailsComponent } from './order-details/order-details.component';
 import { OrdersComponent } from './orders/orders.component';
 import { AuthGuardService } from './service/auth-guard.service';
 import { OrderFormComponent } from './order-form/order-form.component';
+import { HeaderComponent } from './header/header.component';
+import { LoaderComponent } from './loader/loader.component';
+import { SpinnerService } from './service/spinner.service';
+import { LoaderInterceptorService } from './service/interceptors/loader-interceptor.service';
 @NgModule({
   declarations: [
     AppComponent,
@@ -48,6 +53,8 @@ import { OrderFormComponent } from './order-form/order-form.component';
     OrderDetailsComponent,
     OrdersComponent,
     OrderFormComponent,
+    HeaderComponent,
+    LoaderComponent,
   ],
   imports: [
     BrowserModule,
@@ -59,13 +66,14 @@ import { OrderFormComponent } from './order-form/order-form.component';
     NgxSpinnerModule,
     BrowserAnimationsModule,
     NgxPaginationModule,
+    NgHttpLoaderModule.forRoot(),
     ToastrModule.forRoot({
       timeOut:3000,preventDuplicates:true,
       positionClass: 'toast-bottom-right'
    })
   ],
   schemas:[CUSTOM_ELEMENTS_SCHEMA],
-  providers: [authInterceptorProviders,AuthGuardService],
+  providers: [authInterceptorProviders,AuthGuardService,SpinnerService,{ provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptorService, multi: true }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

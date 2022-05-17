@@ -9,19 +9,20 @@ import { UserService } from '../service/user.service';
   styleUrls: ['./forgotpassword.component.scss']
 })
 export class ForgotpasswordComponent implements OnInit {
-  showButton = false
-  resetPasswordToken = ''
-  isSubmitted = false
-  emailForm: FormGroup
-  emailError: boolean = false
   constructor(private userService: UserService, private formBuilder: FormBuilder, private toastr: ToastrService) {
     this.emailForm = formBuilder.group({
       email: ['', [Validators.required, Validators.email]]
     })
   }
-
   ngOnInit(): void {
   }
+  showButton = false
+  resetPasswordToken = ''
+  isSubmitted = false
+  emailForm: FormGroup
+  emailError: boolean = false
+ 
+
   sendEmailReset() {
     this.isSubmitted = true
     let email = this.emailForm.controls['email'].value
@@ -37,7 +38,8 @@ export class ForgotpasswordComponent implements OnInit {
         }
       }
         , err => {
-          this.toastr.error('An error has occured while performing the operations')
+          this.emailError=true
+          this.toastr.error('An error has occured '+err.error.message)
         })
     }
     else { }

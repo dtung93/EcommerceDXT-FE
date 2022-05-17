@@ -11,13 +11,14 @@ import { roleName } from '../model/role.model';
 import { Paging } from '../model/page.model';
 import { ConsoleLogger } from '@angular/compiler-cli';
 import { parseMappings } from '@angular/compiler-cli/src/ngtsc/sourcemaps/src/source_file';
+import { NgxSpinnerService } from 'ngx-spinner';
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
-  constructor(private cartService: CartService, private fb: FormBuilder, private userService: UserService, private token: TokenStorageService, private toastr: ToastrService, private productService: ProductService) {
+  constructor(private spinner:NgxSpinnerService,private cartService: CartService, private fb: FormBuilder, private userService: UserService, private token: TokenStorageService, private toastr: ToastrService, private productService: ProductService) {
     this.productForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(25)]],
       img: [''],
@@ -29,6 +30,7 @@ export class HomeComponent implements OnInit {
   }
   ngOnInit(): void {
     //API call to get array of products
+ 
     if (this.token.getToken()) {
       this.roles = this.token.getUser().roles;
       if (this.roles?.includes(roleName.a) || this.roles?.includes(roleName.mo) || this.roles?.includes(roleName.ma)) {
@@ -65,6 +67,7 @@ export class HomeComponent implements OnInit {
   category = ''
   keyword: boolean = false
   roles?: any[] = []
+  outOfStock=false
 
   sortOptions = [
     { id: 1, name: 'Sort by ascending price', value: 'ascending' },
@@ -150,13 +153,15 @@ export class HomeComponent implements OnInit {
   }
   //http service to get and display the array of products, paging information from API with parameters category and name, page and page sizee
   getProducts(): void {
+
     const params = this.getRequestParams(this.category, this.name, this.getPage(), this.pageSize)
     this.productService.getProducts(params).subscribe(response => {
+      this.spinner.hide()
       const { products, totalItems } = response
       this.products = products
       this.count = totalItems
       this.HasProducts = true
-      console.log(response)
+      console.log(response.products)
     }, error => { this.toastr.error('No products could be found') })
   }
   searchProducts(){

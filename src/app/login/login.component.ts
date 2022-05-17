@@ -11,6 +11,16 @@ import { ToastrService } from 'ngx-toastr';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
+  constructor(private spinner:NgxSpinnerService,private authService:AuthService,private tokenStorage:TokenStorageService,private toastr:ToastrService) { }
+  ngOnInit(): void {
+    //display modal form when component is initiated
+    this.openModal()
+    if (this.tokenStorage.getToken()) {
+      this.display='none'
+      this.isLoggedIn = true;
+      this.roles = this.tokenStorage.getUser().roles;
+    }
+  }
   updateRoles=[]
   internetError=false
   loginError=false
@@ -30,17 +40,9 @@ export class LoginComponent implements OnInit {
   onCloseHandled(){
     this.display='none'
   }
-  constructor(private spinner:NgxSpinnerService,private authService:AuthService,private tokenStorage:TokenStorageService,private toastr:ToastrService) { }
 
-  ngOnInit(): void {
-    //display modal form when component is initiated
-    this.openModal()
-    if (this.tokenStorage.getToken()) {
-      this.display='none'
-      this.isLoggedIn = true;
-      this.roles = this.tokenStorage.getUser().roles;
-    }
-  }
+
+
   //welcome message
   signInSuccess(username:string){
     this.toastr.success("Hello "+ username+"!")

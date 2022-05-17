@@ -19,16 +19,32 @@ export class CartComponent implements OnInit {
   constructor(private productService: ProductService, private toastr: ToastrService, private cartService: CartService, private userService: UserService, private token: TokenStorageService) { }
 
   ngOnInit(): void {
-
-    this.cartService.getCart().subscribe((res) => {
-      console.log(res)
-      this.cartService.updateCartTotal(res.totalItems)
-      this.items = res.items.sort(function (a: any, b: any) {
-        return parseFloat(a.product.id) - parseFloat(b.product.id)
+  if (this.token.getToken()){
+    if (this.token.getUser().enabled==true){
+      this.cartService.getCart().subscribe((res) => {
+        console.log(res)
+        this.cartService.updateCartTotal(res.totalItems)
+        this.items = res.items.sort(function (a: any, b: any) {
+          return parseFloat(a.product.id) - parseFloat(b.product.id)
+        })
+        this.totalItems = res.totalItems
+        this.grandTotal = this.roundUpNumber(res.grandTotal)
       })
-      this.totalItems = res.totalItems
-      this.grandTotal = this.roundUpNumber(res.grandTotal)
+    }
+    else{
+      this.accountNotActivated=true
+      Swal.fire({title: 'Account activation required',
+      text: 'Your account is not activated. Please check your email and try again',
+      icon:'error',
+      color:'red',
+      background:'#FDFEFE',
+      showConfirmButton:true,
+      confirmButtonColor:'#186192',
+      width:'26rem'
     })
+    }
+  }
+  
   }
   @ViewChild('closeRemoveModal') closeRemoveModal?: ElementRef
   @ViewChild('closeEmptyCart') closeEmptyCart?: ElementRef
@@ -39,7 +55,7 @@ export class CartComponent implements OnInit {
   grandTotal!: number
   currentUser: User = new User()
   maxQuantity=false
- 
+  accountNotActivated=false
   sortItems(max: any, min: any) {
     return max.id - min.id
   }

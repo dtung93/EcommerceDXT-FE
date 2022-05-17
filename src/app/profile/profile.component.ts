@@ -13,6 +13,38 @@ import { confirmField } from '../service/validator';
   styleUrls: ['./profile.component.scss']
 })
 export class ProfileComponent implements OnInit {
+  constructor(private fb:FormBuilder,private token: TokenStorageService, private userService: UserService, private toastr: ToastrService) {
+    this.changePasswordForm=this.fb.group({
+    oldPassword:['',[Validators.required]],
+    newPassword:['',[Validators.required,Validators.minLength(6),Validators.maxLength(50)]],
+    confirmNewPassword:['',[Validators.required,Validators.minLength(6),Validators.maxLength(50)]]
+    },{ validator:confirmField('newPassword','confirmNewPassword')})
+    
+       }
+       ngOnInit():void {
+        if (this.token.getToken()) {
+          this.selectedUser = this.token.getUser()
+          if(this.selectedUser.enabled==true){
+        if(this.selectedUser.roles.find((element)=>element=='ROLE_MASTER'))
+          this.isMaster=true
+        if(this.selectedUser.roles.find(element=>element=='ROLE_ADMIN'))
+          this.isAdmin=true
+        if(this.selectedUser.roles.find(element=>element=='ROLE_MODERATOR'))
+          this.isModerator=true
+        }
+        else {
+          this.isDisabled=true
+          console.log(this.isDisabled)
+         Swal.fire({
+           icon:'info',
+           showConfirmButton:true,
+           background:'snow',
+          confirmButtonColor:"#2d8bca",
+          text:'Account is not activated yet!'    
+         })
+        }
+      }
+      }
   pushBottom=false
   username:string=''
   isSubmitted=false
@@ -32,39 +64,9 @@ export class ProfileComponent implements OnInit {
     { id: 1, name: 'ROLE_USER', tag: 'User' },
     { id: 2, name: 'ROLE_MODERATOR', tag: 'Moderator' }, { id: 3, name: "ROLE_ADMIN", tag: 'Admin' }
   ]
-  constructor(private fb:FormBuilder,private token: TokenStorageService, private userService: UserService, private toastr: ToastrService) {
-this.changePasswordForm=this.fb.group({
-oldPassword:['',[Validators.required]],
-newPassword:['',[Validators.required,Validators.minLength(6),Validators.maxLength(50)]],
-confirmNewPassword:['',[Validators.required,Validators.minLength(6),Validators.maxLength(50)]]
-},{ validator:confirmField('newPassword','confirmNewPassword')})
 
-   }
   @ViewChild('closeUpdateModal') closeUpdateModal?: ElementRef 
-  ngOnInit():void {
-    if (this.token.getToken()) {
-      this.selectedUser = this.token.getUser()
-      if(this.selectedUser.enabled==true){
-    if(this.selectedUser.roles.find((element)=>element=='ROLE_MASTER'))
-      this.isMaster=true
-    if(this.selectedUser.roles.find(element=>element=='ROLE_ADMIN'))
-      this.isAdmin=true
-    if(this.selectedUser.roles.find(element=>element=='ROLE_MODERATOR'))
-      this.isModerator=true
-    }
-    else {
-      this.isDisabled=true
-      console.log(this.isDisabled)
-     Swal.fire({
-       icon:'info',
-       showConfirmButton:true,
-       background:'snow',
-      confirmButtonColor:"#2d8bca",
-      text:'Account is not activated yet!'    
-     })
-    }
-  }
-  }
+ 
   getUserDetail(id: number) {
     this.userService.getUser(id).subscribe((res) => {
       this.selectedUser = res
@@ -171,5 +173,9 @@ setInterval(
       )
     },error=>{ this.passwordError="You have entered a wrong password"})
     }
+  }
+  resetForm(){
+    this.pushBottom=false
+    this.isSubmitted=false
   }
 }

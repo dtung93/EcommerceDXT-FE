@@ -15,8 +15,18 @@ import { Paging } from '../model/page.model';
   styleUrls: ['./board-master.component.scss']
 })
 export class BoardMasterComponent implements OnInit {
+  constructor(private authService: AuthService, private fb: FormBuilder, private userService: UserService, private toastr: ToastrService, private token: TokenStorageService) {
+    this.userForm = this.fb.group({
+      username: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(20)]],
+      password: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(50)]],
+      role: ['user'],
+      confirmPassword: ['', [Validators.minLength(6), Validators.maxLength(50)]],
+      email: ['', [Validators.email, Validators.required, Validators.minLength(8)]]
+    }, {
+      validator: confirmField("password", "confirmPassword")
+    })
+  }
   ngOnInit(): void {
-
     this.userService.getMasterBoard().subscribe(res => {
       this.content = res
     }, error => { this.content = JSON.parse(error.message) })
@@ -30,17 +40,7 @@ export class BoardMasterComponent implements OnInit {
 
   }
   
-  constructor(private authService: AuthService, private fb: FormBuilder, private userService: UserService, private toastr: ToastrService, private token: TokenStorageService) {
-    this.userForm = this.fb.group({
-      username: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(20)]],
-      password: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(50)]],
-      role: ['user'],
-      confirmPassword: ['', [Validators.minLength(6), Validators.maxLength(50)]],
-      email: ['', [Validators.email, Validators.required, Validators.minLength(8)]]
-    }, {
-      validator: confirmField("password", "confirmPassword")
-    })
-  }
+  
   @ViewChild('closeAddUser') closeAddUser?: ElementRef
   @ViewChild('closeDeleteModal') closeDeleteModal?: ElementRef
   @ViewChild('adduser') adduser?: ElementRef
@@ -95,7 +95,7 @@ export class BoardMasterComponent implements OnInit {
   showUserPanel = false
   updateError = ''
   display = 'none'
-
+  addUserFailed=false
   addUserPanel() {
     this.showUserPanel = !this.showUserPanel
     console.log(this.showUserPanel)
@@ -118,6 +118,7 @@ export class BoardMasterComponent implements OnInit {
         this.closeAddUser?.nativeElement.click()
         this.toastr.info("New account is successfully added")
       }, error => { 
+        this.addUserFailed=true
         console.log(error.error.message)
         this.errorMessage = error.error.message })
     }
@@ -152,7 +153,9 @@ export class BoardMasterComponent implements OnInit {
     this.page=1
     const data=this.getSearchParams(this.username)
     return this.userService.getUsers(data).subscribe((res:any)=>{
-      this.users=res.users
+      this.users = res.users?.map((user: any) => {
+        return { ...user, editable: this.checkRoleCondition(user) }
+      })
      console.log(this.users)
     })
   }
@@ -264,8 +267,9 @@ export class BoardMasterComponent implements OnInit {
       this.userService.updateUser(data).subscribe((res: any) => {
         console.log(res)
         this.display = 'none'
-        this.toastr.info("User #" + res.data.user.id + " is updated")
-      }, (error) => { this.updateError = error.error.errorMessage })
+        this.toastr.info("User " + res.data.user.username + " is updated")
+      }, (error) => { this.updateError = "Username or phone number already in use"
+       })
   }
   showToast(username: string) {
     this.toastr.error(username + ' has been deleted')

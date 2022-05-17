@@ -61,6 +61,8 @@
         <button *ngIf="isAdmin" class="btn text-white profile" (click)="userModal()">Edit
           Role</button>
         &nbsp;
+
+
         <button type="button" (click)="getUserDetail(selectedUser.id)" class="btn btn text-white profile"
           data-bs-toggle="modal" data-bs-target="#exampleModal">
           Edit Profile
@@ -86,23 +88,23 @@
                 <tr>
                   <td [ngClass]="pushBottom?'push-bottom':' '">Current password</td>
                   <td>
-                    <input type='password'placeholder='Your current password'formControlName="oldPassword">
+                    <input  style="width:15rem" type='password'placeholder='Your current password'formControlName="oldPassword">
                     <div class="text-danger" *ngIf="isSubmitted&&this.changePasswordForm.controls['oldPassword'].invalid">Please enter your current password</div>
                   </td>               
                 </tr>
                 <br>
                 <tr>
-                  <td [ngClass]="pushBottom?'push-bottom':' '">New password:</td>
-                  <td> <input type='password' placeholder="Your new password" formControlName="newPassword">
+                  <td [ngClass]="pushBottom?'push-bottom':' '">New password</td>
+                  <td> <input style="width:15rem" type='password' placeholder="Your new password" formControlName="newPassword">
                     <div class="text-danger" *ngIf="isSubmitted&&this.changePasswordForm.controls['newPassword'].invalid">Please enter new password, minimum 6 characters</div></td>
                 </tr>
                 <br>
                 <tr>
                   <td [ngClass]="pushBottom?'push-bottom2':' '">
-                    Confirm new password:
+                    Confirm new password
                   </td>
                   <td>
-                    <input type="password" placeholder="Confirm new password"formControlName="confirmNewPassword">
+                    <input style="width:15rem" type="password" placeholder="Confirm new password"formControlName="confirmNewPassword">
                     <div class="text-danger" *ngIf="isSubmitted&&this.changePasswordForm.controls['confirmNewPassword'].invalid">Password does not match</div>
                   </td>
                 </tr>
@@ -112,7 +114,7 @@
                 <tr><button type="submit" #control class='btn btn text-white control' style="background-color: #2d8bca;"
                     >Update Password</button></tr>
                 <button type="button" class="btn btn-outline-secondary control" data-bs-dismiss="modal"
-                  arial-label="close">Close</button>
+                (click)="resetForm()"  arial-label="close">Close</button>
               </div>
               </form>
             </div>
@@ -132,10 +134,11 @@
               <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
+              <form name="profile">
               <table [style]="width">
                 <td><input type='hidden' [ngModel]="selectedUser.id" value={{selectedUser.id}}></td>
                 <tr>
-                  <td>Username:</td>
+                  <td>Username</td>
 
                   <div style="font-weight: bold;font-size: 20px;">{{selectedUser.username}}</div>
                 </tr>
@@ -151,17 +154,18 @@
             </tr> -->
                 <tr>
                   <td>Email</td>
-                  <input type='text' [style]="width" [(ngModel)]="selectedUser.email" value={{selectedUser.email}}>
+                  <input name="email" type='text' [style]="width" [(ngModel)]="selectedUser.email" value={{selectedUser.email}}>
                 </tr>
                 <tr>
                   <td>Phone Numbers</td>
-                  <input type='text' [style]="width" [(ngModel)]="selectedUser.phone" value={{selectedUser.phone}}>
+                  <input  type='text' [style]="width" [(ngModel)]="selectedUser.phone" value={{selectedUser.phone}}>
                 </tr>
                 <tr>
                   <td>Address</td>
                   <input type='text' [style]="width" [(ngModel)]="selectedUser.address" value={{selectedUser.address}}>
                 </tr>
               </table>
+              </form>
             </div>
             <div class="modal-footer">
               <button (click)="updateUser()" type="button" class="btn btn-primary control"
@@ -186,7 +190,7 @@
             <div class="modal-body bg-light">
               <table [style]="width">
                 <tr *ngIf="isAdmin">
-                  <td>Role:</td>
+                  <td>Role</td>
                   <td style="padding-top: 22px;">
                     <select (change)="onChangeRole($event)">
                       <option [id]="role.id" *ngFor="let role of selectedRoles"

@@ -8,12 +8,13 @@
             <h4 [style]="title" class="title">{{product.name}}</h4>
             <h5 [style]="description">{{product.description}}</h5>
             <h5 [style]="price">Price: {{product.price}}</h5>
-            <h5 *ngIf="smallStock||showButton" class="text-danger">Stock: {{product.qty}}</h5>
+            <h5 *ngIf="(smallStock||showButton)&&!outOfStock" class="text-danger">Stock: {{product.qty}}</h5>
             <i id="editbutton" class="btn fa fa-pencil" (click)="openModal()" *ngIf="showButton" [style]="edit"><span
                     style="margin-left:12px">Edit</span></i>
                 <br><br>
                 <div>
-            <i (click)="addProductToCart()" *ngIf="showCart" [style]="addtocart" class="btn text-white fa fa-shopping-cart"><span style="margin-left:10px">Add To Cart</span></i>
+                    <h5 class="text-danger" *ngIf="product.qty==0"style="text-align: center">Out of Stock</h5>
+            <i (click)="addProductToCart()" *ngIf="showCart&&!outOfStock" [style]="addtocart" class="btn text-white fa fa-shopping-cart"><span style="margin-left:10px">Add To Cart</span></i>
             </div>
         </div>
     </div>

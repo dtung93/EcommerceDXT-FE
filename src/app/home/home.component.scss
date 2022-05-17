@@ -149,6 +149,15 @@ span.plus{
     font-weight: 700;
     color: #666666;
 }
+.out-of-stock{
+    border:3px solid red;
+}
+.out-of-stock-normal{
+    opacity:0.5
+}
+.low-stock{
+    background-color:rgb(249, 232, 232)
+}
 button#search{
     background-color: #2d80b8;;
     color: whitesmoke;
@@ -163,8 +172,8 @@ button#delete,button#view{margin:5px;width:5rem}
 button#add-product{
     background-color: #026eb6;padding:5px;font-size:15px;width:14rem;height:45px
   }
-  table#product-list-admin-mod tr:nth-child(even) {
-    background-color:#f1fcf8;
+  .hide-add-to-cart{
+      display:none;
   }
  
 

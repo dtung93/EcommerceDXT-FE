@@ -61,7 +61,7 @@ export class BoardAdminComponent implements OnInit {
   ]
   selectedRoles: any = [
     { id: 1, name: 'ROLE_USER', tag: 'User' },
-    { id: 2, name: 'ROLE_MODERATOR', tag: 'Moderator' }, { id: 3, name: "ROLE_ADMIN", tag: 'Admin' }
+    { id: 2, name: 'ROLE_MODERATOR', tag: 'Moderator' }
   ]
   page = 1
   count = 0
@@ -127,7 +127,9 @@ export class BoardAdminComponent implements OnInit {
     const data=this.getSearchParams(this.username)
     this.userService.getUsers(data).subscribe((res:any)=>{
       console.log(res)
-      this.users=res.users
+      this.users = res.users?.map((user: any) => {
+        return { ...user, editable: this.checkRoleCondition(user) }
+      })
     })
   }
   getUsers() {

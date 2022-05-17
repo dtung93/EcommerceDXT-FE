@@ -13,24 +13,6 @@ import { CartService } from '../service/cart.service';
 export class ProductDetailComponent implements OnInit {
 product=new Product()
   constructor(private cartService:CartService,private toastr:ToastrService, private api:ProductService,private route:ActivatedRoute,private token:TokenStorageService) { }
-  font='font-family:optima'
-  padding='padding:5'
-  info='background-color:#2d8bca ;margin:10px 15px 10px 5px;text-align:center;color:snow;font-size:25px'
-  title='color:#638BA6;font-size:3rem;font-weight:bold'
-  category='color:#A95C68;font-size:1rem'
-  description='color:grey;font-weight:bold;font-size:15px;text-align:left'
-  price='color:smoke;font-weight:bolder;font-size:2rem'
-  edit='color:white;font-size:20px;width:100%;background-color:#318dca'
-  addtocart='color:white;font-size:20px;width:100%;background-color:#239beb;'
-  width='width:100%'
-  isLoggedIn=false
-  showButton=false
-  nameError=false
-  quantityError=false
-  priceError=false
-  showCart=false
-  smallStock=false
-  roles:string[]=[]
   ngOnInit(): void {
     this.getProduct(this.route.snapshot.params['id'])
     if(this.token.getToken()){
@@ -48,11 +30,34 @@ product=new Product()
     this.toastr.info('Product'+' '+'#'+id+' is updated')
   }
 
+  font='font-family:optima'
+  padding='padding:5'
+  info='background-color:#2d8bca ;margin:10px 15px 10px 5px;text-align:center;color:snow;font-size:25px'
+  title='color:#638BA6;font-size:3rem;font-weight:bold'
+  category='color:#A95C68;font-size:1rem'
+  description='color:grey;font-weight:bold;font-size:15px;text-align:left'
+  price='color:smoke;font-weight:bolder;font-size:2rem'
+  edit='color:white;font-size:20px;width:100%;background-color:#318dca'
+  addtocart='color:white;font-size:20px;width:100%;background-color:#239beb;'
+  width='width:100%'
+  isLoggedIn=false
+  showButton=false
+  nameError=false
+  quantityError=false
+  priceError=false
+  showCart=false
+  smallStock=false
+  outOfStock=false
+  roles:string[]=[]
+ 
 getProduct(id:number){
   return this.api.getProductDetail(id).subscribe((s)=>{
     this.product=s
     if(this.product.qty<=5){
       this.smallStock=true
+    }
+    if(this.product.qty==0){
+      this.outOfStock=true
     }
     console.log(s)
   })
