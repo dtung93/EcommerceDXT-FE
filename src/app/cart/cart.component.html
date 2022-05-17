@@ -1,12 +1,16 @@
-<div class="container" *ngIf="items.length==0">
 
+<div class="container text-white" style="background-color: #2d8bca;">
+  <h3 id="header" style="text-align: center">Your Cart</h3>
+</div>
+<div class="container"><div class="text-danger" *ngIf="accountNotActivated">You need to enable your account to access your cart.</div></div>
+
+
+
+<div class="container" *ngIf="items.length==0&&accountNotActivated==false">
  <div><h5>Your cart is empty. Start <a class="text-primary" routerLink="/home">shopping</a> now</h5></div>
 </div>
 
-<div class="container bg-light" *ngIf="items.length!=0">
-  <div class="container text-white" style="background-color: #2d8bca;">
-    <h3 id="header" style="text-align: center">Your Cart</h3>
-  </div>
+<div class="container bg-light" *ngIf="items.length!=0&&accountNotActivated==false">
  <a routerLink="/home"><button  class="btn btn text-white" style="background-color: #026eb6;"><i class="fa fa-arrow-left" style="margin-right:5px"></i><span>Back to Products</span></button></a>
   <div class="table-responsive">
  <table style="width:100%;" class="table mt-1">

@@ -1,3 +1,5 @@
+
+
 <div class="container">
   <header class="jumbotron" *ngIf="notUser">
     <h3 id="header">MANAGE PRODUCTS</h3>
@@ -125,7 +127,7 @@
 
   <div class="row" style="padding-top: 20px;" >
     <div class="row" *ngIf="!notUser">
-      <div id="{{ x.id }}" *ngFor="
+      <div id="{{ x.id }}" [ngClass]="{'out-of-stock-normal':x.qty==0}" *ngFor="
           let x of products
             | paginate
               : {
@@ -142,7 +144,7 @@
             </a>
             <div class="product-action">
               <a routerLink="/product/{{ x.id }}"><i class="fa fa-info"></i></a>
-              <a><i class="fa fa-shopping-cart" (click)="addProductToCart(x.id)"></i></a>
+              <a *ngIf="x.qty!=0"><i class="fa fa-shopping-cart" (click)="addProductToCart(x.id)"></i></a>
               <a *ngIf="showButton"><i class="fa fa-trash" (click)="openModal(x)"></i></a>
             </div>
           </div>
@@ -172,7 +174,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="
+          <tr [ngClass]="{'out-of-stock':x.qty==0,'low-stock':x.qty>0&&x.qty<=5}" *ngFor="
               let x of products
                 | paginate
                   : {
@@ -247,3 +249,5 @@
     (pageChange)="handlePageChange($event)" style="float:right;" class="my-pagination"></pagination-controls>
 
 </div>
+
+<app-loader></app-loader>

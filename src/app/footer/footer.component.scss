@@ -1,4 +1,21 @@
-.row{background-color: #2d8bca;margin-left:1px;color:snow;position:relative;}
+
+
+.footer {
+  background-color: #2d8bca;
+  color:snow;
+  position:relative;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+}
+@media (max-width: 768px) {.footer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  max-height:25%
+}
+}
 a{text-decoration: none;list-style-type: none;color:inherit;font-size: 14px;}
 a:hover{opacity: 0.5;cursor: pointer;}
 span{font-weight:bold;font-size:25px}

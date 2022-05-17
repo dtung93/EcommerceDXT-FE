@@ -11,11 +11,7 @@ import { confirmField } from '../service/validator';
   styleUrls: ['./reset-password.component.scss']
 })
 export class ResetPasswordComponent implements OnInit {
-  invalidToken=false
-  resetToken:any
-  resetPassword:any
-  isSubmitted=false
-  passwordForm: FormGroup;
+
   constructor(private formBuilder:FormBuilder,private userService: UserService, private toastr: ToastrService) { 
 this.passwordForm = formBuilder.group({
   token:['',[Validators.required]],
@@ -27,6 +23,11 @@ confirmPassword:['',[Validators.minLength(6),Validators.maxLength(30)]]
   
   ngOnInit(): void {
   }
+  invalidToken=false
+  resetToken:any
+  resetPassword:any
+  isSubmitted=false
+  passwordForm: FormGroup;
   getParams(resetToken:any,resetPassword:any){
     let params:any={}
     if(resetToken){
@@ -49,6 +50,7 @@ updatePassword(){
   return this.userService.sendResetPassword(params).subscribe((res)=>{
     console.log(res)
     this.toastr.info('Your password has been successfully updated! Please login again')
+    setInterval(()=>location.href='/login',2000)
   },err=>{
     console.log(err.error.message)
     this.invalidToken=true

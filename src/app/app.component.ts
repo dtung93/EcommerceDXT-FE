@@ -4,6 +4,8 @@ import { Subscription } from 'rxjs';
 import { EventBusService } from './service/event-bus.service';
 import { CartService } from './service/cart.service';
 import { roleName } from './model/role.model';
+import { HttpClient } from '@angular/common/http';
+import { Spinkit } from 'ng-http-loader';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -26,7 +28,8 @@ export class AppComponent implements OnInit, OnDestroy {
   showMasterBoard=false;
   @ViewChild('openSideBar') openSideBar?: ElementRef 
   static totalItems: any;
-  constructor(private cartService: CartService,private tokenStorageService:TokenStorageService,private eventBusService:EventBusService){}
+  constructor(private http:HttpClient,private cartService: CartService,private tokenStorageService:TokenStorageService,private eventBusService:EventBusService){}
+
   ngOnInit(): void {
     this.isLoggedIn = !!this.tokenStorageService.getToken();
     if (this.isLoggedIn) {
@@ -66,5 +69,14 @@ openNavButton(){
     this.showAdminBoard = false;
     this.showModeratorBoard = false;
     this.showMasterBoard=false
+  }
+  getIMDBData() {
+    return this.http
+    .get<any>('http://www.omdbapi.com/?apikey=YOUR_OMDB_KEY&s=car')
+    .subscribe((response) => {
+      console.log(response);
+    }, (error) => {
+      alert('Error Found!');
+    });
   }
 }

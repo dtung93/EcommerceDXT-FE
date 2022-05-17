@@ -13,6 +13,25 @@ import { NgxSpinner, NgxSpinnerService } from 'ngx-spinner';
   styleUrls: ['./order-form.component.scss']
 })
 export class OrderFormComponent implements OnInit {
+  constructor(private spinner: NgxSpinnerService, private orderService: OrderService, private productService: ProductService, private toastr: ToastrService, private cartService: CartService, private fb: FormBuilder, private checkOutService: CheckOutService) {
+    this.orderForm = this.fb.group({
+      name: ['', [Validators.required,]],
+      address: ['', [Validators.required]],
+      phone: ['', [Validators.required,Validators.pattern(/\-?\d*\.?\d{1,2}/)]],
+      email: ['', [Validators.required, Validators.email]]
+    })
+
+  }
+  ngOnInit(): void {
+    this.cartService.getCart().subscribe((res: any) => {
+      this.cart = res
+      this.amount = res.grandTotal
+      this.totalItems = res.totalItems
+      this.items = res.items
+      console.log(this.cart)
+    })
+
+  }
   isClicked=false
   date = new Date()
   cart: any
@@ -26,25 +45,8 @@ export class OrderFormComponent implements OnInit {
   items: any[] = []
   grandTotal!: number
   totalItems!: number
-  constructor(private spinner: NgxSpinnerService, private orderService: OrderService, private productService: ProductService, private toastr: ToastrService, private cartService: CartService, private fb: FormBuilder, private checkOutService: CheckOutService) {
-    this.orderForm = this.fb.group({
-      name: ['', [Validators.required,]],
-      address: ['', [Validators.required]],
-      phone: ['', [Validators.required]],
-      email: ['', [Validators.required, Validators.email]]
-    })
-
-  }
-  ngOnInit(): void {
-    this.cartService.getCart().subscribe((res: any) => {
-      this.cart = res
-      this.amount = res.grandTotal
-      this.totalItems = res.totalItems
-      this.items = res.items
-      console.log(this.cart)
-    })
-    this.invokeStripe()
-  }
+ 
+ 
 
   checkProductQuantity() {
     this.cartService.getCart().subscribe((res: any) => {
@@ -115,8 +117,8 @@ export class OrderFormComponent implements OnInit {
           this.cartService.updateCartTotal(0)
           this.orderService.newOrder(orderDetails).subscribe((res) => {
             console.log(res)
-            this.spinner.show()
-            setInterval(() => location.href = "/my-orders", 2000)
+            this.toastr.success('Payment was processed successfully! Thank you for your order '+res.id)
+            setInterval(()=>location.href='/my-orders',2000)
           })
         }
         else {

@@ -23,7 +23,7 @@
         </tr>
         <tr>
           <td>Phone numbers</td>
-          <td><input type="text" placeholder="Phone numbers" formControlName="phone">
+          <td><input type="text" placeholder="Phone numbers" formControlName="phone" >
             <div class="text-danger" *ngIf="isSubmitted&&this.orderForm.controls['phone'].invalid">Invalid phone numbers</div></td>
         </tr>
         <tr><td colspan="2"><hr></td></tr>
@@ -34,7 +34,7 @@
      <tr>
 
      </tr>
-     <tr><td><button id="checkout" class="btn btn text-white" style="background-color:#2d8bca" type="submit">Pay Now</button></td></tr>
+     <tr><td><button id="checkout" [disabled]="this.items.length==0" class="btn btn text-white" style="background-color:#2d8bca" type="submit">Pay Now</button></td></tr>
       </table>
     </form>
 
@@ -67,3 +67,4 @@
   
       </table>
 </div>
+<app-loader></app-loader>
