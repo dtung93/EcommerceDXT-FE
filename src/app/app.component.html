@@ -1,7 +1,7 @@
 
   <div class="col" id="app">
 <app-header></app-header>
-  <div class="row justify-content-center" style="min-height:75vh">
+  <div class="row justify-content-center" style="min-height:80vh">
     <div class="col-sm-2" *ngIf="isLoggedIn&&!showCart">
       <div id="mySidenav" [ngClass]="hasWidth?'hasWidth':''" class="sidenav sticky-top">
         <div style="background-color:#3dacf6" class="row">
@@ -21,12 +21,12 @@
         <a id="item" href="/master" *ngIf="showMasterBoard" class='nav-link' routerLinkActive="active"
           routerLink="master"><i class="fa fa-list-alt" style="margin-right:5px"></i>Master Panel</a>
       </div>
-
     </div>
 
     <div class="col-sm-10 content">
       <router-outlet ></router-outlet>
     </div>
   </div>
+
   <app-footer></app-footer>
 </div>

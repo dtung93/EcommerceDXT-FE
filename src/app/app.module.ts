@@ -33,6 +33,8 @@ import { HeaderComponent } from './header/header.component';
 import { LoaderComponent } from './loader/loader.component';
 import { SpinnerService } from './service/spinner.service';
 import { LoaderInterceptorService } from './service/interceptors/loader-interceptor.service';
+import { SliderComponent } from './slider/slider.component';
+import { CarouselModule } from 'ngx-owl-carousel-o';
 @NgModule({
   declarations: [
     AppComponent,
@@ -55,10 +57,13 @@ import { LoaderInterceptorService } from './service/interceptors/loader-intercep
     OrderFormComponent,
     HeaderComponent,
     LoaderComponent,
+    SliderComponent,
   ],
   imports: [
     BrowserModule,
+    NgbModule,
     AppRoutingModule,
+    CarouselModule,
     ReactiveFormsModule,
     FormsModule,
     HttpClientModule,
