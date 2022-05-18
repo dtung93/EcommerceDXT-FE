@@ -88,7 +88,7 @@
   <div class="row" *ngIf="HasProducts">
 
     <!-- FILTER AND SEARCH  -->
-    <input id="filter-control" name="search" type="text" class="form-control" placeholder="Search by product name"
+    <input style="height:45px" id="filter-control" name="search" type="text" class="form-control" placeholder="Search by product name"
     [(ngModel)]='productName'/>
     <select style="width: fit-content;height:45px;margin-top:5px" [(ngModel)]="category">
       <option value="" selected hidden disabled>Filter By Category</option>

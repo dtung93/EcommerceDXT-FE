@@ -61,7 +61,7 @@ export class BoardAdminComponent implements OnInit {
   ]
   selectedRoles: any = [
     { id: 1, name: 'ROLE_USER', tag: 'User' },
-    { id: 2, name: 'ROLE_MODERATOR', tag: 'Moderator' }
+    { id: 2, name: 'ROLE_MODERATOR', tag: 'Moderator' },{id:3,name:'ROLE_ADMIN',tag:'Admin'},{id:4,name:'ROLE_MASTER',tag:'Master'}
   ]
   page = 1
   count = 0

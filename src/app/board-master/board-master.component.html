@@ -3,6 +3,7 @@
       <div class="row">
         <h3 id="header">MANAGE USERS</h3>
       </div>
+
       <div class="row">
         <div class="col-md-3">
           <input type="text" class="form-control" placeholder="Search by username or email" [(ngModel)]="username">
@@ -11,13 +12,20 @@
           <button class="btn text-white" style="background-color:#3895d3" id='search' (click)="searchUser()">Search</button>
           <button class="btn btn-secondary" style="margin-left:10px;height:3em;width:7em" (click)="this.getUsers()">Clear filters</button>
         </div>
-        <div class="col-md-3 pt-2">
+        <div class="col-md-3 mb-3">
           <button (click)="logForm()" type="button" class="btn btn text-white add-user"
            data-bs-toggle="modal" data-bs-target="#exampleModal">
             <span class="bg-white plus"><i class="fa fa-plus" ></i></span> Add New User
           </button>
         </div>
       </div>
+      <div *ngIf="this.users.length==0||this.users.length==null"
+      class="col-lg-12 col-md-12 col-xl-12">
+      <div class="text-danger" role="alert">
+        <h4 class="alert-heading">NO USER FOUND</h4>
+        <p>No users were found.</p>
+      </div>
+    </div>
   
       <!-- ADD NEW ACCOUNT MODAL -->
       <div class="row">
@@ -31,12 +39,12 @@
              
               <div class="modal-body">
                 <form [formGroup]="userForm" (submit)="addUser()">
-                <table id="add-user" width="100%">
-                  <label for="error" class="text-danger" *ngIf="isSubmitted&&addUserFailed">Add user failed! {{errorMessage}}</label>
+                  <span for="error" class="text-danger" *ngIf="isSubmitted&&addUserFailed">Add user failed! {{errorMessage}}</span>
+                <table id="add-user" width="100%">               
                   <tr>
-                    <td>Username</td>
+                    <td style="width:30%">Username</td>
                     <td><input type='text' formControlName="username" placeholder="Enter a username">
-                      <label class="text-danger" for="username"  *ngIf="userForm.controls['username'].invalid&&isSubmitted">Username is required, 4-20 characters</label></td>                   
+                      <span class="text-danger" for="username"  *ngIf="userForm.controls['username'].invalid&&isSubmitted">Username is required, 4-20 characters</span></td>                   
                   </tr>
                   <tr>
                     <td>Email</td>

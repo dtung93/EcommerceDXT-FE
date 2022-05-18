@@ -11,7 +11,13 @@
         <button class="btn btn-secondary" style="margin-left:10px;height:3em;width:7em"(click)="this.getUsers()">Clear filters</button>
       </div>
     </div>
-
+    <div *ngIf="this.users.length==0||this.users.length==null"
+    class="col-lg-12 col-md-12 col-xl-12">
+    <div class="text-danger" role="alert">
+      <h4 class="alert-heading">NO USER FOUND</h4>
+      <p>No users were found.</p>
+    </div>
+  </div>
     <!-- USER TABLE -->
     <div class="row">
       <div class="col-sm-2">
@@ -100,12 +106,12 @@
             <table [style]="width">
               <td><input type='hidden' [(ngModel)]="selectedUser.id" value={{selectedUser.id}}></td>
               <tr>
-                <td>Username:</td>
+                <td>Username</td>
                 <div style="font-weight: bold;font-size: 20px;">{{selectedUser.username}}</div>
               </tr>
               <tr>
               <tr>
-                <td>Role:</td>
+                <td>Role</td>
                 <td>
                   <select [(ngModel)]='roleSelected' >
                     <option [id]="role.id" *ngFor="let role of selectedRoles"
@@ -115,15 +121,16 @@
                 </td>
               </tr>
               <tr>
-                <td>Email:</td>
+                <td>Email</td>
                 <input type='text' [style]="width" [(ngModel)]="selectedUser.email" value={{selectedUser.email}}>
               </tr>
               <tr>
-                <td>Phone numbers:</td>
-                <input type='text' [style]="width" [(ngModel)]="selectedUser.phone" value={{selectedUser.phone}}>
+                <td>Phone numbers</td>
+                <input type='tel' style="height:50px" [style]="width" [(ngModel)]="selectedUser.phone" value={{selectedUser.phone}}>
               </tr>
+              <br>
               <tr>
-                <td>Address:</td>
+                <td>Address</td>
                 <input type='text' [style]="width" [(ngModel)]="selectedUser.address" value={{selectedUser.address}}>
               </tr>
             </table>

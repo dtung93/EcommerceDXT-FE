@@ -40,6 +40,7 @@ export class HomeComponent implements OnInit {
     this.getProducts()
 
   }
+  productCart:any
   productName=''
   productForm: FormGroup
   products: Product[] = []
@@ -104,7 +105,7 @@ export class HomeComponent implements OnInit {
     this.isSubmitted = false
     this.productForm.reset()
     this.showToast(id, name)
-    setInterval(() => { this.getProducts() }, 1000)
+    setInterval(() => { location.reload() }, 1000)
   }
   submitProductForm() {
     this.isSubmitted = true
@@ -249,7 +250,8 @@ export class HomeComponent implements OnInit {
         console.log(res)
         this.toastr.info('Product successfully added to cart')
         this.cartService.updateCartTotal(res.totalItems)
-      }, error => { console.log(error.error.message) })
+      }, error => { console.log(error.error.message) }
+     )
     }
     else {
       Swal.fire({
