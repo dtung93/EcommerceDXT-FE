@@ -33,14 +33,19 @@ export class HomeComponent implements OnInit {
  
     if (this.token.getToken()) {
       this.roles = this.token.getUser().roles;
-      if (this.roles?.includes(roleName.a) || this.roles?.includes(roleName.mo) || this.roles?.includes(roleName.ma)) {
+      if (this.roles?.includes(roleName.a)&&(this.token.getUser().enabled) || this.roles?.includes(roleName.mo)&&(this.token.getUser().enabled) || this.roles?.includes(roleName.ma)&&(this.token.getUser().enabled)) {
         this.notUser = true
+      }
+      if(!this.token.getUser().enabled){
+      console.log(this.token.getUser().enabled)
+      this.userNotActivated=true
+      this.toastr.error('Your account is not activated yet')
       }
     }
     this.getProducts()
 
   }
-  productCart:any
+
   productName=''
   productForm: FormGroup
   products: Product[] = []
@@ -69,7 +74,7 @@ export class HomeComponent implements OnInit {
   keyword: boolean = false
   roles?: any[] = []
   outOfStock=false
-
+  userNotActivated=false
   sortOptions = [
     { id: 1, name: 'Sort by ascending price', value: 'ascending' },
     { id: 2, name: 'Sort by descending price', value: 'descending' }
@@ -86,7 +91,7 @@ export class HomeComponent implements OnInit {
   }
 
   showDeleteToast(productname: string) {
-    this.toastr.error(productname, 'Notice')
+    this.toastr.info(productname)
   }
   openModal(product: Product) {
     this.display = 'block'
@@ -166,7 +171,7 @@ export class HomeComponent implements OnInit {
     }, error => { this.toastr.error('No products could be found') })
   }
   searchProducts(){
-    this.page=1
+    this.page=this.page
     const params = this.getSearchParams(this.category,this.productName)
     console.log(params)
     this.productService.getProducts(params).subscribe(response => {
@@ -254,16 +259,7 @@ export class HomeComponent implements OnInit {
      )
     }
     else {
-      Swal.fire({
-        title: 'Login required',
-        text: 'You need to be signed-in to use this function',
-        icon: 'error',
-        color: 'red',
-        background: '#FDFEFE',
-        showConfirmButton: true,
-        confirmButtonColor: '#186192',
-        width: '26rem'
-      })
+    this.toastr.error('You need to sign in to use this function')
     }
   }
 

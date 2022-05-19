@@ -1,7 +1,7 @@
 <div class="container">
     <h3 class="header" *ngIf="!isAdmin" style="margin-top:10px;color:rgb(83, 82, 82);text-align: center;background-color: #f1f8fd;">Your order history</h3>
     <h3 class="header" *ngIf="isAdmin" style="margin-top:10px;color:rgb(83, 82, 82);text-align: center;background-color: #f1f8fd;">Order list</h3>
-    <table style="width:90%">
+    <table class="table table-striped" style="width:90%">
         <thead  style="background-color: #3895d3;color:snow">
 <th style="width:10%">Order Id</th>
 <th style="width:25%">Date</th>

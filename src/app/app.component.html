@@ -2,7 +2,7 @@
   <div class="col" id="app">
 <app-header></app-header>
   <div class="row justify-content-center" style="min-height:80vh">
-    <div class="col-sm-2" *ngIf="isLoggedIn&&!showCart">
+    <div class="col-sm-2" *ngIf="isLoggedIn&&!showCart&&(showAdminBoard||showMasterBoard)">
       <div id="mySidenav" [ngClass]="hasWidth?'hasWidth':''" class="sidenav sticky-top">
         <div style="background-color:#3dacf6" class="row">
           <a style="font-size:20px" disabled>Control Panel</a>
@@ -28,5 +28,5 @@
     </div>
   </div>
 
-  <app-footer></app-footer>
+  <app-footer ></app-footer>
 </div>

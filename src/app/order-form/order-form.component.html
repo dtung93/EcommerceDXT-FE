@@ -39,25 +39,31 @@
     </form>
 
   </div>
-  <table style="width:60%;  border-collapse: separate;
-  border-spacing: 5px" class="bg-light pb-5">
-    <h4 style="color:gray">Order Review</h4>
+  <table style="width:60%;border-collapse: separate;
+  border-spacing: 5px" class="bg-light mb-3">
+  <td></td>
+    <h3 style="color:gray">Order Review</h3>
       <tr>
-        <th scope="col">Product name</th>
-        <th scope="col">Quantity</th>
-        <th scope="col">Price</th>
-        <th *ngIf="isClicked">Stock</th>
+        <th scope="col" style="width:10%"></th>
+        <th scope="col"style="width:30%">Product name</th>
+        <th scope="col" style="width:15%">Quantity</th>
+        <th scope="col"style="width:15%">Price</th>
+        <th style="width:17%">Total</th>
+        <th *ngIf="isClicked" style="width:20%">Stock</th>
       </tr>
     <tbody> <tr [ngClass]="{'out-of-stock':item.outOfStock}" *ngFor="let item of items">
+      <td><img style="width:50px;height:30px" src={{item.product.img}}></td>
       <td>{{item.product.name}}</td>
       <td >{{item.quantity}}</td>
+      <td>{{item.product.price}}</td>
       <td>{{item.total}}</td>
       <td *ngIf="!item.outOfStock&&isClicked"><i class="fa fa-check text-success">In Stock</i></td>
       <td *ngIf="item.outOfStock" class="text-danger">Stock: {{item.product.qty}} </td>
     </tr>
     <tr>
-      <td></td>
+      <td colspan="2"></td>
       <td>{{totalItems}} items</td>
+      <td></td>
       <td><strong>Total: ${{amount}}</strong></td>
     </tr>
     <tr class="text-danger" *ngIf="outOfStock">

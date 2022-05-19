@@ -33,15 +33,7 @@ export class CartComponent implements OnInit {
     }
     else{
       this.accountNotActivated=true
-      Swal.fire({title: 'Account activation required',
-      text: 'Your account is not activated. Please check your email and try again',
-      icon:'error',
-      color:'red',
-      background:'#FDFEFE',
-      showConfirmButton:true,
-      confirmButtonColor:'#186192',
-      width:'26rem'
-    })
+      this.toastr.error('Account not activated!')
     }
   }
   

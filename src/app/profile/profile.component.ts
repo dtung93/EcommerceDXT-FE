@@ -7,57 +7,56 @@ import { User } from '../model/user.model';
 import { ConsoleLogger } from '@angular/compiler-cli';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { confirmField } from '../service/validator';
+import { roleName } from '../model/role.model';
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.scss']
 })
 export class ProfileComponent implements OnInit {
-  constructor(private fb:FormBuilder,private token: TokenStorageService, private userService: UserService, private toastr: ToastrService) {
-    this.changePasswordForm=this.fb.group({
-    oldPassword:['',[Validators.required]],
-    newPassword:['',[Validators.required,Validators.minLength(6),Validators.maxLength(50)]],
-    confirmNewPassword:['',[Validators.required,Validators.minLength(6),Validators.maxLength(50)]]
-    },{ validator:confirmField('newPassword','confirmNewPassword')})
-    
-       }
-       ngOnInit():void {
-        if (this.token.getToken()) {
-          this.selectedUser = this.token.getUser()
-          if(this.selectedUser.enabled==true){
-        if(this.selectedUser.roles.find((element)=>element=='ROLE_MASTER'))
-          this.isMaster=true
-        if(this.selectedUser.roles.find(element=>element=='ROLE_ADMIN'))
-          this.isAdmin=true
-        if(this.selectedUser.roles.find(element=>element=='ROLE_MODERATOR'))
-          this.isModerator=true
+  constructor(private fb: FormBuilder, private token: TokenStorageService, private userService: UserService, private toastr: ToastrService) {
+    this.changePasswordForm = this.fb.group({
+      oldPassword: ['', [Validators.required]],
+      newPassword: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(50)]],
+      confirmNewPassword: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(50)]]
+    }, { validator: confirmField('newPassword', 'confirmNewPassword') })
+
+  }
+  ngOnInit(): void {
+    if (this.token.getToken()) {
+      this.selectedUser = this.token.getUser()
+      if (this.selectedUser.enabled == true) {
+        if (this.selectedUser.roles.find((element) => element == roleName.ma)) {
+          this.isMaster = true
+          console.log('Master? ' + this.isMaster)
         }
-        else {
-          this.isDisabled=true
-          console.log(this.isDisabled)
-         Swal.fire({
-           icon:'info',
-           showConfirmButton:true,
-           background:'snow',
-          confirmButtonColor:"#2d8bca",
-          text:'Account is not activated yet!'    
-         })
+        if (this.selectedUser.roles.find(element => element == roleName.a)) {
+          this.isAdmin = true
+          console.log("Admin? " + this.isAdmin)
         }
+        if (this.selectedUser.roles.find(element => element == roleName.mo))
+         { this.isModerator = true
+        console.log("Moderator? " + this.isModerator)}
       }
+      else {
+        this.isDisabled = true
+        this.toastr.error('Account not activated!')
       }
-  pushBottom=false
-  username:string=''
-  isSubmitted=false
-  changePasswordForm:FormGroup
-  passwordError:string=''
-  roleSelected :any=null
+    }
+  }
+  pushBottom = false
+  username: string = ''
+  isSubmitted = false
+  changePasswordForm: FormGroup
+  passwordError: string = ''
+  roleSelected: any = null
   display = 'none'
-  isDisabled=false
+  isDisabled = false
   isAdmin = false
   isModerator = false
-  isUser=false
-  isMaster=false
-  selectedUser=new User()
+  isUser = false
+  isMaster = false
+  selectedUser = new User()
   selectedUserRoles: any[] = []
   width = 'width:100%;backround-color:#145580'
   selectedRoles: any = [
@@ -65,12 +64,12 @@ export class ProfileComponent implements OnInit {
     { id: 2, name: 'ROLE_MODERATOR', tag: 'Moderator' }, { id: 3, name: "ROLE_ADMIN", tag: 'Admin' }
   ]
 
-  @ViewChild('closeUpdateModal') closeUpdateModal?: ElementRef 
- 
+  @ViewChild('closeUpdateModal') closeUpdateModal?: ElementRef
+
   getUserDetail(id: number) {
     this.userService.getUser(id).subscribe((res) => {
       this.selectedUser = res
-      this.selectedUser.roles = res.roles  
+      this.selectedUser.roles = res.roles
       console.log(this.selectedUser)
     })
   }
@@ -82,24 +81,24 @@ export class ProfileComponent implements OnInit {
     this.display = 'block'
     console.log(this.selectedUser)
   }
-  updateRole():void{
-    const data={
-      id:this.selectedUser.id,
-      roles:this.selectedUser.roles
+  updateRole(): void {
+    const data = {
+      id: this.selectedUser.id,
+      roles: this.selectedUser.roles
     }
-  this.userService.updateRole(data).subscribe((res)=>{
-console.log(res)
-this.display='none'
-this.toastr.info('Your role has changed! Please login again')
-setInterval(
-  () =>{
-    window.location.href='/home',1000
-    this.token.signOut()
+    this.userService.updateRole(data).subscribe((res) => {
+      console.log(res)
+      this.display = 'none'
+      this.toastr.info('Your role has changed! Please login again')
+      setInterval(
+        () => {
+          window.location.href = '/home', 1000
+          this.token.signOut()
+        }
+      )
+    })
   }
-)
-  })
-  }
-  testModal(){
+  testModal() {
     console.log(this.selectedUser.username)
   }
   updateUser(): void {
@@ -108,18 +107,18 @@ setInterval(
       email: this.selectedUser.email,
       username: this.selectedUser.username,
       password: this.selectedUser.password,
-      address:this.selectedUser.address,
-      phone:this.selectedUser.phone,
-      roles:[this.selectedUser.roles[0]],
-      enabled:this.selectedUser.enabled
+      address: this.selectedUser.address,
+      phone: this.selectedUser.phone,
+      roles: [this.selectedUser.roles[0]],
+      enabled: this.selectedUser.enabled
     }
-      this.userService.updateUser(data).subscribe((res) => {
-        console.log(res)
-        this.closeUpdateModal?.nativeElement.click();
-        this.toastr.info("Your account is updated!")
-      },error=>{
-        console.log(error.message)
-      })
+    this.userService.updateUser(data).subscribe((res) => {
+      console.log(res)
+      this.closeUpdateModal?.nativeElement.click();
+      this.toastr.info("Your account is updated!")
+    }, error => {
+      console.log(error.message)
+    })
 
   }
 
@@ -129,7 +128,7 @@ setInterval(
     }
   }
   checkRole(id: any) {
-    const existRole = this.selectedUser.roles.find((role:any) => role.id === id)
+    const existRole = this.selectedUser.roles.find((role: any) => role.id === id)
     return (this.selectedUser.roles
       && this.selectedUser.roles.length < 1
       && !existRole)
@@ -141,7 +140,7 @@ setInterval(
   }
 
   onChangeRole(event: any) {
-    console.log( event.target.value);
+    console.log(event.target.value);
     const roleUpdate = this.selectedRoles.find((r: any) => r.id == event.target.value)
     console.log(roleUpdate);
     const roleParam = {
@@ -150,32 +149,32 @@ setInterval(
     }
     this.selectedUser.roles = [roleParam];
   }
-  submitChangePasswordForm(){
-    this.isSubmitted=true
-    if(this.changePasswordForm.invalid){
-      this.passwordError="Error when updating password"
-      this.pushBottom=true
+  submitChangePasswordForm() {
+    this.isSubmitted = true
+    if (this.changePasswordForm.invalid) {
+      this.passwordError = "Error when updating password"
+      this.pushBottom = true
     }
-    else{
-      this.pushBottom=false
-     const data={
-       username:this.selectedUser.username,
-       oldPassword:this.changePasswordForm.controls['oldPassword'].value,
-      newPassword:this.changePasswordForm.controls['newPassword'].value
-     }
-    this.userService.changePassword(data).subscribe((res)=>{
-      this.toastr.info('Your password has changed successfully! Please login again')
-      setInterval(
-        () =>{
-          window.location.href='/login',1000
-          this.token.signOut()
-        }
-      )
-    },error=>{ this.passwordError="You have entered a wrong password"})
+    else {
+      this.pushBottom = false
+      const data = {
+        username: this.selectedUser.username,
+        oldPassword: this.changePasswordForm.controls['oldPassword'].value,
+        newPassword: this.changePasswordForm.controls['newPassword'].value
+      }
+      this.userService.changePassword(data).subscribe((res) => {
+        this.toastr.info('Your password has changed successfully! Please login again')
+        setInterval(
+          () => {
+            window.location.href = '/login', 1000
+            this.token.signOut()
+          }
+        )
+      }, error => { this.passwordError = "You have entered a wrong password" })
     }
   }
-  resetForm(){
-    this.pushBottom=false
-    this.isSubmitted=false
+  resetForm() {
+    this.pushBottom = false
+    this.isSubmitted = false
   }
 }
