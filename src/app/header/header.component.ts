@@ -11,6 +11,7 @@ import { TokenStorageService } from '../service/token-storage.service';
   styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent implements OnInit {
+  userOrder=false
   constructor(private cartService:CartService,private eventBusService:EventBusService,private tokenStorageService:TokenStorageService) { }
   ngOnInit(): void {
     this.isLoggedIn = !!this.tokenStorageService.getToken();
@@ -21,6 +22,9 @@ export class HeaderComponent implements OnInit {
      this.cartService.getCart().subscribe((res)=>{
        this.totalItems=res.totalItems;
      })
+     if(user.enabled){
+      this.userOrder=true
+      }
     }
       this.avatar=user.avatar
       this.roles = user.roles;

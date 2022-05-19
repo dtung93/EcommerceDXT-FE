@@ -117,7 +117,7 @@ export class OrderFormComponent implements OnInit {
           this.cartService.updateCartTotal(0)
           this.orderService.newOrder(orderDetails).subscribe((res) => {
             console.log(res)
-            this.toastr.success('Payment was processed successfully! Thank you for your order '+res.id)
+            this.toastr.info('Payment was processed successfully! Thank you for your order# '+res.id)
             setInterval(()=>location.href='/my-orders',2000)
           })
         }

@@ -144,7 +144,7 @@
             </a>
             <div class="product-action">
               <a routerLink="/product/{{ x.id }}"><i class="fa fa-info"></i></a>
-              <a *ngIf="x.qty!=0"><i class="fa fa-shopping-cart" (click)="addProductToCart(x.id)"></i></a>
+              <a *ngIf="x.qty!=0&&!userNotActivated"><i class="fa fa-shopping-cart" (click)="addProductToCart(x.id)"></i></a>
               <a *ngIf="showButton"><i class="fa fa-trash" (click)="openModal(x)"></i></a>
             </div>
           </div>

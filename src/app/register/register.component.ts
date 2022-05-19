@@ -33,12 +33,14 @@ signUpSuccessful(){
   this.isSuccessful=true
   this.isSignedUpFailed=false
   this.toastr.info('Your account has been successfully registered!')
-  setInterval(()=>window.location.href='/login',3000) 
+  setInterval(()=>location.href='/login',3000) 
 }
 
   onSubmit():void{
+     
     const{username,email,password,avatar,phone,address}=this.form
     this.authService.register(username,password,address,email,phone,avatar).subscribe(res=>{
+      this.errorMessage=''
       this.signUpSuccessful()
     },error=>{
       this.errorMessage=error.error.message

@@ -25,7 +25,7 @@
                 routerLink="login">Login</a>
               <a id="item" *ngIf="showCart" class="nav-link" routerLinkActive="active" routerLink="/cart"><i
                   class="fa fa-shopping-cart"><span id="cart-total" class="circle">{{totalItems}}</span></i></a>
-              <a id="item" *ngIf="showCart" class="nav-link" routerLink="/my-orders" routerLinkActive="active"><i
+              <a id="item" *ngIf="userOrder" class="nav-link" routerLink="/my-orders" routerLinkActive="active"><i
                   class="fa fa-file"><span style="margin-left:5px">My Orders</span></i></a>
               <a id="item" *ngIf="showMasterBoard||showAdminBoard" class="nav-link" routerLink="/my-orders"
                 routerLinkActive="active"><i class="fa fa-file"><span style="margin-left:5px">Manage

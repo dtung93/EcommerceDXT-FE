@@ -48,6 +48,9 @@ updatePassword(){
   this.resetPassword=this.passwordForm.controls['password'].value
   const params=this.getParams(this.resetToken,this.resetPassword)
   return this.userService.sendResetPassword(params).subscribe((res)=>{
+    this.isSubmitted=false
+    this.invalidToken=false
+    this.passwordForm.reset()
     console.log(res)
     this.toastr.info('Your password has been successfully updated! Please login again')
     setInterval(()=>location.href='/login',2000)

@@ -11,7 +11,7 @@
   </div>
   <p class="alert alert-primary">
     Welcome back, <strong>{{selectedUser.username}}</strong>.<span *ngIf="isAdmin||isModerator||isMaster"> You are
-      logged in as <span *ngIf="isModerator&&!isMaster"><strong>Moderator</strong></span>
+      logged in as <span *ngIf="isModerator"><strong>Moderator</strong></span>
       <span *ngIf="isAdmin"><strong>Admin</strong></span> <span *ngIf="isMaster"><strong>Master</strong></span> </span>
   </p>
 
@@ -136,7 +136,7 @@
             <div class="modal-body">
               <form name="profile">
               <table [style]="width">
-                <td><input type='hidden' [ngModel]="selectedUser.id" value={{selectedUser.id}}></td>
+                <td><input type='hidden' [ngModel]="selectedUser.id" value={{selectedUser.id}} name="id"></td>
                 <tr>
                   <td>Username</td>
 
@@ -154,15 +154,15 @@
             </tr> -->
                 <tr>
                   <td>Email</td>
-                  <input name="email" type='text' [style]="width" [(ngModel)]="selectedUser.email" value={{selectedUser.email}}>
+                  <input name="email" type='text' [style]="width" [(ngModel)]="selectedUser.email" value={{selectedUser.email}} name="email">
                 </tr>
                 <tr>
                   <td>Phone Numbers</td>
-                  <input  type='text' [style]="width" [(ngModel)]="selectedUser.phone" value={{selectedUser.phone}}>
+                  <input  type='text' [style]="width" [(ngModel)]="selectedUser.phone" value={{selectedUser.phone}} name="phone">
                 </tr>
                 <tr>
                   <td>Address</td>
-                  <input type='text' [style]="width" [(ngModel)]="selectedUser.address" value={{selectedUser.address}}>
+                  <input type='text' [style]="width" [(ngModel)]="selectedUser.address" value={{selectedUser.address}} name="address">
                 </tr>
               </table>
               </form>

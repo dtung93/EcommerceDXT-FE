@@ -12,7 +12,7 @@
         #f="ngForm"  novalidate>
         <h4 style="text-align: center">Registration</h4>
                 <!-- ALERT MESSAGE -->
-                <div style="text-align:center;margin:auto"class="text-danger" id="forminput" *ngIf="f.submitted && isSignedUpFailed">
+                <div style="text-align:center;margin:auto"class="text-danger" id="forminput" *ngIf="f.submitted &&errorMessage!=''">
                   Signup failed! Please check your inputs again
                   <br />{{errorMessage}}
                 </div>

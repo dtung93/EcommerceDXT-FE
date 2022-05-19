@@ -10,7 +10,6 @@ export class LoaderComponent implements OnInit {
 loading!:boolean
   constructor(private loaderService:SpinnerService) {
     this.loaderService.isLoading.subscribe((res) => {
-      console.log(res);
       this.loading = res;
     });
    }

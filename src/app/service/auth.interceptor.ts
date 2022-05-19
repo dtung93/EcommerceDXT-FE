@@ -26,7 +26,7 @@ export class AuthInterceptor implements HttpInterceptor {
       authReq = this.addTokenHeader(req, token);
     }
     return next.handle(authReq).pipe(catchError(error => {
-      if (error instanceof HttpErrorResponse && !authReq.url.includes('auth/signin') && error.status == 401) {
+      if (error instanceof HttpErrorResponse && !authReq.url.includes('auth/signin') && (error.status == 401||error.status==403)) {
         Swal.fire({title: 'Authorization required',
         text: 'You do not have permission to perform this action',
         icon:'error',
@@ -58,7 +58,7 @@ export class AuthInterceptor implements HttpInterceptor {
           catchError((err) => {
             this.isRefreshing = false;
             
-            this.tokenService.signOut();
+            // this.tokenService.signOut();
             return throwError(err);
           })
         );
