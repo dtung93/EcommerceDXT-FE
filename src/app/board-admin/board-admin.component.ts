@@ -72,6 +72,7 @@ export class BoardAdminComponent implements OnInit {
   totalAccounts = 0
   showUserPanel = false
   display = 'none'
+  isSearched=false
   addUserPanel(){
    this.showUserPanel =!this.showUserPanel
    console.log(this.showUserPanel)
@@ -79,10 +80,10 @@ export class BoardAdminComponent implements OnInit {
   getValueSelected(event: any) {
     this.roleSelected = event
   }
-  getRequestParams(usernameoremail: string, page: number, pageSize: number) {
+  getRequestParams(username: string, page: number, pageSize: number) {
     let params: any = {}
-    if (usernameoremail)
-      params[`usernameoremail`] = usernameoremail
+    if (username)
+      params[`username`] = username
     params[`page`] = page - 1
     if (pageSize)
       params[`size`] = pageSize
@@ -118,25 +119,35 @@ export class BoardAdminComponent implements OnInit {
    this.page=page?+page:1
    return this.page
   }
-  getSearchParams(username:string){
+  getSearchParams(username:string,page:number){
     let params:any={}
-    params[`usernameoremail`]=username
+   if(username)
+   params[`username`]=username
+   if(page)
+   params[`page`]=page-1
     return params
   }
+  eventSearch(){
+    this.page=1
+    this.searchUser()
+  }
   searchUser(){
-    const data=this.getSearchParams(this.username)
+    this.isSearched=true
+    const data=this.getSearchParams(this.username,this.page)
     this.userService.getUsers(data).subscribe((res:any)=>{
-      console.log(res)
       this.users = res.users?.map((user: any) => {
         return { ...user, editable: this.checkRoleCondition(user) }
       })
+      this.totalAccounts=res.totalUsers
+      this.count=res.totalUsers
+      this.page=res.currentPage+1
     })
   }
   getUsers() {
-    const params = this.getRequestParams(this.usernameoremail,this.getPage(), this.pageSize)
+    const params = this.getRequestParams(this.username,this.getPage(), this.pageSize)
     this.userService.getUsers(params).subscribe((res) => {
-      this.totalAccounts = res.totalItems
-      this.count = res.totalItems
+      this.totalAccounts = res.totalUsers
+      this.count = res.totalUsers
       this.users = res.users?.map((user: any) => {
         return { ...user, editable: this.checkRoleCondition(user) }
       })
@@ -232,15 +243,26 @@ export class BoardAdminComponent implements OnInit {
       this.toastr.warning("Cannot delete user! An error has occured", error.message)
     })
   }
-  searchUsername() {
-    this.page = this.page
-    this.keyword = true
-    this.getUsers()
+  clearFilter(){
+    this.isSearched=false
+   const data= this.getRequestParams(this.username="",this.getPage(),this.pageSize)
+    this.userService.getUsers(data).subscribe((res)=>{
+      this.totalAccounts = res.totalUsers
+      this.count = res.totalUsers
+      this.users = res.users?.map((user: any) => {
+        return { ...user, editable: this.checkRoleCondition(user) }
+      })
+    })
   }
   handlePageChange(event: number): void {
-    sessionStorage.setItem(Paging.PAGE_ADMIN_HOME,JSON.stringify(event))
     this.page = event
+    sessionStorage.setItem(Paging.PAGE_ADMIN_HOME,JSON.stringify(event))
+   if(this.username==''){
     this.getUsers()
+   }
+   else{
+    this.searchUser()
+   }
   }
 
   handlePageSizeChange(event: any): void {

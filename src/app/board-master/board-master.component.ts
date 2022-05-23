@@ -96,6 +96,7 @@ export class BoardMasterComponent implements OnInit {
   updateError = ''
   display = 'none'
   addUserFailed=false
+  isSearched=false
   addUserPanel() {
     this.showUserPanel = !this.showUserPanel
     console.log(this.showUserPanel)
@@ -114,7 +115,7 @@ export class BoardMasterComponent implements OnInit {
         role: [this.userForm.controls['role'].value]
       }
 
-      this.userService.addUser(data).subscribe((res) => {
+      this.userService.addUser(data).subscribe(() => {
         this.closeAddUser?.nativeElement.click()
         this.toastr.info("New account is successfully added")
       }, error => { 
@@ -134,29 +135,41 @@ export class BoardMasterComponent implements OnInit {
   logForm() {
     console.log(this.userForm)
   }
-  getRequestParams(usernameoremail: string, page: number, pageSize: number) {
+  getRequestParams(username: string, page: number, pageSize: number) {
     let params: any = {}
-    if (usernameoremail)
-      params[`usernameoremail`] = usernameoremail
+    if (username)
+      params[`username`] = username
     params[`page`] = page - 1
     if (pageSize)
       params[`size`] = pageSize
     return params
   }
-  getSearchParams(usernameoremail:string){
+  getSearchParams(username:string,page:number){
     let params:any={}
-    if(usernameoremail)
-    params[`usernameoremail`]=usernameoremail
+    if(username)
+    params[`username`]=username
+    if(params)
+    params[`page`]=page-1
     return params
   }
-  searchUser(){
+  eventSearch(){
     this.page=1
-    const data=this.getSearchParams(this.username)
+    this.searchUser()
+  }
+  searchUser(){
+    this.isSearched=true
+    const data=this.getSearchParams(this.username,this.page)
     return this.userService.getUsers(data).subscribe((res:any)=>{
       this.users = res.users?.map((user: any) => {
         return { ...user, editable: this.checkRoleCondition(user) }
       })
+     
+      console.log(res)
+      this.totalAccounts=res.totalUsers
+      this.count=res.totalUsers
+      this.page=res.currentPage+1
      console.log(this.users)
+     
     })
   }
   checkMasterRole(role: any) {
@@ -190,15 +203,28 @@ export class BoardMasterComponent implements OnInit {
     return this.page
   }
   getUsers() {
-    const params = this.getRequestParams(this.usernameoremail, this.getPage(), this.pageSize)
+    const params = this.getRequestParams(this.username, this.getPage(), this.pageSize)
     this.userService.getUsers(params).subscribe((res) => {
-      this.totalAccounts = res.totalItems
-      this.count = res.totalItems
+      this.totalAccounts = res.totalUsers
+      this.count = res.totalUsers
       console.log(this.currentUserRole)
       this.users = res.users?.map((user: any) => {
         return { ...user, editable: this.checkRoleCondition(user) }
       })
       console.log(this.users)
+    }, () => { this.noUserError = 'No users could be found' })
+  }
+  clearFilter(){
+    this.username=''
+    this.isSearched=false
+    const params = this.getRequestParams(this.username, this.getPage(), this.pageSize)
+    this.userService.getUsers(params).subscribe((res) => {
+      this.totalAccounts = res.totalUsers
+      this.count = res.totalUsers
+      this.users = res.users?.map((user: any) => {
+        return { ...user, editable: this.checkRoleCondition(user) }
+      })
+     
     }, () => { this.noUserError = 'No users could be found' })
   }
   checkRoleCondition(user: any) {
@@ -285,20 +311,21 @@ export class BoardMasterComponent implements OnInit {
       this.toastr.warning("Cannot delete user! An error has occured", error.message)
     })
   }
-  searchUsername() {
-    this.page = 1
-    this.keyword = true
-    this.getUsers()
-  }
   handlePageChange(event: number): void {
-    sessionStorage.setItem(Paging.PAGE_MASTER_HOME, JSON.stringify(event))
     this.page = event
-    this.getUsers()
+    sessionStorage.setItem(Paging.PAGE_MASTER_HOME, JSON.stringify(event))
+    if(this.username==''){
+      this.getUsers()
+    }
+    else{
+      this.searchUser()
+    }
+  
   }
 
   handlePageSizeChange(event: any): void {
     this.pageSize = event.target.value
-    this.page = 1
+    this.page = this.page
     this.getUsers()
   }
 

@@ -1,42 +1,37 @@
 <body>
   <div class="container bg-light">
     <!-- SEARCH BAR -->
-      <h3 id="header">ADMIN CONTROL PANEL</h3>
+    <h3 id="header">ADMIN CONTROL PANEL</h3>
     <div class="row">
       <div class="col-md-3">
         <input type="text" class="form-control" placeholder="Search by username or email" [(ngModel)]="username">
+        <div class="text-danger" *ngIf="isSearched">{{users.length}} results for '{{username}}'</div>
       </div>
       <div class="col-md-6 pt-2">
-        <button class="btn text-white" id='search' (click)="searchUser()">Search</button>
-        <button class="btn btn-secondary" style="margin-left:10px;height:3em;width:7em"(click)="this.getUsers()">Clear filters</button>
+        <button class="btn text-white" id='search' (click)="eventSearch()">Search</button>
+        <button class="btn btn-secondary" style="margin-left:10px;height:3em;width:7em" (click)="clearFilter()">Clear
+          filters</button>
       </div>
     </div>
-    <div *ngIf="this.users.length==0||this.users.length==null"
-    class="col-lg-12 col-md-12 col-xl-12">
-    <div class="text-danger" role="alert">
-      <h4 class="alert-heading">NO USER FOUND</h4>
-      <p>No users were found.</p>
-    </div>
-  </div>
     <!-- USER TABLE -->
     <div class="row">
       <div class="col-sm-2">
         <table class="table table-sm">
           <tbody>
-            <tr>
+            <tr *ngIf="!isSearched">
               <th scope="row">Total users:</th>
               <td>{{totalAccounts}}</td>
           </tbody>
         </table>
       </div>
     </div>
-    <table id='users'class="table table p-0.5">
+    <table id='users' class="table table p-0.5">
       <thead class="text-white" style="background-color: #2d80b8;">
         <tr>
           <th style="width:15%">User Name</th>
           <th style="width:20%">Email</th>
           <th style="width:15%">Role</th>
-          <th style="width:20%"class="text-center">Action</th>
+          <th style="width:10%">Action</th>
         </tr>
       </thead>
       <tbody class="px-5">
@@ -56,7 +51,7 @@
 
           </td>
           <td>
-            <div class="controlbuttons text-center">
+            <div class="controlbuttons">
               <button class="btn btn text-white" style="background-color: #318dca"
                 (click)="userModal(user.id)">View</button>&nbsp;
               <button class="btn btn text-white" *ngIf="user.editable" style="background-color: rgb(170, 22, 22);"
@@ -66,11 +61,17 @@
         </tr>
       </tbody>
     </table>
+    <div *ngIf="this.users.length==0||this.users.length==null" class="col-lg-12 col-md-12 col-xl-12">
+      <div class="alert alert-danger" role="alert">
+        <h4 class="alert-heading">NO USER FOUND</h4>
+        <p>No users were found.</p>
+      </div>
+    </div>
     <pagination-controls previousLabel="Prev" nextLabel="Next" [responsive]="true"
       (pageChange)="handlePageChange($event)" style="float:right;padding-top:27px"></pagination-controls>
 
 
-      <!-- DELETE CONFIRMATION MODAL -->
+    <!-- DELETE CONFIRMATION MODAL -->
     <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -83,8 +84,10 @@
               *ngFor="let role of selectedUser.roles">{{role['name']}}</strong>?
             . <strong class="text-danger">This is an irreversible action!</strong></div>
           <div class="modal-footer">
-            <button id="control" (click)="deleteUser(selectedUser.id)" type="button" class="btn text-white" style="background-color: #145580;">Yes</button>
-            <button id='control' #closeDeleteModal type="button" class="btn btn-outline-dark " data-bs-dismiss="modal">Cancel</button>
+            <button id="control" (click)="deleteUser(selectedUser.id)" type="button" class="btn text-white"
+              style="background-color: #145580;">Yes</button>
+            <button id='control' #closeDeleteModal type="button" class="btn btn-outline-dark "
+              data-bs-dismiss="modal">Cancel</button>
           </div>
         </div>
       </div>
@@ -92,7 +95,7 @@
 
 
 
-<!-- EDIT CONFIRMATION MODAL -->
+    <!-- EDIT CONFIRMATION MODAL -->
     <div class="modal" tabindex="-1" role="dialog" [ngStyle]="{'display':display}">
       <div class=" modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
@@ -113,9 +116,9 @@
               <tr>
                 <td>Role</td>
                 <td>
-                  <select [(ngModel)]='roleSelected' >
-                    <option [id]="role.id" *ngFor="let role of selectedRoles"
-                      [selected]="role.id===roleSelected.id" [ngValue]="role">{{role.tag}}</option>
+                  <select [(ngModel)]='roleSelected'>
+                    <option [id]="role.id" *ngFor="let role of selectedRoles" [selected]="role.id===roleSelected.id"
+                      [ngValue]="role">{{role.tag}}</option>
                   </select>
                   <label style="color:red" *ngIf="this.selectedUser.roles.length==0">Must have at least 1 role</label>
                 </td>
@@ -126,7 +129,8 @@
               </tr>
               <tr>
                 <td>Phone numbers</td>
-                <input type='tel' style="height:50px" [style]="width" [(ngModel)]="selectedUser.phone" value={{selectedUser.phone}}>
+                <input type='tel' style="height:50px" [style]="width" [(ngModel)]="selectedUser.phone"
+                  value={{selectedUser.phone}}>
               </tr>
               <br>
               <tr>

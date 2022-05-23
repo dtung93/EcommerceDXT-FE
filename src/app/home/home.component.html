@@ -30,9 +30,11 @@
                 aria-hidden="true" ></span></button>
           </div>
           <div class="modal-body">
+            <app-loader></app-loader>
            <!-- PRODUCT FORM -->
             <form [formGroup]="productForm" (ngSubmit)="submitProductForm()">
               <table [style]="width">
+               
                 <tr>
                   <td>Product name</td>
                   <input type='text' [style]="width" formControlName="name" placeholder="Product name">
@@ -90,9 +92,8 @@
     <!-- FILTER AND SEARCH  -->
     <input style="height:45px" id="filter-control" name="search" type="text" class="form-control" placeholder="Search by product name"
     [(ngModel)]='productName'/>
-    <select style="width: fit-content;height:45px;margin-top:5px" [(ngModel)]="category">
-      <option value="" selected hidden disabled>Filter By Category</option>
-      <option value="">All categories</option>
+    <select style="width: max-content;height:45.5px;margin-top:5px" [(ngModel)]="category">
+      <option value="" selected hidden disabled>All categories</option>
       <option value="Home">Home</option>
       <option value="Beauty">Beauty</option>
       <option value="Health">Health</option>
@@ -102,8 +103,10 @@
       <option value="Clothing">Clothing</option>
       <option value="Toys">Toy</option>
       <option value="Kids">Kids</option>
+      <option value="Movies">Movies</option>
       <option value="Automotive">Automotive</option>
       <option value="Grocery">Grocery</option>
+      <option value="Computers">Computers</option>
     </select>
     <div class="form-group" style="width: max-content;margin-top:4px">
       <div *ngFor="let x of sortOptions">
@@ -111,15 +114,16 @@
         x.name }}
       </div>
     </div>
-    <button class="btn btn-default" id="search" type="button" (click)="searchProducts()">
+    <button  style="margin-left: 2rem;" class="btn btn-default" id="search" type="button" (click)="eventSearch()">
       Search
     </button>
     <button id="remove" *ngIf="products?.length !== null" (click)="backToResults()" class="btn btn-secondary">
       Clear filters
     </button>
-    <div *ngIf="keyword && name !== ''; hat" style="color: rgb(202, 45, 45); margin-left: 15px">
-      Search results for '{{ this?.name }}' in
-      <span *ngIf="hasCategory">{{ this?.category }}</span>
+    <div class="h5" *ngIf="!isSearched&&isLoggedIn"> Total products: {{count}}</div>
+    <div *ngIf="isSearched" style="color: rgb(202, 45, 45); margin-left: 15px">
+     {{products.length}} results for '{{ this?.productName }}' 
+      <span *ngIf="hasCategory">in {{ this?.category }}</span>
     </div>
   </div>
 
