@@ -26,6 +26,10 @@
           <td><input type="text" placeholder="Phone numbers" formControlName="phone" >
             <div class="text-danger" *ngIf="isSubmitted&&this.orderForm.controls['phone'].invalid">Invalid phone numbers</div></td>
         </tr>
+        <tr>
+          <td>Or use your default information</td>
+          <td><input type="checkbox" id="info" (change)="getContact($event)"></td>
+        </tr>
         <tr><td colspan="2"><hr></td></tr>
         <tr>
        <td colspan="4"> <h6>Please review your order detail one more time before payment</h6></td>

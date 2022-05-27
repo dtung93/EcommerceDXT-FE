@@ -7,10 +7,17 @@
         <input type="text" class="form-control" placeholder="Search by username or email" [(ngModel)]="username">
         <div class="text-danger" *ngIf="isSearched">{{users.length}} results for '{{username}}'</div>
       </div>
-      <div class="col-md-6 pt-2">
+      <div class="col-md-3 pt-2">
         <button class="btn text-white" id='search' (click)="eventSearch()">Search</button>
         <button class="btn btn-secondary" style="margin-left:10px;height:3em;width:7em" (click)="clearFilter()">Clear
           filters</button>
+      </div>
+      <div class="col-md-2">
+        <select [(ngModel)]="displayNumber" (change)="displayItems(displayNumber)" >
+          <option value="8">8 items per page</option>
+          <option value="12">12 items per page</option>
+          <option value="20">20 items per page</option>
+        </select>
       </div>
     </div>
     <!-- USER TABLE -->

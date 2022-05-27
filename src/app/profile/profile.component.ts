@@ -20,34 +20,45 @@ export class ProfileComponent implements OnInit {
       newPassword: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(50)]],
       confirmNewPassword: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(50)]]
     }, { validator: confirmField('newPassword', 'confirmNewPassword') })
-
+this.updateProfileForm=this.fb.group({
+id:[],
+email:['',[Validators.required]],
+phone:['',[Validators.required]],
+address:['',[Validators.required]]
+})
   }
   ngOnInit(): void {
     if (this.token.getToken()) {
-      this.selectedUser = this.token.getUser()
-      if (this.selectedUser.enabled == true) {
-        if (this.selectedUser.roles.find((element) => element == roleName.ma)) {
-          this.isMaster = true
-          console.log('Master? ' + this.isMaster)
-        }
-        if (this.selectedUser.roles.find(element => element == roleName.a)) {
-          this.isAdmin = true
-          console.log("Admin? " + this.isAdmin)
-        }
-        if (this.selectedUser.roles.find(element => element == roleName.mo))
-         { this.isModerator = true
-        console.log("Moderator? " + this.isModerator)}
-      }
-      else {
-        this.isDisabled = true
-        this.toastr.error('Account not activated!')
-      }
+      let userId=this.token.getUser().id
+      this.userService.getUser(userId).subscribe((res)=>{
+          this.selectedUser=res
+          console.log(this.selectedUser)
+          if (this.selectedUser.enabled == true) {
+            if (this.selectedUser.roles.find((element) => element.name == roleName.ma)) {
+              this.isMaster = true
+              console.log('Master? ' + this.isMaster)
+            }
+            if (this.selectedUser.roles.find(element => element.name == roleName.a)) {
+              this.isAdmin = true
+              console.log("Admin? " + this.isAdmin)
+            }
+            if (this.selectedUser.roles.find(element => element.name == roleName.mo))
+             { this.isModerator = true
+            console.log("Moderator? " + this.isModerator)}
+          }
+          else {
+            this.isDisabled = true
+            this.toastr.error('Account not activated!')
+          }
+      })
+  
     }
   }
   pushBottom = false
   username: string = ''
   isSubmitted = false
   changePasswordForm: FormGroup
+  updateProfileForm:FormGroup
   passwordError: string = ''
   roleSelected: any = null
   display = 'none'
@@ -59,6 +70,7 @@ export class ProfileComponent implements OnInit {
   selectedUser = new User()
   selectedUserRoles: any[] = []
   width = 'width:100%;backround-color:#145580'
+  updateProfileError=''
   selectedRoles: any = [
     { id: 1, name: 'ROLE_USER', tag: 'User' },
     { id: 2, name: 'ROLE_MODERATOR', tag: 'Moderator' }, { id: 3, name: "ROLE_ADMIN", tag: 'Admin' }
@@ -117,9 +129,9 @@ export class ProfileComponent implements OnInit {
       this.closeUpdateModal?.nativeElement.click();
       this.toastr.info("Your account is updated!")
     }, error => {
-      console.log(error.message)
+      console.log(error.error.errorMessage)
+      this.updateProfileError=error.error.errorMessage
     })
-
   }
 
   addRole(id: any) {

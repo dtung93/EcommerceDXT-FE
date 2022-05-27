@@ -73,6 +73,18 @@ export class BoardAdminComponent implements OnInit {
   showUserPanel = false
   display = 'none'
   isSearched=false
+  displayNumber=0
+  displayItems(number:number){
+    const params = this.getRequestParams(this.username,this.page=1, this.pageSize=number)
+    this.userService.getUsers(params).subscribe((res) => {
+      this.totalAccounts = res.totalUsers
+      this.count = res.totalUsers
+      this.users = res.users?.map((user: any) => {
+        return { ...user, editable: this.checkRoleCondition(user) }
+      })
+      console.log(this.users)
+    })
+  }
   addUserPanel(){
    this.showUserPanel =!this.showUserPanel
    console.log(this.showUserPanel)

@@ -72,8 +72,8 @@ export class HomeComponent implements OnInit {
   outOfStock=false
   userNotActivated=false
   sortOptions = [
-    { id: 1, name: 'Sort by ascending price', value: 'ascending' },
-    { id: 2, name: 'Sort by descending price', value: 'descending' }
+    { id: 1, name: 'Sort by ascending price', value: 'ascending',isSelected: false  },
+    { id: 2, name: 'Sort by descending price', value: 'descending',isSelected: false  }
   ]
   categories: any = [
     { name: 'Shoes' }, { name: 'Cars' }, { name: 'Health' },
@@ -82,9 +82,22 @@ export class HomeComponent implements OnInit {
     { name: 'Movies' }, { name: 'Grocery' }
   ]
   isSearched=false
-  sortedOptions(value: string) {
-    this.sortValue = this.sortOptions.find(x => x.value == value)?.value
-    this.sortProducts()
+
+
+  displayItemPerPage(items:number){
+    this.page=1;
+    this.pageSize=items
+    this.searchProducts()
+  }
+  sortedOptions(item:any) {
+    this.sortValue = this.sortOptions.find(x => x.value == item.value)?.value
+    this.sortOptions.forEach((option)=>{
+      if(option.id==item.id)
+    option.isSelected=!option.isSelected
+    else{
+      option.isSelected=false
+    }
+    })
   }
 
   showDeleteToast(productname: string) {
@@ -121,38 +134,8 @@ export class HomeComponent implements OnInit {
       return this.toastr.error('Failed to add product', 'Please check the fields again')
     }
   }
-  getRequestParams(category: string, searchTitle: string, page: number, pageSize: number): any {
-    let params: any = {}
-    if (searchTitle) {
-      params[`name`] = searchTitle
-    }
-    if (category) {
-      params[`category`] = category
-      this.hasCategory = true
-    }
-    if (page) {
-      params[`page`] = page-1
-    }
-    if (pageSize) {
-      params[`size`] = pageSize
-    }
-    return params
-  }
-  getSearchParams(category:string,productName:string,page:number){
-    let params:any={}
-    if (productName) {
-      params[`name`] = productName
-    }
-    if (category) {
-      params[`category`] = category
-      this.hasCategory = true
-    }
-    if(page){
-      params[`page`]=page-1
-    }
-    console.log(params)
-    return params
-  }
+
+ 
   getPage() {
     const page = sessionStorage.getItem(Paging.PAGE_HOME)
     this.page = page ? +page : 1
@@ -160,10 +143,15 @@ export class HomeComponent implements OnInit {
   }
   //http service to get and display the array of products, paging information from API with parameters category and name, page and page sizee
   getProducts(): void {
-    const params = this.getRequestParams(this.category, this.name, this.getPage(), this.pageSize)
-    this.productService.getProducts(params).subscribe(response => {
-      console.log(response)
-      const { products, totalItems } = response
+    const data={
+      productName:"",
+      page:this.page-1,
+      pageSize:this.pageSize,
+     category:this.category="",
+     sort:this.sortValue=''
+     }
+    this.productService.getProducts(data).subscribe(response => {
+      const { products, totalItems } = response.data.response
       this.products = products
       this.count = totalItems
       this.HasProducts = true
@@ -172,15 +160,20 @@ export class HomeComponent implements OnInit {
   }
   searchProducts(){
     this.isSearched=true
-    const params = this.getSearchParams(this.category,this.productName,this.page)
-    console.log(params)
-    this.productService.getProducts(params).subscribe(response => {
-      const { products, totalItems,currentPage } = response
+    const data={
+     productName:this.productName,
+     page:this.page-1,
+     pageSize:this.pageSize,
+    category:this.category,
+    sort:this.sortValue
+    }
+    this.productService.getProducts(data).subscribe(response => {
+      console.log(response.data.response.products)
+      const { products, totalItems,currentPage } = response.data.response
       this.products = products
       this.count = totalItems
       this.page=currentPage+1
       this.HasProducts = true
-      console.log(response)
     }, () => { this.toastr.error('No products could be found') })
   }
 
@@ -189,62 +182,37 @@ export class HomeComponent implements OnInit {
     this.name==null
     this.productName=''
     this.isSearched=false
-    const params = this.getRequestParams(this.name = '', this.category = '', this.page, this.pageSize)
-    this.productService.getProducts(params).subscribe(response => {
-      const { products, totalItems } = response
+    this.sortValue=""
+    const data={
+      productName:"",
+      page:0,
+      pageSize:this.pageSize,
+     category:"",
+     sort:this.sortValue
+     }
+    this.productService.getProducts(data).subscribe(response => {
+      const { products, totalItems } = response.data.response
       this.products = products //array of products
       this.count = totalItems
-      console.log(response)
     }, () => {
       this.toastr.error('No products could be found!')
     })
   }
-  getSortParams(page: number, pageSize: number, value: string) {
-    let params: any = {}
-    if (value) {
-      params[`value`] = value
-    }
-    if (page) {
-      params[`page`] = page-1
-    }
-    if (pageSize) {
-      params[`size`] = pageSize
-    }
-    return params
-  }
-  sortProducts() {
-    const params = this.getSortParams(this.page, this.pageSize, this.sortValue);
-    console.log(params)
-    return this.productService.sortProduct(params).subscribe(response => {
-      const { products, totalItems } = response
-      this.products = products
-      this.count = totalItems
-      console.log(response)
-    }, error => console.log(error))
-  }
+
+
   handlePageChange(event: number): void {
-    
+    console.log(event)
     this.page = event
+   
     sessionStorage.setItem(Paging.PAGE_HOME, JSON.stringify(event))
-    if (this.sortValue == null&&this.productName==''){
-      this.getProducts();
-    }
-    else if(this.sortValue!=null&&this.productName==''){
-      this.sortProducts()
-    }
-    else if(this.sortValue==null&&this.productName!=''){
       this.searchProducts()
-    }
+    
   }
   eventSearch(){
     this.page=1
     this.searchProducts()
   }
-  handlePageSizeChange(event: any): void {
-    this.pageSize = event.target.value
-    this.page = this.page
-    this.getProducts()
-  }
+
   delete(id: any): void {
     this.productService.deleteProduct(id).subscribe((res) => {
       console.log(id)
@@ -253,7 +221,7 @@ export class HomeComponent implements OnInit {
       console.log(selectedProduct)
       this.display = 'none'
       this.showDeleteToast(selectedProduct?.name + ' is deleted')
-    }, error => {
+    }, () => {
       this.toastr.error('You dont have the right or permission to do this action')
       this.display = 'none'
     })

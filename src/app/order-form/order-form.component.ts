@@ -7,13 +7,16 @@ import { ToastrService } from 'ngx-toastr';
 import { ProductService } from '../service/product.service';
 import { OrderService } from '../service/order.service';
 import { NgxSpinner, NgxSpinnerService } from 'ngx-spinner';
+import { OutputFileType } from 'typescript';
+import { UserService } from '../service/user.service';
+import { TokenStorageService } from '../service/token-storage.service';
 @Component({
   selector: 'app-order-form',
   templateUrl: './order-form.component.html',
   styleUrls: ['./order-form.component.scss']
 })
 export class OrderFormComponent implements OnInit {
-  constructor(private spinner: NgxSpinnerService, private orderService: OrderService, private productService: ProductService, private toastr: ToastrService, private cartService: CartService, private fb: FormBuilder, private checkOutService: CheckOutService) {
+  constructor(private userService:UserService,private token:TokenStorageService, private orderService: OrderService, private toastr: ToastrService, private cartService: CartService, private fb: FormBuilder, private checkOutService: CheckOutService) {
     this.orderForm = this.fb.group({
       name: ['', [Validators.required,]],
       address: ['', [Validators.required]],
@@ -117,7 +120,7 @@ export class OrderFormComponent implements OnInit {
           this.cartService.updateCartTotal(0)
           this.orderService.newOrder(orderDetails).subscribe((res) => {
             console.log(res)
-            this.toastr.info('Payment was processed successfully! Thank you for your order# '+res.id)
+            this.toastr.info('Thank you for your oder! Your payment was processed successfully! Your order number is '+res.id)
             setInterval(()=>location.href='/my-orders',2000)
           })
         }
@@ -147,5 +150,20 @@ export class OrderFormComponent implements OnInit {
       window.document.body.appendChild(script);
     }
   }
-
+getContact(event:any){
+  if(event.target.checked){
+   const user=this.token.getUser()
+   console.log(user)
+   const userId=this.token.getUser().id
+   this.userService.getUser(userId).subscribe((res:any)=>{
+    this.orderForm.patchValue({
+      name:res.username,
+      address:res.address,
+      phone:res.phone,
+      email:res.email
+    })
+   })
+  }
+ else this.orderForm.reset()
+}
 }

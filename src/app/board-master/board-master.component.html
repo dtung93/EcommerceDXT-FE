@@ -4,19 +4,27 @@
       <h3 id="header">MANAGE USERS</h3>
     </div>
 
-    <div class="row">
+    <!-- FILTER AND SEARCH -->
+    <div class="row mt-3">
       <div class="col-md-3">
         <input type="text" class="form-control" placeholder="Search by username or email" [(ngModel)]="username">
       <div class="text-danger mt-1" *ngIf="isSearched"><span style="font-size:20px">{{totalAccounts}}</span> results with '{{username}}'</div>
       </div>
-      <div class="col-md-6 ">
-        <button class="btn text-white" style="background-color:#3895d3" id='search'
+      <div class="col-md-3 " style="height:45px">
+        <button class="btn text-white" style="background-color:#3895d3;height:45px" id='search'
           (click)="eventSearch()">Search</button>
-        <button class="btn btn-secondary" style="margin-left:10px;height:3em;width:7em" (click)="this.clearFilter()">Clear
+        <button class="btn btn-secondary" style="margin-left:10px;height:45px;width:7em" (click)="this.clearFilter()">Clear
           filters</button>
       </div>
-      <div class="col-md-3 mb-3">
-        <button (click)="logForm()" type="button" class="btn btn text-white add-user" data-bs-toggle="modal"
+      <div class="col-md-2">
+        <select (change)="displayUser(displayUserNumber)" [(ngModel)]="displayUserNumber" style="width: max-content;height:max-content;margin-left:5px">
+          <option selected value="6">6 items per page</option>
+          <option value="12">12 items per page</option>
+          <option value="18">18 items per page</option>
+          </select>
+      </div>
+      <div class="col-md-4 ">
+        <button style="height:45px;float:right"(click)="logForm()" type="button" class="btn btn text-white add-user" data-bs-toggle="modal"
           data-bs-target="#exampleModal">
           <span class="bg-white plus"><i class="fa fa-plus"></i></span> Add New User
         </button>
@@ -103,7 +111,7 @@
       </div>
     </div>
 
-    <div class="row">
+    <div class="row mt-2">
       <div class="col-sm-2">
         <table class="table table-sm">
           <tbody>
@@ -119,10 +127,10 @@
     <table id='users' class="table table p-0.5">
       <thead class="text-white" style="background-color: #3895d3;">
         <tr>
-          <th style="width:20%">User Name</th>
-          <th style="width:30%">Email</th>
-          <th style="width:25%">Role</th>
-          <th style="width:25%" >Action</th>
+          <th style="width:10%">User Name</th>
+          <th style="width:10%">Email</th>
+          <th style="width:5%">Role</th>
+          <th style="width:10%" class="text-center" >Action</th>
         </tr>
       </thead>
       <tbody class="px-5">
@@ -143,7 +151,7 @@
 
           </td>
           <td>
-            <div [ngClass]="{'hide-buttons':this.currentUsername===user.username}">
+            <div class="text-center" [ngClass]="{'hide-buttons':this.currentUsername===user.username}">
               <button class="btn btn text-white" style="background-color: #318dca"
                 (click)="userModal(user.id)">View</button>&nbsp;
               <button class="btn btn text-white" *ngIf="user.editable" style="background-color: rgb(170, 22, 22);"
@@ -200,8 +208,8 @@
           </div>
           <div class="modal-body bg-light">
             <div class="text-danger" *ngIf="updateError!=''">Update failed!. {{updateError}}</div>
+          <form [formGroup]="updateUserForm" (submit)="updateUser()">
             <table [style]="width">
-              <td><input type='hidden' [(ngModel)]="selectedUser.id" value={{selectedUser.id}}></td>
               <tr class="mb-3">
                 <td>Username</td>
                 <div style="font-weight: bold;font-size: 20px;">{{selectedUser.username}}</div>
@@ -210,35 +218,44 @@
               <tr style="margin-top:15px">
                 <td>Role</td>
                 <td>
-                  <select [(ngModel)]='roleSelected'>
+                  <select formControlName="roleSelected">
                     <option [id]="role.id" *ngFor="let role of selectedRoles" [selected]="role.id==roleSelected.id"
-                      [ngValue]="role">{{role.tag}}</option>
+                     [ngValue]="role">{{role.tag}}</option>
                   </select>
-                  <label style="color:red" *ngIf="this.selectedUser.roles.length==0">Must have at least 1 role</label>
+                  <label style="color:red" *ngIf="updateUserForm.controls['roleSelected'].invalid&&updateUserSubmitted">Must have at least 1 role</label>
                 </td>
               </tr>
               <tr>
-                <td>Email</td>
-                <td> <input type='text' [style]="width" [(ngModel)]="selectedUser.email" value={{selectedUser.email}}>
+                <td>Email*</td>
+                <td> <input type='text' [style]="width" formControlName="email" value={{selectedUser.email}}>
+                  <div class="text-danger" *ngIf="updateUserForm.controls['email'].invalid&&updateUserSubmitted">Email must be 6 characters minimum</div>
                 </td>
               </tr>
               <tr>
-                <td>Phone</td>
-                <td> <input type="text" [(ngModel)]="selectedUser.phone" value={{selectedUser.phone}}></td>
+                <td>Phone*</td>
+                <td> <input type="text" value={{selectedUser.phone}} formControlName="phone">
+                <div class="text-danger" *ngIf="updateUserForm.controls['phone'].invalid&&updateUserSubmitted">Phone required</div>
+                </td>
               </tr>
               <tr>
                 <td>Address</td>
-                <td><input type="text" [(ngModel)]="selectedUser.address" value={{selectedUser.address}}></td>
+                <td><input type="text"  value={{selectedUser.address}} formControlName="address"></td>
               </tr>
+              <tr>
+                <td></td>
+                <td>  <div class="modal-footer">
+                  <tr><button *ngIf="selectedUser.roles[0]?.id!==4" id="control" class='btn btn text-white'
+                      style="background-color: #3085bd;">Update</button>
+                  </tr>
+                  <button id="control" type="button" class="btn btn-outline-secondary"
+                    (click)="onCloseHandled()">Cancel</button>
+                </div></td>
+              </tr>
+            
             </table>
+          </form>
           </div>
-          <div class="modal-footer">
-            <tr><button *ngIf="selectedUser.roles[0]?.id!==4" id="control" class='btn btn text-white'
-                style="background-color: #3085bd;" (click)='updateUser()'>Update</button>
-            </tr>
-            <button id="control" type="button" class="btn btn-outline-secondary"
-              (click)="onCloseHandled()">Cancel</button>
-          </div>
+         
         </div>
       </div>
     </div>
