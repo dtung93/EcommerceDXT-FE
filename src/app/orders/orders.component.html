@@ -14,11 +14,11 @@
 <tbody>
 <tr *ngFor="let order of orders">
 <td>{{order.id}}</td>
-<td>{{order.date}}</td>
+<td>{{order.date | date : "dd-MM-yyyy hh:mm a"}}</td>
 <td *ngIf="isAdmin" >{{order.cart.username}}</td>
 <td>{{order.cart.totalItems}}</td>
 <td>{{order.cart.grandTotal}}</td>
-<td>PAID</td>
+<td class="text-success">PAID</td>
 <td>
 <a routerLink="/order-details/{{order.id}}"><button class="text-white btn" style="background-color:#2d8bca;width:120px">Order Details</button></a>
 

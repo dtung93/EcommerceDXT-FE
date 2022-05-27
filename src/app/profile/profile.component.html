@@ -3,8 +3,8 @@
     You must activate your account first. Please check your email
   </div>
 </div>
-<div class="container" *ngIf="selectedUser&&selectedUser.enabled==true;">
-
+<div class="container" *ngIf="selectedUser&&selectedUser.enabled">
+  <app-loader></app-loader>
   <div class="row">
     <!-- PROFILE INFO -->
     <h3 style="text-align: center;background-color: #3492d1;" class="text-white">Your profile</h3>
@@ -14,6 +14,7 @@
       logged in as <span *ngIf="isModerator"><strong>Moderator</strong></span>
       <span *ngIf="isAdmin"><strong>Admin</strong></span> <span *ngIf="isMaster"><strong>Master</strong></span> </span>
   </p>
+
 
 
 
@@ -77,16 +78,16 @@
         <div class=" modal-dialog modal-dialog-centered" role="document">
           <div class="modal-content">
             <div class="modal-header text-white" style="background-color:#3492d1">
-              <h4 class="modal-title">Change password</h4>
+              <h4 class="modal-title">Change Password</h4>
               <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Close"><span
                   aria-hidden="true"></span></button>
             </div>
-            <div class="text-danger" style="text-align:center" *ngIf="isSubmitted&&(this.passwordError!=='')">An error has occurred. {{passwordError}}</div>
+            <div class="text-danger" style="text-align:center" *ngIf="isSubmitted&&(this.passwordError!=='')">{{passwordError}}</div>
             <div class="modal-body bg-light">
               <form [formGroup]="changePasswordForm" (submit)="submitChangePasswordForm()">
-              <table id="change-password" [style]="width">
+              <table id="change-password" >
                 <tr>
-                  <td [ngClass]="pushBottom?'push-bottom':' '">Current password</td>
+                  <td  [ngClass]="pushBottom?'push-bottom':' '">Current password</td>
                   <td>
                     <input  style="width:15rem" type='password'placeholder='Your current password'formControlName="oldPassword">
                     <div class="text-danger" *ngIf="isSubmitted&&this.changePasswordForm.controls['oldPassword'].invalid">Please enter your current password</div>
@@ -110,7 +111,7 @@
                 </tr>
                 
               </table>
-              <div class="modal-footer">
+              <div class="modal-footer mt-3">
                 <tr><button type="submit" #control class='btn btn text-white control' style="background-color: #2d8bca;"
                     >Update Password</button></tr>
                 <button type="button" class="btn btn-outline-secondary control" data-bs-dismiss="modal"
@@ -134,9 +135,10 @@
               <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-              <form name="profile">
+              <div class="text-danger" style="font-size:15px" *ngIf="updateProfileError!=''">{{updateProfileError}}</div>
+              <form [formGroup]="updateProfileForm" (submit)="updateUser()">
               <table [style]="width">
-                <td><input type='hidden' [ngModel]="selectedUser.id" value={{selectedUser.id}} name="id"></td>
+                <td><input type='hidden'formControlName="id" value={{selectedUser.id}} name="id"></td>
                 <tr>
                   <td>Username</td>
 
@@ -154,21 +156,21 @@
             </tr> -->
                 <tr>
                   <td>Email</td>
-                  <input name="email" type='text' [style]="width" [(ngModel)]="selectedUser.email" value={{selectedUser.email}} name="email">
+                  <input name="email" type='text' [style]="width"  value={{selectedUser.email}} formControlName="email">
                 </tr>
                 <tr>
                   <td>Phone Numbers</td>
-                  <input  type='text' [style]="width" [(ngModel)]="selectedUser.phone" value={{selectedUser.phone}} name="phone">
+                  <input  type='text' [style]="width" value={{selectedUser.phone}} formControlName="phone">
                 </tr>
                 <tr>
                   <td>Address</td>
-                  <input type='text' [style]="width" [(ngModel)]="selectedUser.address" value={{selectedUser.address}} name="address">
+                  <input type='text' [style]="width"  value={{selectedUser.address}} formControlName="address">
                 </tr>
               </table>
               </form>
             </div>
             <div class="modal-footer">
-              <button (click)="updateUser()" type="button" class="btn btn-primary control"
+              <button type="button" class="btn btn-primary control"
                 style="background-color:#2d8bca">Update Profile</button>
               <button #closeUpdateModal type="button" class="btn btn-outline-secondary control"
                 data-bs-dismiss="modal">Close</button>

@@ -63,7 +63,7 @@ export class CartComponent implements OnInit {
     this.selectedItem = item
     const data = {
       id: this.selectedItem.product.id,
-      quantity: event.target.value
+      quantity: parseInt(event.target.value? event.target.value : 0) 
     }
     this.cartService.setItemQuantity(data).subscribe((res) => {
       this.items = res.items.sort(function (a: any, b: any) {

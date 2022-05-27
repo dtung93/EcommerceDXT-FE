@@ -17,12 +17,16 @@ product=new Product()
     this.getProduct(this.route.snapshot.params['id'])
     if(this.token.getToken()){
       this.roles=this.token.getUser().roles
-     if(this.roles.includes("ROLE_MODERATOR")||this.roles.includes("ROLE_ADMIN")||this.roles.includes('ROLE_MASTER')){
+     if(this.roles.includes("ROLE_MODERATOR")&&this.token.getUser().enabled||this.roles.includes("ROLE_ADMIN")&&this.token.getUser().enabled||this.roles.includes('ROLE_MASTER')&&this.token.getUser().enabled){
        this.showButton=true
  
      }
-     else{this.showButton=false
-    this.showCart=true}
+     else{
+       this.showButton=false
+       if(this.token.getUser().enabled){ 
+         this.showCart=true
+      }
+   }
     }
     console.log(this.product);
   }
@@ -111,7 +115,7 @@ this.api.updateProduct(data).subscribe((res)=>{
 }
 addProductToCart(){
   if(!this.token.getToken()){
-    this.toastr.info('Please sign in to use this service')
+    this.toastr.error('Please sign in to use this service')
   }
   else{
     const productId={id:this.product.id}
