@@ -21,6 +21,7 @@ export class OrderDetailsComponent implements OnInit {
         this.order=res
         this.items=res.cart.items
         console.log(this.order)
+        console.log(res)
     })
   }
 }

@@ -8,14 +8,14 @@ import { Observable } from 'rxjs';
 export class OrderService {
 apiURL="http://localhost:8080/api/order/"
   constructor(private http:HttpClient) { }
-getAllOrders():Observable<any>{
-  return this.http.get(this.apiURL+'all-orders')
+getAllOrders(data:any):Observable<any>{
+  return this.http.post(this.apiURL+'all-orders',data)
 }
 getOrderDetails(id:number):Observable<any>{
   return this.http.get(this.apiURL+`details/${id}`)
 }
-getOrder():Observable<any>{
-  return this.http.get(this.apiURL+'my-order')
+getOrder(data:any):Observable<any>{
+  return this.http.post(this.apiURL+'my-order',data)
 }
 newOrder(data:any):Observable<any>{
 return this.http.post(this.apiURL+'new-order',data)

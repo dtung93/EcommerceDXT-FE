@@ -156,15 +156,15 @@
             </tr> -->
                 <tr>
                   <td>Email</td>
-                  <input name="email" type='text' [style]="width"  value={{selectedUser.email}} formControlName="email">
+                  <input name="email" type='text' [style]="width"  value={{email}} formControlName="email">
                 </tr>
                 <tr>
                   <td>Phone Numbers</td>
-                  <input  type='text' [style]="width" value={{selectedUser.phone}} formControlName="phone">
+                  <input  type='text' [style]="width" value={{phone}} formControlName="phone">
                 </tr>
                 <tr>
                   <td>Address</td>
-                  <input type='text' [style]="width"  value={{selectedUser.address}} formControlName="address">
+                  <input type='text' [style]="width"  value={{address}} formControlName="address">
                 </tr>
               </table>
               </form>
@@ -196,9 +196,9 @@
                   <td style="padding-top: 22px;">
                     <select (change)="onChangeRole($event)">
                       <option [id]="role.id" *ngFor="let role of selectedRoles"
-                        [selected]="role.name===selectedUser.roles[0]" [value]="role.id">{{role.tag}}</option>
+                        [selected]="role.name==selectedUser.roles[0].name" [value]="role.id">{{role.tag}}</option>
                     </select>&nbsp;
-
+                      
                   </td>
 
                 </tr>

@@ -13,7 +13,7 @@
           filters</button>
       </div>
       <div class="col-md-2">
-        <select [(ngModel)]="displayNumber" (change)="displayItems(displayNumber)" >
+        <select style="height:49px" [(ngModel)]="displayNumber" (change)="displayItems(displayNumber)" >
           <option value="8">8 items per page</option>
           <option value="12">12 items per page</option>
           <option value="20">20 items per page</option>
@@ -111,8 +111,9 @@
             <button type="button" class="btn-close bg-white" (click)="onCloseHandled()"><span
                 aria-hidden="true"></span></button>
           </div>
-          <label for="error" style="color:red" *ngIf="updateError!=''">Update failed! {{updateError}}</label>
+          <label for="error" class="text-danger" *ngIf="error&&updateError!=''">Update failed! {{updateError}}</label>
           <div class="modal-body bg-light">
+          
             <table [style]="width">
               <td><input type='hidden' [(ngModel)]="selectedUser.id" value={{selectedUser.id}}></td>
               <tr>
@@ -132,17 +133,17 @@
               </tr>
               <tr>
                 <td>Email</td>
-                <input type='text' [style]="width" [(ngModel)]="selectedUser.email" value={{selectedUser.email}}>
+                <input id="input-email" type='text' [style]="width" value={{selectedUser.email}} [(ngModel)]="email">
               </tr>
               <tr>
                 <td>Phone numbers</td>
-                <input type='tel' style="height:50px" [style]="width" [(ngModel)]="selectedUser.phone"
-                  value={{selectedUser.phone}}>
+                <input type='tel' style="height:50px" [style]="width" 
+                  value={{selectedUser.phone}} [(ngModel)]="phone">
               </tr>
               <br>
               <tr>
                 <td>Address</td>
-                <input type='text' [style]="width" [(ngModel)]="selectedUser.address" value={{selectedUser.address}}>
+                <input type='text' [style]="width" value={{selectedUser.address}} [(ngModel)]="address">
               </tr>
             </table>
           </div>

@@ -54,6 +54,9 @@ address:['',[Validators.required]]
   
     }
   }
+  address:any
+  phone:any
+  email:any
   pushBottom = false
   username: string = ''
   isSubmitted = false
@@ -82,7 +85,9 @@ address:['',[Validators.required]]
     this.userService.getUser(id).subscribe((res) => {
       this.selectedUser = res
       this.selectedUser.roles = res.roles
-      console.log(this.selectedUser)
+      this.email=res.email
+      this.phone=res.phone
+      this.address=res.address
     })
   }
 
@@ -91,7 +96,6 @@ address:['',[Validators.required]]
   }
   userModal() {
     this.display = 'block'
-    console.log(this.selectedUser)
   }
   updateRole(): void {
     const data = {
@@ -160,6 +164,7 @@ address:['',[Validators.required]]
       name: roleUpdate.name
     }
     this.selectedUser.roles = [roleParam];
+    console.log(this.selectedUser.roles)
   }
   submitChangePasswordForm() {
     this.isSubmitted = true

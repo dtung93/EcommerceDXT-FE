@@ -2,18 +2,14 @@
   <header class="jumbotron" *ngIf="notUser">
     <h3 id="header">MANAGE PRODUCTS</h3>
   </header>
-  <div class="row" style="background-color:#f9fbfd" *ngIf="notUser">
-    <table>
+  <div class="row mt-1" style="background-color:#f9fbfd" *ngIf="notUser">
       <tr>
-        <td style="padding-left:10px">
-          <h4 style="color:grey">ADD NEW PRODUCT</h4>
-        </td>
+ 
         <td style="float:right;margin-right:20px;"> <button id="add-product" type="button" class="btn btn-primary"
             data-bs-toggle="modal" data-bs-target="#productModal">
             <span class="bg-white plus"><i class="fa fa-plus mt-1"></i></span> ADD NEW PRODUCT
           </button></td>
       </tr>
-    </table>
 
 
     <!-- ADD NEW PRODUCT-MODAL -->
@@ -91,7 +87,7 @@
       </div>
     </div>
   </div>
-  <div class="row" *ngIf="HasProducts">
+  <div class="row mt-1" *ngIf="HasProducts">
 
     <!-- FILTER AND SEARCH  -->
     <input style="height:45px" id="filter-control" name="search" type="text" class="form-control"
@@ -126,8 +122,8 @@
     </button>
 
     <div *ngIf="isSearched" style="color: rgb(202, 45, 45); margin-left: 15px">
-      {{products.length}} results for '{{ this?.productName }}'
-      <span *ngIf="hasCategory">in {{ this?.category }}</span>
+      {{products.length}} results <span *ngIf="productName!=''">for '{{productName }}'</span>
+      <span *ngIf="category!=''"> in {{category }}</span>
     </div>
   </div>
 
@@ -173,8 +169,8 @@
         <div class="p-2 bd-highlight mt-3">    <pagination-controls *ngIf="HasProducts" previousLabel="Prev" nextLabel="Next" [responsive]="true"
           (pageChange)="handlePageChange($event)" style="float:right;margin-left:-50px" class="my-pagination">
         </pagination-controls></div>
-        <div class="p-2 bd-highlight"><select (change)="displayItemPerPage(pageSize) "
-          style="width: max-content;margin-left:5px" [(ngModel)]="pageSize">
+        <div style="max-height:50px"  class="p-2 "><select id="pageSize" (change)="displayItemPerPage(pageSize) "
+         [(ngModel)]="pageSize">
           <option value="8">8 items per page</option>
           <option value="12">12 items per page</option>
           <option value="20">20 items per page</option>

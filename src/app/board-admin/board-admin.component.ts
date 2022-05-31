@@ -32,6 +32,10 @@ export class BoardAdminComponent implements OnInit {
         this.isAdmin = true
     }
   }
+  error=false
+  email:any
+  address:any
+  phone:any
   username=''
   updateError=''
   isSubmitted=false
@@ -53,6 +57,7 @@ export class BoardAdminComponent implements OnInit {
   width = 'width:100%;backround-color:#145580'
   @ViewChild('closeDeleteModal') closeDeleteModal?: ElementRef 
   selectedUser = new User()
+  oldUser=new User()
   content?: string
   categories: any = [
     { name: 'Shoes' }, { name: 'Cars' }, { name: 'Health' },
@@ -73,7 +78,7 @@ export class BoardAdminComponent implements OnInit {
   showUserPanel = false
   display = 'none'
   isSearched=false
-  displayNumber=0
+  displayNumber=8
   displayItems(number:number){
     const params = this.getRequestParams(this.username,this.page=1, this.pageSize=number)
     this.userService.getUsers(params).subscribe((res) => {
@@ -191,6 +196,7 @@ export class BoardAdminComponent implements OnInit {
   }
   onCloseHandled() {
     this.display = 'none'
+    this.error=false
   }
   isOpened: boolean = false
 
@@ -202,6 +208,8 @@ export class BoardAdminComponent implements OnInit {
   getUserDetail(id: number) {
     return this.userService.getUser(id).subscribe((res) => {
       this.selectedUser = res
+      this.oldUser=res
+      console.log(this.oldUser)
       this.roleSelected=this.selectedRoles.find((role:any)=>role.id === res.roles[0].id)
     })
   }
@@ -215,28 +223,39 @@ export class BoardAdminComponent implements OnInit {
     this.getUserDetail(id);
     this.openModal()
   }
-
+changeValue(event:any){
+this.selectedUser.email=event.target.value
+console.log(this.selectedUser.email)
+}
   updateUser(){
     const data = {
-      id: this.selectedUser.id,
-      email: this.selectedUser.email,
-      username: this.selectedUser.username,
-      password: this.selectedUser.password,
-      address:this.selectedUser.address,
-      phone:this.selectedUser.phone,
+      user:{
+      id: this.oldUser.id,
+      email: this.oldUser.email,
+      username: this.oldUser.username,
+      password: this.oldUser.password,
+      address:this.oldUser.address,
+      phone:this.oldUser.phone,
+      enabled:this.oldUser.enabled
+      },
       roles: [this.roleSelected],
-      enabled:this.selectedUser.enabled
+      email: this.email?this.email:this.selectedUser.email,
+      address:this.address?this.address:this.selectedUser.address,
+      phone:this.phone?this.phone:this.selectedUser.phone
     }
-    if(data.roles.length<1||data.roles==null||data.email==''){
+    if(data.user.email==''){
       this.toastr.error('Error!',"Email must be set")     
     }
     else{
       this.userService.updateUser(data).subscribe((res:any) => {
         console.log(res)
         this.display = 'none'
-        this.toastr.info("User #" + res.data.user.id+" is updated")
-      },error=>{
-          this.updateError="Email or phone numbers may already be in use"
+        this.toastr.info("User " + res.data.data.user.username+" is updated")
+        this.updateError==''
+        this.error=false
+      },(error)=>{
+          this.error=true
+          this.updateError=error.error.errorMessage
           this.selectedUser==null
       })
     }
@@ -257,7 +276,7 @@ export class BoardAdminComponent implements OnInit {
   }
   clearFilter(){
     this.isSearched=false
-   const data= this.getRequestParams(this.username="",this.getPage(),this.pageSize)
+   const data= this.getRequestParams(this.username="",this.page=1,this.pageSize)
     this.userService.getUsers(data).subscribe((res)=>{
       this.totalAccounts = res.totalUsers
       this.count = res.totalUsers
