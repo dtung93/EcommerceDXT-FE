@@ -64,6 +64,7 @@ export class BoardMasterComponent implements OnInit {
   updateUserForm!: FormGroup
   isAdmin = false
   isMaster = false
+  error=false
   currentUserRole = '';
   currentUsername: any
   usernameoremail: string = ''
@@ -107,7 +108,7 @@ export class BoardMasterComponent implements OnInit {
   display = 'none'
   addUserFailed = false
   isSearched = false
-  displayUserNumber = 0
+  displayUserNumber = 6
   updateUserSubmitted = false
   displayUser(displayNumber: number) {
     const params = this.getRequestParams(this.username, this.page = 1, this.pageSize = displayNumber)
@@ -159,9 +160,7 @@ export class BoardMasterComponent implements OnInit {
   getValueSelected(event: any) {
     this.roleSelected = event
   }
-  logForm() {
-    console.log(this.userForm)
-  }
+
   getRequestParams(username: string, page: number, pageSize: number) {
     let params: any = {}
     if (username)
@@ -171,21 +170,24 @@ export class BoardMasterComponent implements OnInit {
       params[`size`] = pageSize
     return params
   }
-  getSearchParams(username: string, page: number) {
+  getSearchParams(username: string, page: number,size:number) {
     let params: any = {}
     if (username)
       params[`username`] = username
-    if (params)
+    if (page)
       params[`page`] = page - 1
+      if(size)
+      params[`size`]=size
     return params
   }
+    
   eventSearch() {
     this.page = 1
     this.searchUser()
   }
   searchUser() {
     this.isSearched = true
-    const data = this.getSearchParams(this.username, this.page)
+    const data = this.getSearchParams(this.username, this.page,this.pageSize)
     return this.userService.getUsers(data).subscribe((res: any) => {
       this.users = res.users?.map((user: any) => {
         return { ...user, editable: this.checkRoleCondition(user) }
@@ -244,7 +246,8 @@ export class BoardMasterComponent implements OnInit {
   clearFilter() {
     this.username = ''
     this.isSearched = false
-    const params = this.getRequestParams(this.username, this.getPage(), this.pageSize)
+    this.page=1
+    const params = this.getRequestParams(this.username, this.page, this.pageSize)
     this.userService.getUsers(params).subscribe((res) => {
       this.totalAccounts = res.totalUsers
       this.count = res.totalUsers
@@ -281,7 +284,8 @@ export class BoardMasterComponent implements OnInit {
   onCloseHandled() {
     this.display = 'none'
     this.selectedUser == null
-    this.updateUserForm.reset()
+   this.error=false
+    this.updateError==''
   }
   isOpened: boolean = false
 
@@ -336,8 +340,10 @@ else{
     this.userService.updateUser(params).subscribe((res: any) => {
       console.log(res)
       this.display = 'none'
-      this.toastr.info("User " + res.data.user.user.username + " is updated")
+      this.toastr.info("User " + res.data.data.user.username + " is updated")
+      this.error=false
     }, (error) => {
+      this.error=true
       this.updateUserForm.controls['email'].value==""
       this.updateError = error.error.errorMessage
     })
