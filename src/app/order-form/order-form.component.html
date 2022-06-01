@@ -72,9 +72,10 @@
       <td></td>
       <td><strong>Total: ${{amount}}</strong></td>
     </tr>
-    <tr class="text-danger" *ngIf="outOfStock">
-      Some products in your cart is out of stock. Please update your <a routerLink="/cart">cart</a>
-
+    <tr  *ngIf="outOfStock">
+      
+      <td class="text-danger" colspan="6">Some products in your cart is out of stock. Please update your <a routerLink="/cart">cart</a>
+        </td>
     </tr></tbody>
   
       </table>

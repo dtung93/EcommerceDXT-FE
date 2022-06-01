@@ -6,4 +6,6 @@ export class Product {
     img!: string;
     description!: string;
     category!:string
+    editBy!:string
+    date!:Date
 }

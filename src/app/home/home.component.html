@@ -125,6 +125,12 @@
       {{products.length}} results <span *ngIf="productName!=''">for '{{productName }}'</span>
       <span *ngIf="category!=''"> in {{category }}</span>
     </div>
+    <div class="row" *ngIf="notUser">
+      <div class="col-sm-12"><span style="font-weight:bold;color:#2d8bca">Total Products: </span> {{listproducts.length}}</div>
+      <div class="col-sm-9"><span style="font-weight:bold;color:orange">Low stock: </span><span *ngFor="let x of lowquantity"><a routerLink="/product/{{x.id}}">{{x.name}}</a>, </span></div>
+      <div class="col-sm-9"><span style="font-weight: bold;color:red">Out of Stock: </span><span *ngFor="let x of outStock"><a routerLink="/product/{{x.id}}">{{x.name}}</a>, </span></div>
+    </div>
+
   </div>
 
   <!-- PRODUCT LIST - NORMAL  -->
@@ -213,6 +219,8 @@
                   style="background-color: #2d8bca">View</button></a>
               <button id="delete" class="btn text-white" style="background-color: rgb(170, 22, 22);"
                 (click)="openModal(x)">Delete</button>
+                <div class="text-primary" *ngIf="x.editBy!=null"> Last edited by: {{x.editBy}}, {{x.date|date : "dd-MM-yyyy hh:mm a"}}</div>
+               
             </td>
           </tr>
         </tbody>

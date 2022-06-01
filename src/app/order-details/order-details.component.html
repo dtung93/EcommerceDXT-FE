@@ -5,23 +5,23 @@
    <table class="table table-striped"style="width:40%">
     <tr>
         <td id="header">Order Id</td>
-        <td><span>{{order.id}}</span></td>
+        <td><span>{{order?.id}}</span></td>
     </tr>
        <tr>
            <td id="header">Name</td>
-           <td><span>{{order.name}}</span></td>
+           <td><span>{{order?.name}}</span></td>
        </tr>
        <tr>
         <td id="header">Email</td>
-        <td><span>{{order.email}}</span></td>
+        <td><span>{{order?.email}}</span></td>
     </tr>
     <tr>
         <td id="header">Address</td>
-           <td><span>{{order.address}}</span></td>
+           <td><span>{{order?.address}}</span></td>
     </tr>
     <tr>
         <td id="header">Phone</td>
-        <td><span>{{order.phone}}</span></td>
+        <td><span>{{order?.phone}}</span></td>
     </tr>
     <tr>
         <td id="header">Status</td>
@@ -50,8 +50,8 @@
    </tr>
    <tr>
        <td colspan="3"></td>
-       <td><strong>{{order.cart.totalItems}}</strong> items</td>
-       <td><strong>${{order.cart.grandTotal}}</strong></td>
+       <td><strong>{{order?.cart.totalItems}}</strong> items</td>
+       <td><strong>${{order?.cart.grandTotal}}</strong></td>
    </tr>
    </tbody>
    </table>
