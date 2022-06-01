@@ -26,9 +26,18 @@ export class CartComponent implements OnInit {
         this.cartService.updateCartTotal(res.totalItems)
         this.items = res.items.sort(function (a: any, b: any) {
           return parseFloat(a.product.id) - parseFloat(b.product.id)
+        }).map((item:any)=>{
+          let exceedQuantity=(item.product.qty<item.quantity&&item.product.qty>0)
+          let outStock=item.product.qty==0
+          return {...item,outStock:outStock,exceedQuantity:exceedQuantity}
         })
+        console.log(this.items)
         this.totalItems = res.totalItems
         this.grandTotal = this.roundUpNumber(res.grandTotal)
+        this.exceedQuantity=this.checkItemQuantity(res.items)
+        console.log(this.exceedQuantity)
+        this.outOfStock=this.checkOutStock(res.items)
+        console.log(this.outOfStock)
       })
     }
     else{
@@ -48,16 +57,26 @@ export class CartComponent implements OnInit {
   currentUser: User = new User()
   maxQuantity=false
   accountNotActivated=false
+  exceedQuantity=false
+  outOfStock=false
   sortItems(max: any, min: any) {
     return max.id - min.id
   }
-  checkItemQuantity(items: any) {
-    let outOfStock=false
+checkItemQuantity(items: any) {
+    let quantityChange=false
     items.forEach((x: any) => {
-      if(x.outOfStock==true)
-       outOfStock=true
+      if(x.product.qty<x.quantity&&x.product.qty>0)
+       quantityChange=true
     })
-    return outOfStock
+    return quantityChange
+  }
+  checkOutStock(items:any){
+    let outStock=false
+    items.forEach((item:any)=>{
+     if(item.product.qty==0)
+     outStock=true
+    })
+    return outStock
   }
   setItemQuantity(event: any, item: any) {
     this.selectedItem = item
@@ -68,6 +87,10 @@ export class CartComponent implements OnInit {
     this.cartService.setItemQuantity(data).subscribe((res) => {
       this.items = res.items.sort(function (a: any, b: any) {
         return parseFloat(a.product.id) - parseFloat(b.product.id)
+      }).map((item:any)=>{
+        let exceedQuantity=item.product.qty<item.quantity&&item.product.qty>0
+        let outStock=item.product.qty==0
+        return {...item,outStock:outStock,exceedQuantity:exceedQuantity}
       })
       console.log(res)
       this.totalItems = res.totalItems
@@ -114,6 +137,10 @@ export class CartComponent implements OnInit {
     this.cartService.removeFromCartByOne(productId).subscribe((res: any) => {
       this.items = res.items.sort(function (a: any, b: any) {
         return parseFloat(a.product.id) - parseFloat(b.product.id)
+      }).map((item:any)=>{
+        let exceedQuantity=item.product.qty<item.quantity&&item.product.qty>0
+        let outStock=item.product.qty==0
+        return {...item,outStock:outStock,exceedQuantity:exceedQuantity}
       })
       console.log(res)
       this.totalItems = res.totalItems
@@ -127,6 +154,10 @@ export class CartComponent implements OnInit {
     this.cartService.addToCart(productId).subscribe((res: any) => {
       this.items = res.items.sort(function (a: any, b: any) {
         return parseFloat(a.product.id) - parseFloat(b.product.id)
+      }).map((item:any)=>{
+        let exceedQuantity=item.product.qty<item.quantity&&item.product.qty>0
+        let outStock=item.product.qty==0
+        return {...item,outStock:outStock,exceedQuantity:exceedQuantity}
       })
       this.totalItems = res.totalItems
       this.grandTotal = res.grandTotal

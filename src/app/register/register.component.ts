@@ -43,7 +43,7 @@ signUpSuccessful(){
       this.errorMessage=''
       this.signUpSuccessful()
     },error=>{
-      this.errorMessage=error.error.message
+      this.errorMessage=error.error.errorMessage
       this.isSignedUpFailed=true
     })
   }

@@ -57,6 +57,7 @@ address:['',[Validators.required]]
   address:any
   phone:any
   email:any
+  updateError=false
   pushBottom = false
   username: string = ''
   isSubmitted = false
@@ -80,7 +81,7 @@ address:['',[Validators.required]]
   ]
 
   @ViewChild('closeUpdateModal') closeUpdateModal?: ElementRef
-
+  @ViewChild('closeChangePassword') closeChangePassword?:ElementRef
   getUserDetail(id: number) {
     this.userService.getUser(id).subscribe((res) => {
       this.selectedUser = res
@@ -119,25 +120,35 @@ address:['',[Validators.required]]
   }
   updateUser(): void {
     const data = {
-      id: this.selectedUser.id,
+     user:{ id: this.selectedUser.id,
       email: this.selectedUser.email,
       username: this.selectedUser.username,
       password: this.selectedUser.password,
       address: this.selectedUser.address,
       phone: this.selectedUser.phone,
-      roles: [this.selectedUser.roles[0]],
-      enabled: this.selectedUser.enabled
+     }
+     ,email:this.updateProfileForm.controls['email'].value?this.updateProfileForm.controls['email'].value:this.email,
+     phone:this.updateProfileForm.controls['phone'].value?this.updateProfileForm.controls['phone'].value:this.phone,
+     address:this.updateProfileForm.controls['address'].value?this.updateProfileForm.controls['address'].value:this.address,
+     roles:[
+       this.selectedUser.roles[0]
+     ]
     }
+console.log(data)
     this.userService.updateUser(data).subscribe((res) => {
       console.log(res)
       this.closeUpdateModal?.nativeElement.click();
       this.toastr.info("Your account is updated!")
+      this.updateError=false
     }, error => {
       console.log(error.error.errorMessage)
+      this.updateError=true
       this.updateProfileError=error.error.errorMessage
     })
   }
-
+removeUpdateError(){
+  this.updateError=false
+}
   addRole(id: any) {
     if (this.checkRole(id)) {
       this.selectedUser.roles.push(this.roleSelected)
@@ -180,14 +191,15 @@ address:['',[Validators.required]]
         newPassword: this.changePasswordForm.controls['newPassword'].value
       }
       this.userService.changePassword(data).subscribe((res) => {
-        this.toastr.info('Your password has changed successfully! Please login again')
+        this.closeChangePassword?.nativeElement.click()
+        this.toastr.info('Password successfully changed! Please login again')
         setInterval(
           () => {
             window.location.href = '/login', 1000
             this.token.signOut()
           }
         )
-      }, error => { this.passwordError = "You have entered a wrong password" })
+      }, error => { this.passwordError = "You have entered a "+error.error.errorMessage })
     }
   }
   resetForm() {

@@ -14,7 +14,7 @@ import { Paging } from '../model/page.model';
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
-  constructor(private cartService: CartService, private fb: FormBuilder, private userService: UserService, private token: TokenStorageService, private toastr: ToastrService, private productService: ProductService) {
+  constructor(private cartService: CartService, private fb: FormBuilder, private token: TokenStorageService, private toastr: ToastrService, private productService: ProductService) {
     this.productForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(25)]],
       img: [''],
@@ -33,6 +33,11 @@ export class HomeComponent implements OnInit {
        
       if (this.roles?.includes(roleName.a)&&(this.token.getUser().enabled) || this.roles?.includes(roleName.mo)&&(this.token.getUser().enabled) || this.roles?.includes(roleName.ma)&&(this.token.getUser().enabled)) {
         this.notUser = true
+        this.productService.listproducts().subscribe((res)=>{
+          this.listproducts=res.data.data
+          this.outStock=res.data.data.filter((product:any)=>product.qty==0)
+          this.lowquantity=res.data.data.filter((product:any)=>product.qty<=5&&product.qty>0)     
+        })
       }
       if(!this.token.getUser().enabled){
       this.userNotActivated=true
@@ -46,6 +51,9 @@ export class HomeComponent implements OnInit {
   productName=''
   productForm: FormGroup
   products: Product[] = []
+  lowquantity:Product[]=[]
+  listproducts:Product[]=[]
+  outStock:Product[]=[]
   selectedProduct?: Product
   currentUser: any
   isSubmitted = false;
@@ -155,7 +163,6 @@ export class HomeComponent implements OnInit {
       this.products = products
       this.count = totalItems
       this.HasProducts = true
-      console.log(response)
     }, () => { this.toastr.error('No products could be found') })
   }
   searchProducts(){

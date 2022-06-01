@@ -10,7 +10,9 @@ export class ProductService {
   getProducts(params:any): Observable<any> {
     return this.http.post(apiURL + '/products', params);
   }
-
+ listproducts():Observable<any>{
+   return this.http.get(apiURL+'/products')
+ }
  getProductDetail(id:any):Observable<Product>{
    return this.http.get<Product>(apiURL + `/product/${id}`)
  }

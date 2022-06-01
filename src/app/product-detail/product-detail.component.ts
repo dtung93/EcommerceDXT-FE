@@ -5,6 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { ProductService } from '../service/product.service';
 import { TokenStorageService } from '../service/token-storage.service';
 import { CartService } from '../service/cart.service';
+import { User } from '../model/user.model';
 @Component({
   selector: 'app-product-detail',
   templateUrl: './product-detail.component.html',
@@ -12,14 +13,17 @@ import { CartService } from '../service/cart.service';
 })
 export class ProductDetailComponent implements OnInit {
 product=new Product()
+username:any
   constructor(private cartService:CartService,private toastr:ToastrService, private api:ProductService,private route:ActivatedRoute,private token:TokenStorageService) { }
   ngOnInit(): void {
     this.getProduct(this.route.snapshot.params['id'])
     if(this.token.getToken()){
       this.roles=this.token.getUser().roles
+      this.username=this.roles[0].substring(5,14)+" "+this.token.getUser().username
+      console.log(this.roles[0].substring(5,14))
      if(this.roles.includes("ROLE_MODERATOR")&&this.token.getUser().enabled||this.roles.includes("ROLE_ADMIN")&&this.token.getUser().enabled||this.roles.includes('ROLE_MASTER')&&this.token.getUser().enabled){
        this.showButton=true
- 
+      
      }
      else{
        this.showButton=false
@@ -88,7 +92,9 @@ img:this.product.img,
 description:this.product.description,
 category:this.product.category,
 price:this.product.price,
-qty:this.product.qty
+qty:this.product.qty,
+editBy:this.username,
+date:new Date()
   }
 if(data.qty==null||data.price==null||data.name==''){
   this.toastr.error('Failed to update. Please check your inputs again')

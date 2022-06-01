@@ -1,4 +1,10 @@
 .container{margin-bottom:25px;margin-top:20px}
+.out-of-stock{
+  opacity:0.4;
+}
+.exceed-quantity{
+ background-color: rgb(252, 236, 236);
+}
 a{text-decoration: none;color:black;font-weight:bold}
 
 #checkout,#empty{padding:10px;width:120px}

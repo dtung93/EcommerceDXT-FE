@@ -5,8 +5,9 @@
 </div>
 <div class="container" *ngIf="selectedUser&&selectedUser.enabled">
   <app-loader></app-loader>
+      <!-- PROFILE INFO -->
   <div class="row">
-    <!-- PROFILE INFO -->
+
     <h3 style="text-align: center;background-color: #3492d1;" class="text-white">Your profile</h3>
   </div>
   <p class="alert alert-primary">
@@ -17,14 +18,7 @@
 
 
 
-
-
-
-
-
-
-
-
+<!-- PROFILE BOARD -->
   <div class="row">
     <div class="col-xs-12 col-sm-6 col-md-3" style="text-align:center;margin-right:0px">
       <img src={{selectedUser.avatar}} src="asdasda" onerror="this.src='/assets/img/noimage.jpg'">
@@ -48,16 +42,6 @@
           <td id="info">{{selectedUser.email}}</td>
         </tr>
       </table>
-      <!-- <p>
-        Your username:<strong>{{selectedUser.username}}</strong>
-      </p>
-      <p>
-        Email:<strong>
-          {{ selectedUser.email }}
-        </strong>
-      </p>
-      <p>Phone number:<strong>{{selectedUser.phone}}</strong></p>
-      <p>Address:<strong>{{selectedUser.address}}</strong></p> -->
       <div class="button-row mt-3" style="margin-left:-2px">
         <button *ngIf="isAdmin" class="btn text-white profile" (click)="userModal()">Edit
           Role</button>
@@ -82,44 +66,55 @@
               <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Close"><span
                   aria-hidden="true"></span></button>
             </div>
-            <div class="text-danger" style="text-align:center" *ngIf="isSubmitted&&(this.passwordError!=='')">{{passwordError}}</div>
+            <div class="text-danger" style="text-align:center" *ngIf="isSubmitted&&(this.passwordError!=='')">
+              {{passwordError}}</div>
             <div class="modal-body bg-light">
               <form [formGroup]="changePasswordForm" (submit)="submitChangePasswordForm()">
-              <table id="change-password" >
-                <tr>
-                  <td  [ngClass]="pushBottom?'push-bottom':' '">Current password</td>
-                  <td>
-                    <input  style="width:15rem" type='password'placeholder='Your current password'formControlName="oldPassword">
-                    <div class="text-danger" *ngIf="isSubmitted&&this.changePasswordForm.controls['oldPassword'].invalid">Please enter your current password</div>
-                  </td>               
-                </tr>
-                <br>
-                <tr>
-                  <td [ngClass]="pushBottom?'push-bottom':' '">New password</td>
-                  <td> <input style="width:15rem" type='password' placeholder="Your new password" formControlName="newPassword">
-                    <div class="text-danger" *ngIf="isSubmitted&&this.changePasswordForm.controls['newPassword'].invalid">Please enter new password, minimum 6 characters</div></td>
-                </tr>
-                <br>
-                <tr>
-                  <td [ngClass]="pushBottom?'push-bottom2':' '">
-                    Confirm new password
-                  </td>
-                  <td>
-                    <input style="width:15rem" type="password" placeholder="Confirm new password"formControlName="confirmNewPassword">
-                    <div class="text-danger" *ngIf="isSubmitted&&this.changePasswordForm.controls['confirmNewPassword'].invalid">Password does not match</div>
-                  </td>
-                </tr>
-                
-              </table>
-              <div class="modal-footer mt-3">
-                <tr><button type="submit" #control class='btn btn text-white control' style="background-color: #2d8bca;"
-                    >Update Password</button></tr>
-                <button type="button" class="btn btn-outline-secondary control" data-bs-dismiss="modal"
-                (click)="resetForm()"  arial-label="close">Close</button>
-              </div>
+                <table id="change-password">
+                  <tr>
+                    <td [ngClass]="pushBottom?'push-bottom':' '">Current password</td>
+                    <td>
+                      <input style="width:15rem" type='password' placeholder='Your current password'
+                        formControlName="oldPassword">
+                      <div class="text-danger"
+                        *ngIf="isSubmitted&&this.changePasswordForm.controls['oldPassword'].invalid">Please enter your
+                        current password</div>
+                    </td>
+                  </tr>
+                  <br>
+                  <tr>
+                    <td [ngClass]="pushBottom?'push-bottom':' '">New password</td>
+                    <td> <input style="width:15rem" type='password' placeholder="Your new password"
+                        formControlName="newPassword">
+                      <div class="text-danger"
+                        *ngIf="isSubmitted&&this.changePasswordForm.controls['newPassword'].invalid">Please enter new
+                        password, minimum 6 characters</div>
+                    </td>
+                  </tr>
+                  <br>
+                  <tr>
+                    <td [ngClass]="pushBottom?'push-bottom2':' '">
+                      Confirm new password
+                    </td>
+                    <td>
+                      <input style="width:15rem" type="password" placeholder="Confirm new password"
+                        formControlName="confirmNewPassword">
+                      <div class="text-danger"
+                        *ngIf="isSubmitted&&this.changePasswordForm.controls['confirmNewPassword'].invalid">Password
+                        does not match</div>
+                    </td>
+                  </tr>
+
+                </table>
+                <div class="modal-footer mt-3">
+                  <tr><button type="submit" #control class='btn btn text-white control'
+                      style="background-color: #2d8bca;">Update Password</button></tr>
+                  <button type="button" class="btn btn-outline-secondary control" data-bs-dismiss="modal" #closeChangePassword
+                  (click)="resetForm()" >Close</button>
+                </div>
               </form>
             </div>
-   
+
           </div>
 
         </div>
@@ -135,16 +130,17 @@
               <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-              <div class="text-danger" style="font-size:15px" *ngIf="updateProfileError!=''">{{updateProfileError}}</div>
+              <div class="text-danger" style="font-size:15px" *ngIf="updateError&&updateProfileError!=''">
+                {{updateProfileError}}</div>
               <form [formGroup]="updateProfileForm" (submit)="updateUser()">
-              <table [style]="width">
-                <td><input type='hidden'formControlName="id" value={{selectedUser.id}} name="id"></td>
-                <tr>
-                  <td>Username</td>
+                <table [style]="width">
+                  <td><input type='hidden' formControlName="id" value={{selectedUser.id}} name="id"></td>
+                  <tr>
+                    <td>Username</td>
 
-                  <div style="font-weight: bold;font-size: 20px;">{{selectedUser.username}}</div>
-                </tr>
-                <!-- <tr *ngIf="isAdmin||isMaster">
+                    <div style="font-weight: bold;font-size: 20px;">{{selectedUser.username}}</div>
+                  </tr>
+                  <!-- <tr *ngIf="isAdmin||isMaster">
               <td>Role:</td>
               <td  style="padding-top: 22px;">
                 <select (change)="onChangeRole($event)">
@@ -154,26 +150,26 @@
               </td>
 
             </tr> -->
-                <tr>
-                  <td>Email</td>
-                  <input name="email" type='text' [style]="width"  value={{email}} formControlName="email">
-                </tr>
-                <tr>
-                  <td>Phone Numbers</td>
-                  <input  type='text' [style]="width" value={{phone}} formControlName="phone">
-                </tr>
-                <tr>
-                  <td>Address</td>
-                  <input type='text' [style]="width"  value={{address}} formControlName="address">
-                </tr>
-              </table>
+                  <tr>
+                    <td>Email</td>
+                    <input name="email" type='text' [style]="width" value={{email}} formControlName="email">
+                  </tr>
+                  <tr>
+                    <td>Phone Numbers</td>
+                    <input type='text' [style]="width" value={{phone}} formControlName="phone">
+                  </tr>
+                  <tr>
+                    <td>Address</td>
+                    <input type='text' [style]="width" value={{address}} formControlName="address">
+                  </tr>
+                </table>
               </form>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-primary control"
+              <button type="button" class="btn btn-primary control" (click)="updateUser()"
                 style="background-color:#2d8bca">Update Profile</button>
               <button #closeUpdateModal type="button" class="btn btn-outline-secondary control"
-                data-bs-dismiss="modal">Close</button>
+                (click)="removeUpdateError()" data-bs-dismiss="modal">Close</button>
 
             </div>
           </div>
@@ -198,7 +194,7 @@
                       <option [id]="role.id" *ngFor="let role of selectedRoles"
                         [selected]="role.name==selectedUser.roles[0].name" [value]="role.id">{{role.tag}}</option>
                     </select>&nbsp;
-                      
+
                   </td>
 
                 </tr>
@@ -220,4 +216,3 @@
 
 
 </div>
-
