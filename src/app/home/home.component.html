@@ -5,7 +5,7 @@
   <div class="row mt-1" style="background-color:#f9fbfd" *ngIf="notUser">
       <tr>
  
-        <td style="float:right;margin-right:20px;"> <button id="add-product" type="button" class="btn btn-primary"
+        <td style="float:right;margin-right:15px;"> <button id="add-product" type="button" class="btn btn-primary"
             data-bs-toggle="modal" data-bs-target="#productModal">
             <span class="bg-white plus"><i class="fa fa-plus mt-1"></i></span> ADD NEW PRODUCT
           </button></td>
@@ -27,44 +27,44 @@
           <div class="modal-body">
             <app-loader></app-loader>
             <!-- PRODUCT FORM -->
-            <form [formGroup]="productForm" (ngSubmit)="submitProductForm()">
+            <form [formGroup]="productForm" (ngSubmit)="submitProductForm()" (keydown.enter)="submitProductForm()">
               <table [style]="width">
 
                 <tr>
                   <td>Product name</td>
-                  <input type='text' [style]="width" formControlName="name" placeholder="Product name">
+                  <input type='text' (keydown.enter)="submitProductForm()" [style]="width" formControlName="name" placeholder="Product name">
                   <br><label id="error" class="text-danger"
                     *ngIf="productForm.controls['name'].invalid&&isSubmitted">Product name is
                     required, 4-25 characters</label>
                 </tr>
                 <tr>
                   <td>Image URL</td>
-                  <input type='text' formControlName="img" [style]="width" placeholder="Product image url"><br>
+                  <input type='text' (keydown.enter)="submitProductForm()" formControlName="img" [style]="width" placeholder="Product image url"><br>
                   <label id="error" class="text-danger" *ngIf="productForm.controls['img'].invalid&&isSubmitted">Invalid
                     url for image</label>
                 </tr>
                 <tr>
                   <td>Product Description</td>
-                  <textarea [style]="width" formControlName="description"></textarea>
-                  <label for="" id="error" class="text-danger"
-                    *ngIf="productForm.controls['description'].invalid&&isSubmitted">Description
-                    text required</label>
+                  <textarea (keydown.enter)="submitProductForm()" [style]="width" formControlName="description"></textarea>
                 </tr>
                 <tr>
                   <td>Price </td>
-                  <input type='number' formControlName="price" placeholder="Price" [style]="width" min="0">
+                  <input type='number' (keydown.enter)="submitProductForm()" formControlName="price" placeholder="Price" [style]="width" min="0">
                   <label for="price" id="error" class="text-danger"
                     *ngIf="productForm.controls['price'].invalid&&isSubmitted">Price must be
                     set</label><br>
                 </tr>
                 <tr>
                   <td>Quantity</td>
-                  <input formControlName="qty" oninput="validity.valid||(value='')" type='number' placeholder="Quantity"
+                  <input formControlName="qty" (keydown.enter)="submitProductForm()" oninput="validity.valid||(value='')" type='number' placeholder="Quantity"
                     [style]="width" min="0">
+                    <label for="qty" id="error" class="text-danger"
+                    *ngIf="productForm.controls['qty'].invalid&&isSubmitted">Quantity must be
+                    set</label><br>
                 </tr>
                 <tr>
                   <td>Category</td>
-                  <select formControlName="category" placeholder="Select a category">
+                  <select (keydown.enter)="submitProductForm()" formControlName="category" placeholder="Select a category">
                     <option>Select</option>
                     <option [selected]="cat.name==='Shoes'" value={{cat.name}} *ngFor="let cat of categories">
                       {{cat.name}}
@@ -91,7 +91,7 @@
 
     <!-- FILTER AND SEARCH  -->
     <input style="height:45px" id="filter-control" name="search" type="text" class="form-control"
-      placeholder="Search by product name" [(ngModel)]='productName' />
+      placeholder="Search by product name" [(ngModel)]='productName' (keydown.enter)="eventSearch()" />
     <select style="width: max-content;height:45.5px;margin-top:5px" [(ngModel)]="category">
       <option value="" selected>All categories</option>
       <option value="Home">Home</option>
@@ -114,7 +114,8 @@
         x.name }}
       </div>
     </div>
-    <button style="margin-left: 2rem;" class="btn btn-default" id="search" type="button" (click)="eventSearch()">
+    <button style="margin-left: 2rem;" class="btn btn-default" id="search" type="button" (click)="eventSearch()" 
+    >
       Search
     </button>
     <button id="remove" *ngIf="products?.length !== null" (click)="backToResults()" class="btn btn-secondary">
@@ -122,15 +123,18 @@
     </button>
 
     <div *ngIf="isSearched" style="color: rgb(202, 45, 45); margin-left: 15px">
-      {{products.length}} results <span *ngIf="productName!=''">for '{{productName }}'</span>
-      <span *ngIf="category!=''"> in {{category }}</span>
+      {{products.length}} results <span *ngIf="productName!=''">for '{{productName }}'</span>, page {{page}}
+      <span *ngIf="category!=''">  in {{category }}</span>
     </div>
     <div class="row" *ngIf="notUser">
-      <div class="col-sm-12"><span style="font-weight:bold;color:#2d8bca">Total Products: </span> {{listproducts.length}}</div>
-      <div class="col-sm-9"><span style="font-weight:bold;color:orange">Low stock: </span><span *ngFor="let x of lowquantity"><a routerLink="/product/{{x.id}}">{{x.name}}</a>, </span></div>
-      <div class="col-sm-9"><span style="font-weight: bold;color:red">Out of Stock: </span><span *ngFor="let x of outStock"><a routerLink="/product/{{x.id}}">{{x.name}}</a>, </span></div>
-    </div>
-
+   <div *ngFor="let x of productlist" style="padding:10px">
+      <div class="low-quantity" [class.show]="x.visible">
+       <span class="h6">{{x.name}}</span>
+          <span  *ngFor="let y of x.list"><a [ngClass]="{'list-out-stock':y.qty==0,'list-low-stock':y.qty<=5&&y.qty>0}" routerLink="/product/{{y.id}}">{{y.name}}</a>&nbsp;&nbsp;</span>
+      </div>
+      <button *ngIf="x.list.length>7" class="btn text-white mt-2" style="background-color:#2d8bca" (click)="x.visible = !x.visible">{{ x.visible ? 'Show less': 'Show More' }}</button>
+   </div>
+   <div>Total products: <span class="h6">{{totalItems}}</span></div>
   </div>
 
   <!-- PRODUCT LIST - NORMAL  -->
@@ -219,7 +223,7 @@
                   style="background-color: #2d8bca">View</button></a>
               <button id="delete" class="btn text-white" style="background-color: rgb(170, 22, 22);"
                 (click)="openModal(x)">Delete</button>
-                <div class="text-primary" *ngIf="x.editBy!=null"> Last edited by: {{x.editBy}}, {{x.date|date : "dd-MM-yyyy hh:mm a"}}</div>
+                <div class="text-primary" style="font-size:15px" *ngIf="x.editBy!=null"> Last edited by: {{x.editBy}}, {{x.date|date : "dd-MM-yyyy hh:mm a"}}</div>
                
             </td>
           </tr>

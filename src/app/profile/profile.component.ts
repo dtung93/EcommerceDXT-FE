@@ -21,7 +21,7 @@ export class ProfileComponent implements OnInit {
       confirmNewPassword: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(50)]]
     }, { validator: confirmField('newPassword', 'confirmNewPassword') })
 this.updateProfileForm=this.fb.group({
-id:[],
+id:[null],
 email:['',[Validators.required]],
 phone:['',[Validators.required]],
 address:['',[Validators.required]]
@@ -32,6 +32,12 @@ address:['',[Validators.required]]
       let userId=this.token.getUser().id
       this.userService.getUser(userId).subscribe((res)=>{
           this.selectedUser=res
+          this.updateProfileForm.patchValue({
+          id:this.selectedUser.id,
+          email:this.selectedUser.email,
+          phone:this.selectedUser.phone,
+          address:this.selectedUser.address
+          })
           console.log(this.selectedUser)
           if (this.selectedUser.enabled == true) {
             if (this.selectedUser.roles.find((element) => element.name == roleName.ma)) {
@@ -60,6 +66,7 @@ address:['',[Validators.required]]
   updateError=false
   pushBottom = false
   username: string = ''
+  updateIsSubmitted=false
   isSubmitted = false
   changePasswordForm: FormGroup
   updateProfileForm:FormGroup
@@ -119,6 +126,7 @@ address:['',[Validators.required]]
     console.log(this.selectedUser.username)
   }
   updateUser(): void {
+    this.updateIsSubmitted=true
     const data = {
      user:{ id: this.selectedUser.id,
       email: this.selectedUser.email,
@@ -127,15 +135,18 @@ address:['',[Validators.required]]
       address: this.selectedUser.address,
       phone: this.selectedUser.phone,
      }
-     ,email:this.updateProfileForm.controls['email'].value?this.updateProfileForm.controls['email'].value:this.email,
-     phone:this.updateProfileForm.controls['phone'].value?this.updateProfileForm.controls['phone'].value:this.phone,
-     address:this.updateProfileForm.controls['address'].value?this.updateProfileForm.controls['address'].value:this.address,
+     ,email:this.updateProfileForm.controls['email'].value,
+     phone:this.updateProfileForm.controls['phone'].value,
+     address:this.updateProfileForm.controls['address'].value,
      roles:[
        this.selectedUser.roles[0]
      ]
     }
-console.log(data)
-    this.userService.updateUser(data).subscribe((res) => {
+if(this.updateProfileForm.invalid){
+  this.toastr.error('Please check your inputs again!')
+}
+else{
+ this.userService.updateUser(data).subscribe((res) => {
       console.log(res)
       this.closeUpdateModal?.nativeElement.click();
       this.toastr.info("Your account is updated!")
@@ -145,8 +156,16 @@ console.log(data)
       this.updateError=true
       this.updateProfileError=error.error.errorMessage
     })
+}
+   
   }
 removeUpdateError(){
+  this.updateProfileForm.patchValue({
+    id:this.selectedUser.id,
+    email:this.selectedUser.email,
+    phone:this.selectedUser.phone,
+    address:this.selectedUser.address
+    })
   this.updateError=false
 }
   addRole(id: any) {

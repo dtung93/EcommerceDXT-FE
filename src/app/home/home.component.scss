@@ -159,12 +159,27 @@ span.plus{
 .out-of-stock{
     border:3px solid red;
 }
+.list-low-stock{
+color:rgb(247, 140, 101);
+}
+.list-out-stock{
+color:red
+}
 .out-of-stock-normal{
     opacity:0.5
 }
 .low-stock{
     background-color:rgb(253, 225, 214)
 }
+.low-quantity {
+    line-height: 20px;
+    height: 20px;
+    overflow: hidden;
+  }
+.show {
+    overflow: visible;
+    height: auto;
+  }
 button#search{
     background-color: #2d80b8;;
     color: whitesmoke;

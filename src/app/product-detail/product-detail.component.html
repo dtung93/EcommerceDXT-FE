@@ -29,36 +29,37 @@
                             aria-hidden="true"></span></button>
                 </div>
                 <div class="modal-body bg-light">
+                    <form [formGroup]="productForm" (submit)="updateProduct()">
                     <table [style]="width">
-                        <td><input type='hidden' [(ngModel)]="product.id" value={{product.id}}></td>
+                        <td><input type='hidden' formControlName="id" value={{product.id}}></td>
                         <tr>
                             <td>Name:</td>
-                            <input type='text' [style]="width" [(ngModel)]="product.name" value={{product.name}}>
-                            <label *ngIf="nameError" class="text-danger" id="error">Product name is required</label>
+                            <input type='text'[style]="width" name="name" formControlName="name" value={{product.name}}>
+                            <label *ngIf="this.productForm.invalid&&this.productForm.controls['name'].errors" class="text-danger" id="error">Product name is required</label>
                         </tr>
                         <tr>
                             <td>Image URL:</td>
-                            <input type='text' [style]="width" [(ngModel)]="product.img" value={{product.img}}>
+                            <input type='text' [style]="width" formControlname="img"  value={{product.img}}>
                         </tr>
                         <tr>
                             <td>Product Description</td>
-                            <textarea [style]="width" [(ngModel)]="product.description"></textarea>
+                            <textarea [style]="width" formControlName="description" value={{product.description}}></textarea>
                         </tr>
                         <tr>
                             <td>Price: </td>
-                            <input type='tel'   [style]="width"
-                                min="0" [(ngModel)]="product.price" oninput="this.value = this.value.replace(/^([^0-9]*)$/,'')">
-                                <label *ngIf="priceError" class="text-danger" id="error">Price is required</label>
+                            <input type='tel' value={{product.price}}   [style]="width" formControlName="price"
+                                min="0" oninput="this.value = this.value.replace(/^([^0-9]*)$/,'')">
+                                <label *ngIf="this.productForm.invalid&&this.productForm.controls['price'].errors" class="text-danger" id="error">Price is required</label>
                         </tr>
                         <tr>
                             <td>Quantity:</td>
-                            <input oninput="validity.valid||(value='')"  type='number' [style]="width" required
-                                min="0" [(ngModel)]="product.qty">
-                                <label *ngIf="quantityError" class="text-danger" id="error">Quantity must be set</label>
+                            <input oninput="validity.valid||(value='')" value={{product.qty}} formControlName="qty"  type='number' [style]="width" required
+                                min="0">
+                                <label *ngIf="this.productForm.invalid&&this.productForm.controls['qty'].errors" class="text-danger" id="error">Quantity must be set</label>
                         </tr>
                         <tr>
                             <td>Category:</td>
-                            <select [style]="width" [(ngModel)]="product.category">
+                            <select [style]="width" formControlName="category" value={{product.category}}>
                                 <option value="Health">Health</option>
                                 <option value="Beauty">Beauty</option>
                                 <option value="Sports">Sports</option>
@@ -76,13 +77,15 @@
                             </select>
                         </tr>
                     </table>
+                    <div class="modal-footer">
+                        <tr><button id="detail" type="submit" class='btn btn text-white' style="background-color:#2d80b7;width: 10rem;"
+                             >Update</button></tr>
+                        <button type="button" id="close" class="btn btn-outline-secondary" style="width: 10rem;"
+                            (click)="onCloseHandled()">Cancel</button>
+                    </div>
+                    </form>
                 </div>
-                <div class="modal-footer">
-                    <tr><button id="detail" class='btn btn text-white' style="background-color:#2d80b7;width: 10rem;"
-                            (click)='updateProduct()' >Update</button></tr>
-                    <button type="button" id="close" class="btn btn-outline-secondary" style="width: 10rem;"
-                        (click)="onCloseHandled()">Cancel</button>
-                </div>
+
             </div>
         </div>
 

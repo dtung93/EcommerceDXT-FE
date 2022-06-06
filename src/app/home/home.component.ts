@@ -15,45 +15,68 @@ import { Paging } from '../model/page.model';
 })
 export class HomeComponent implements OnInit {
   constructor(private cartService: CartService, private fb: FormBuilder, private token: TokenStorageService, private toastr: ToastrService, private productService: ProductService) {
-    this.productForm = this.fb.group({
-      name: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(25)]],
-      img: [''],
-      category: ['', [Validators.required]],
-      description: ['', [Validators.required]],
-      price: ['', [Validators.required, Validators.min(0)]],
-      qty: ['']
-    })
+
   }
   ngOnInit(): void {
     //API call to get array of products
- 
+
     if (this.token.getToken()) {
-      this.isLoggedIn=true
+      this.isLoggedIn = true
       this.roles = this.token.getUser().roles;
-       
-      if (this.roles?.includes(roleName.a)&&(this.token.getUser().enabled) || this.roles?.includes(roleName.mo)&&(this.token.getUser().enabled) || this.roles?.includes(roleName.ma)&&(this.token.getUser().enabled)) {
+
+      if (this.roles?.includes(roleName.a) && (this.token.getUser().enabled) || this.roles?.includes(roleName.mo) && (this.token.getUser().enabled) || this.roles?.includes(roleName.ma) && (this.token.getUser().enabled)) {
         this.notUser = true
-        this.productService.listproducts().subscribe((res)=>{
-          this.listproducts=res.data.data
-          this.outStock=res.data.data.filter((product:any)=>product.qty==0)
-          this.lowquantity=res.data.data.filter((product:any)=>product.qty<=5&&product.qty>0)     
+        this.productForm = this.fb.group({
+          name: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(25)]],
+          img: [''],
+          category: ['', [Validators.required]],
+          description: [''],
+          price: [null, [Validators.required, Validators.min(0)]],
+          qty: [null, [Validators.required]],
+          editBy: [this.token.getUser().roles[0].substring(5, 14) + " " + this.token.getUser().username],
+          date: [new Date()]
+
+        })
+        this.productService.listproducts().subscribe((res) => {
+          this.totalItems=res.data.data.length
+          this.listproducts = res.data.data
+          this.outStock = res.data.data.filter((x:any)=>x.qty==0)
+          this.lowquantity = res.data.data.filter((x:any)=>x.qty>0&&x.qty<=5)
+         this.productlist=
+            [
+              {
+                id: 1,
+                name:'Low stock( Quantity < 5): ',
+                list: this.lowquantity,
+                visible: false
+              }
+              , {
+                id: 2,
+                name:'Out of Stock: ',
+                list: this.outStock,
+                visible: false
+              }
+            ]       
         })
       }
-      if(!this.token.getUser().enabled){
-      this.userNotActivated=true
-      this.toastr.error('Your account is not activated yet')
+      if (!this.token.getUser().enabled) {
+        this.userNotActivated = true
+        this.toastr.error('Your account is not activated yet')
       }
     }
     this.getProducts()
 
   }
 
-  productName=''
-  productForm: FormGroup
+  username: string = ''
+  productName = ''
+  productForm!: FormGroup
+  totalItems:any
   products: Product[] = []
-  lowquantity:Product[]=[]
-  listproducts:Product[]=[]
-  outStock:Product[]=[]
+  lowquantity: Product[] = []
+  listproducts: Product[] = []
+  outStock: Product[] = []
+  productlist :any[]=[]
   selectedProduct?: Product
   currentUser: any
   isSubmitted = false;
@@ -65,6 +88,7 @@ export class HomeComponent implements OnInit {
   HasProducts: boolean = false
   content?: string
 
+  show = false
   isLoggedIn = false
   showButton = false
   display = 'none'
@@ -77,11 +101,11 @@ export class HomeComponent implements OnInit {
   category = ''
   keyword: boolean = false
   roles?: any[] = []
-  outOfStock=false
-  userNotActivated=false
+  outOfStock = false
+  userNotActivated = false
   sortOptions = [
-    { id: 1, name: 'Sort by ascending price', value: 'ascending',isSelected: false  },
-    { id: 2, name: 'Sort by descending price', value: 'descending',isSelected: false  }
+    { id: 1, name: 'Sort by ascending price', value: 'ascending', isSelected: false },
+    { id: 2, name: 'Sort by descending price', value: 'descending', isSelected: false }
   ]
   categories: any = [
     { name: 'Shoes' }, { name: 'Cars' }, { name: 'Health' },
@@ -89,22 +113,22 @@ export class HomeComponent implements OnInit {
     { name: 'Home' }, { name: 'Clothing' }, { name: 'Sports' }, { name: 'Grocery' }, { name: "Kids" }, { name: "Automotive" }, { name: "Toys" },
     { name: 'Movies' }, { name: 'Grocery' }
   ]
-  isSearched=false
+  isSearched = false
 
 
-  displayItemPerPage(items:number){
-    this.page=1;
-    this.pageSize=items
+  displayItemPerPage(items: number) {
+    this.page = 1;
+    this.pageSize = items
     this.searchProducts()
   }
-  sortedOptions(item:any) {
+  sortedOptions(item: any) {
     this.sortValue = this.sortOptions.find(x => x.value == item.value)?.value
-    this.sortOptions.forEach((option)=>{
-      if(option.id==item.id)
-    option.isSelected=!option.isSelected
-    else{
-      option.isSelected=false
-    }
+    this.sortOptions.forEach((option) => {
+      if (option.id == item.id)
+        option.isSelected = !option.isSelected
+      else {
+        option.isSelected = false
+      }
     })
   }
 
@@ -132,6 +156,7 @@ export class HomeComponent implements OnInit {
   }
   submitProductForm() {
     this.isSubmitted = true
+    console.log(this.productForm)
     if (this.productForm.valid) {
       const data = this.productForm.value
       return this.productService.addProduct(data).subscribe((res) => {
@@ -143,7 +168,7 @@ export class HomeComponent implements OnInit {
     }
   }
 
- 
+
   getPage() {
     const page = sessionStorage.getItem(Paging.PAGE_HOME)
     this.page = page ? +page : 1
@@ -151,13 +176,13 @@ export class HomeComponent implements OnInit {
   }
   //http service to get and display the array of products, paging information from API with parameters category and name, page and page sizee
   getProducts(): void {
-    const data={
-      productName:"",
-      page:this.page-1,
-      pageSize:this.pageSize,
-     category:this.category="",
-     sort:this.sortValue=''
-     }
+    const data = {
+      productName: "",
+      page: this.page - 1,
+      pageSize: this.pageSize,
+      category: this.category = "",
+      sort: this.sortValue = ''
+    }
     this.productService.getProducts(data).subscribe(response => {
       const { products, totalItems } = response.data.response
       this.products = products
@@ -165,38 +190,38 @@ export class HomeComponent implements OnInit {
       this.HasProducts = true
     }, () => { this.toastr.error('No products could be found') })
   }
-  searchProducts(){
-    this.isSearched=true
-    const data={
-     productName:this.productName,
-     page:this.page-1,
-     pageSize:this.pageSize,
-    category:this.category,
-    sort:this.sortValue
+  searchProducts() {
+    this.isSearched = true
+    const data = {
+      productName: this.productName,
+      page: this.page - 1,
+      pageSize: this.pageSize,
+      category: this.category,
+      sort: this.sortValue
     }
     this.productService.getProducts(data).subscribe(response => {
       console.log(response.data.response.products)
-      const { products, totalItems,currentPage } = response.data.response
+      const { products, totalItems, currentPage } = response.data.response
       this.products = products
       this.count = totalItems
-      this.page=currentPage+1
+      this.page = currentPage + 1
       this.HasProducts = true
     }, () => { this.toastr.error('No products could be found') })
   }
 
   //http service to get and display the array of products with no parameters
   backToResults(): void {
-    this.name==null
-    this.productName=''
-    this.isSearched=false
-    this.sortValue=""
-    const data={
-      productName:"",
-      page:0,
-      pageSize:this.pageSize,
-     category:"",
-     sort:this.sortValue
-     }
+    this.name == null
+    this.productName = ''
+    this.isSearched = false
+    this.sortValue = ""
+    const data = {
+      productName: "",
+      page: 0,
+      pageSize: this.pageSize,
+      category: "",
+      sort: this.sortValue
+    }
     this.productService.getProducts(data).subscribe(response => {
       const { products, totalItems } = response.data.response
       this.products = products //array of products
@@ -210,13 +235,13 @@ export class HomeComponent implements OnInit {
   handlePageChange(event: number): void {
     console.log(event)
     this.page = event
-   
+
     sessionStorage.setItem(Paging.PAGE_HOME, JSON.stringify(event))
-      this.searchProducts()
-    
+    this.searchProducts()
+
   }
-  eventSearch(){
-    this.page=1
+  eventSearch() {
+    this.page = 1
     this.searchProducts()
   }
 
@@ -241,10 +266,10 @@ export class HomeComponent implements OnInit {
         this.toastr.info('Product successfully added to cart')
         this.cartService.updateCartTotal(res.totalItems)
       }, error => { console.log(error.error.message) }
-     )
+      )
     }
     else {
-    this.toastr.error('You need to sign in to use this function')
+      this.toastr.error('You need to sign in to use this function')
     }
   }
 

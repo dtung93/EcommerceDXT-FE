@@ -49,6 +49,7 @@ export class OrdersComponent implements OnInit {
   }
   displayUsers(sort:number){
   this.pageSize=sort
+  this.page=1
   this.searchOrders()
   }
   getAllOrders() {
@@ -70,7 +71,6 @@ export class OrdersComponent implements OnInit {
       this.orders=res.data.response.orders
       this.page=res.data.response.currentPage+1
       this.totalItems=res.data.response.totalItems
-      console.log(this.orders)
     })
   }
   eventSearch(){

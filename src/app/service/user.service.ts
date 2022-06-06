@@ -22,7 +22,7 @@ export class UserService {
    return this.http.get(apiURL + '/master', { responseType: 'text' });
   }
   getUsers(params:any):Observable<any>{
-    return this.http.get(apiURL+ '/admin/users',{ params })
+    return this.http.post(apiURL+ '/admin/users',params)
   }
   getUser(id:number):Observable<User>{
     return this.http.get<User>(apiURL+`/user/${id}`)

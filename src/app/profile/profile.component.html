@@ -153,10 +153,12 @@
                   <tr>
                     <td>Email</td>
                     <input name="email" type='text' [style]="width" value={{email}} formControlName="email">
+                    <label class="text-danger" *ngIf="updateIsSubmitted&&updateProfileForm.controls['email'].invalid">Invalid email </label>
                   </tr>
                   <tr>
                     <td>Phone Numbers</td>
                     <input type='text' [style]="width" value={{phone}} formControlName="phone">
+                    <div class="text-danger" *ngIf="updateIsSubmitted&&updateProfileForm.controls['phone'].invalid">Invalid phone numbers</div>
                   </tr>
                   <tr>
                     <td>Address</td>

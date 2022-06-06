@@ -7,9 +7,11 @@
     <!-- FILTER AND SEARCH -->
     <div class="row mt-3">
       <div class="col-md-3">
-        <input type="text" class="form-control" placeholder="Search by username or email" [(ngModel)]="username">
-      <div class="text-danger mt-1" *ngIf="isSearched"><span style="font-size:20px">{{totalAccounts}}</span> results with '{{username}}'</div>
-      </div>
+        <input type="text" (keydown.enter)="eventSearch()" class="form-control" placeholder="Search by username or email" [(ngModel)]="username">
+      <div class="text-danger mt-1" *ngIf="isSearched"><span style="font-size:20px">{{users.length}}</span> results    <span *ngIf="username!=null"> for "{{username}}"</span>,  page {{page}} </div>
+   
+    </div>
+  
       <div class="col-md-3 " style="height:45px">
         <button class="btn text-white" style="background-color:#3895d3;height:45px" id='search'
           (click)="eventSearch()">Search</button>
@@ -17,11 +19,7 @@
           filters</button>
       </div>
       <div class="col-md-2 ">
-        <select  (change)="displayUser(displayUserNumber)" [(ngModel)]="displayUserNumber" style="width: max-content;height:45px;margin-left:5px">
-          <option value="6">6 items per page</option>
-          <option value="12">12 items per page</option>
-          <option value="18">18 items per page</option>
-          </select>
+    
       </div>
       <div class="col-md-4 ">
         <button style="height:45px;float:right" type="button" class="btn btn text-white add-user" data-bs-toggle="modal"
@@ -115,15 +113,32 @@
       <div class="col-sm-2">
         <table class="table table-sm">
           <tbody>
-            <tr *ngIf="!isSearched">
+            <tr>
               <th scope="row">Total users:</th>
               <td>{{totalAccounts}}</td>
           </tbody>
         </table>
       </div>
     </div>
+    <table class="mt-3" style="width:100%">
+      <tr>
+          <td colspan="7">
+              <div class="d-flex flex-row-reverse bd-highlight">
+                  <div class="bd-highlight">
+                      <pagination-controls previousLabel="Prev" nextLabel="Next" [responsive]="true"
+                          (pageChange)="handlePageChange($event)" style="float:right;margin-top:5px" class="my-pagination">
+                      </pagination-controls>
+                  </div>
+                  <div style="max-height:50px" class="p-2 "><select style="padding:5px" id="pageSize" [(ngModel)]="pageSize"
+                          (change)="displayUser(pageSize)">
+                          <option value="10">10 items per page</option>
+                          <option value="20">20 items per page</option>
+                      </select></div>
+              </div>
+          </td>
+      </tr>
+  </table>
 
-    <!-- USER LIST TABLE -->
     <table id='users' class="table table p-0.5">
       <thead class="text-white" style="background-color: #3895d3;">
         <tr>
@@ -218,23 +233,22 @@
               <tr style="margin-top:15px">
                 <td>Role</td>
                 <td>
-                  <select formControlName="roleSelected">
-                    <option [id]="role.id" *ngFor="let role of selectedRoles" [selected]="role.id==roleSelected.id"
-                     [ngValue]="role">{{role.tag}}</option>
+                  <select (change)="changeRole($event)">
+                    <option  *ngFor="let role of selectedRoles" [value]="role.tag" [selected]="role.id==roleSelected.id"
+                      >{{role.tag}}</option>
                   </select>
-                  <label style="color:red" *ngIf="updateUserForm.controls['roleSelected'].invalid&&updateUserSubmitted">Must have at least 1 role</label>
                 </td>
               </tr>
               <tr>
                 <td>Email*</td>
                 <td> <input type='text' [style]="width" formControlName="email" value={{selectedUser.email}}>
-                  <div class="text-danger" *ngIf="updateUserForm.controls['email'].invalid&&updateUserSubmitted">Email must be 6 characters minimum</div>
+                  <div class="text-danger" *ngIf="updateUserForm.controls['email'].invalid&&updateUserSubmitted">Invalid email</div>
                 </td>
               </tr>
               <tr>
                 <td>Phone*</td>
                 <td> <input type="text" value={{selectedUser.phone}} formControlName="phone">
-                <div class="text-danger" *ngIf="updateUserForm.controls['phone'].invalid&&updateUserSubmitted">Phone required</div>
+                <div class="text-danger" *ngIf="updateUserForm.controls['phone'].invalid&&updateUserSubmitted">Invalid Phone</div>
                 </td>
               </tr>
               <tr>
