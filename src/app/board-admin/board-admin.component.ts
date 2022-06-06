@@ -5,9 +5,8 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { User } from '../model/user.model';
 import { ToastrService } from 'ngx-toastr';
 import { ConsoleLogger } from '@angular/compiler-cli/private/localize';
-import Swal from 'sweetalert2'
 import { TokenStorageService } from '../service/token-storage.service';
-import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { roleName } from '../model/role.model';
 import { Paging } from '../model/page.model';
 @Component({
@@ -17,6 +16,13 @@ import { Paging } from '../model/page.model';
 })
 export class BoardAdminComponent implements OnInit {
   constructor(private fb:FormBuilder,private userService: UserService, private toastr: ToastrService, private token: TokenStorageService) {
+    this.updateUserForm=this.fb.group({
+        id:[null],
+        username:[''],
+        address:[''],
+        phone:['',[Validators.required]],
+        email:['',[Validators.required,Validators.email]]
+    })
   }
   ngOnInit(): void {
     this.userService.getAdminBoard().subscribe(res => {
@@ -32,11 +38,12 @@ export class BoardAdminComponent implements OnInit {
         this.isAdmin = true
     }
   }
+  updateUserForm:FormGroup
   error=false
   email:any
   address:any
   phone:any
-  username=''
+  username:any
   updateError=''
   isSubmitted=false
   userForm!: FormGroup 
@@ -66,12 +73,14 @@ export class BoardAdminComponent implements OnInit {
   ]
   selectedRoles: any = [
     { id: 1, name: 'ROLE_USER', tag: 'User' },
-    { id: 2, name: 'ROLE_MODERATOR', tag: 'Moderator' },{id:3,name:'ROLE_ADMIN',tag:'Admin'},{id:4,name:'ROLE_MASTER',tag:'Master'}
+    { id: 2, name: 'ROLE_MODERATOR', tag: 'Moderator' },
+    {id:3,name:'ROLE_ADMIN',tag:'Admin'},
+    {id:4,name:'ROLE_MASTER',tag:'Master'}
   ]
   page = 1
   count = 0
-  pageSize = 6
-  keyword = false
+  pageSize = 10
+  updateSubmitted=false
   roles: any[] = []
   users: any[] = []
   totalAccounts = 0
@@ -80,14 +89,17 @@ export class BoardAdminComponent implements OnInit {
   isSearched=false
   displayNumber=8
   displayItems(number:number){
-    const params = this.getRequestParams(this.username,this.page=1, this.pageSize=number)
-    this.userService.getUsers(params).subscribe((res) => {
-      this.totalAccounts = res.totalUsers
-      this.count = res.totalUsers
-      this.users = res.users?.map((user: any) => {
+    let data={
+      username:this.username,
+      pageSize:number
+    }
+    this.userService.getUsers(data).subscribe((res) => {
+      this.totalAccounts = res.data.users.totalUsers
+      this.count = res.data.users.totalUsers
+      this.page=res.data.users.currentPage
+      this.users = res.data.users.users?.map((user: any) => {
         return { ...user, editable: this.checkRoleCondition(user) }
       })
-      console.log(this.users)
     })
   }
   addUserPanel(){
@@ -150,25 +162,27 @@ export class BoardAdminComponent implements OnInit {
   }
   searchUser(){
     this.isSearched=true
-    const data=this.getSearchParams(this.username,this.page)
+    let data={
+      page:this.page-1,
+      username:this.username,
+      pageSize:this.pageSize,
+    }
     this.userService.getUsers(data).subscribe((res:any)=>{
-      this.users = res.users?.map((user: any) => {
+      this.users = res.data.users.users?.map((user: any) => {
         return { ...user, editable: this.checkRoleCondition(user) }
       })
-      this.totalAccounts=res.totalUsers
-      this.count=res.totalUsers
-      this.page=res.currentPage+1
+      this.totalAccounts=res.data.users.totalUsers
+      this.count=res.data.users.totalUsers
+      this.page=res.data.users.currentPage+1
     })
   }
   getUsers() {
-    const params = this.getRequestParams(this.username,this.getPage(), this.pageSize)
-    this.userService.getUsers(params).subscribe((res) => {
-      this.totalAccounts = res.totalUsers
-      this.count = res.totalUsers
-      this.users = res.users?.map((user: any) => {
+    this.userService.getUsers({}).subscribe((res) => {
+      this.totalAccounts = res.data.users.totalUsers
+      this.count = res.data.users.totalUsers
+      this.users = res.data.users.users?.map((user: any) => {
         return { ...user, editable: this.checkRoleCondition(user) }
       })
-      console.log(this.users)
     })
   }
   checkRoleCondition(user: any) {
@@ -208,9 +222,19 @@ export class BoardAdminComponent implements OnInit {
   getUserDetail(id: number) {
     return this.userService.getUser(id).subscribe((res) => {
       this.selectedUser = res
-      this.oldUser=res
-      console.log(this.oldUser)
-      this.roleSelected=this.selectedRoles.find((role:any)=>role.id === res.roles[0].id)
+      let role=this.selectedRoles.find((role:any)=>role.id === res.roles[0].id)
+      this.roleSelected={
+        id:role.id,
+        name:role.name
+      }
+      this.updateUserForm.patchValue({
+        id:this.selectedUser.id,
+        username:this.selectedUser.username,
+        phone:this.selectedUser.phone,
+        address:this.selectedUser.address,
+        email:this.selectedUser.email,
+        roles:[this.roleSelected]
+      })
     })
   }
 
@@ -223,30 +247,36 @@ export class BoardAdminComponent implements OnInit {
     this.getUserDetail(id);
     this.openModal()
   }
-changeValue(event:any){
-this.selectedUser.email=event.target.value
-console.log(this.selectedUser.email)
+
+changeRole(event:any){
+  console.log(event.target.value)
+  let role=this.selectedRoles.find((x:any)=>x.tag==event.target.value)
+  this.roleSelected.id=role.id
+  this.roleSelected.name=role.name
+  console.log(this.roleSelected)
 }
   updateUser(){
     const data = {
       user:{
-      id: this.oldUser.id,
-      email: this.oldUser.email,
-      username: this.oldUser.username,
-      password: this.oldUser.password,
-      address:this.oldUser.address,
-      phone:this.oldUser.phone,
-      enabled:this.oldUser.enabled
+      id: this.selectedUser.id,
+      email: this.selectedUser.email,
+      username: this.selectedUser.username,
+      password: this.selectedUser.password,
+      address:this.selectedUser.address,
+      phone:this.selectedUser.phone,
+      enabled:this.selectedUser.enabled,
+      roles:[this.selectedUser.roles[0]]
       },
-      roles: [this.roleSelected],
-      email: this.email?this.email:this.selectedUser.email,
-      address:this.address?this.address:this.selectedUser.address,
-      phone:this.phone?this.phone:this.selectedUser.phone
+      roles:[this.roleSelected],
+      email: this.updateUserForm.controls['email'].value,
+      address:this.updateUserForm.controls['address'].value,
+      phone:this.updateUserForm.controls['phone'].value
     }
-    if(data.user.email==''){
-      this.toastr.error('Error!',"Email must be set")     
+    this.updateSubmitted=true
+    if(this.updateUserForm.invalid){
+      this.toastr.error('Error when updating, please check your input again!')
     }
-    else{
+    else {
       this.userService.updateUser(data).subscribe((res:any) => {
         console.log(res)
         this.display = 'none'
@@ -258,7 +288,7 @@ console.log(this.selectedUser.email)
           this.updateError=error.error.errorMessage
           this.selectedUser==null
       })
-    }
+    } 
   }
   showToast(username: string) {
     this.toastr.error(username+ ' has been deleted!')
@@ -276,24 +306,15 @@ console.log(this.selectedUser.email)
   }
   clearFilter(){
     this.isSearched=false
-   const data= this.getRequestParams(this.username="",this.page=1,this.pageSize)
-    this.userService.getUsers(data).subscribe((res)=>{
-      this.totalAccounts = res.totalUsers
-      this.count = res.totalUsers
-      this.users = res.users?.map((user: any) => {
-        return { ...user, editable: this.checkRoleCondition(user) }
-      })
-    })
-  }
+    this.username=null
+  this.page=1
+  this.pageSize=10
+  this.searchUser()
+   }
   handlePageChange(event: number): void {
     this.page = event
     sessionStorage.setItem(Paging.PAGE_ADMIN_HOME,JSON.stringify(event))
-   if(this.username==''){
-    this.getUsers()
-   }
-   else{
     this.searchUser()
-   }
   }
 
   handlePageSizeChange(event: any): void {

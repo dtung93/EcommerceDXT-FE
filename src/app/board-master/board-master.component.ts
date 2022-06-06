@@ -26,12 +26,11 @@ export class BoardMasterComponent implements OnInit {
       validator: confirmField("password", "confirmPassword")
     })
     this.updateUserForm = this.fb.group({
-      id: [],
-      roleSelected: [],
-      email: ['', [Validators.email, Validators.maxLength(100), Validators.minLength(6)]],
-      role: [],
-      address: [],
-      phone: []
+      id:[null],
+      username:[''],
+      address:[''],
+      phone:['',[Validators.required]],
+      email:['',[Validators.required,Validators.email]]
     })
   }
   ngOnInit(): void {
@@ -58,10 +57,10 @@ export class BoardMasterComponent implements OnInit {
     name: 'ROLE_USER',
     tag: 'User'
   }
-  username = ''
+  username:any
   isSubmitted = false;
   userForm!: FormGroup
-  updateUserForm!: FormGroup
+  updateUserForm: FormGroup
   isAdmin = false
   isMaster = false
   error=false
@@ -98,7 +97,7 @@ export class BoardMasterComponent implements OnInit {
   role: any[] = []
   page = 1
   count = 0
-  pageSize = 6
+  pageSize = 10
   keyword = false
   roles: any[] = []
   users: any[] = []
@@ -108,15 +107,18 @@ export class BoardMasterComponent implements OnInit {
   display = 'none'
   addUserFailed = false
   isSearched = false
-  displayUserNumber = 6
+  displayUserNumber = 10
   updateUserSubmitted = false
   displayUser(displayNumber: number) {
-    const params = this.getRequestParams(this.username, this.page = 1, this.pageSize = displayNumber)
-    this.userService.getUsers(params).subscribe((res) => {
-      this.totalAccounts = res.totalUsers
-      this.count = res.totalUsers
-      console.log(this.currentUserRole)
-      this.users = res.users?.map((user: any) => {
+     const data={
+       username:this.username,
+       pageSize:displayNumber
+     }
+    this.userService.getUsers(data).subscribe((res) => {
+      this.totalAccounts = res.data.users.totalUsers
+      this.count = res.data.users.totalUsers
+      this.page=res.data.users.currentPage+1
+      this.users = res.data.users.users?.map((user: any) => {
         return { ...user, editable: this.checkRoleCondition(user) }
       })
       console.log(this.users)
@@ -131,7 +133,7 @@ export class BoardMasterComponent implements OnInit {
   addUser() {
     this.isSubmitted = true
     if (this.userForm.invalid) {
-      this.toastr.error('Failed to add new user, Please check your input fields again')
+      this.toastr.error('Failed to add user! Please check your input fields again')
     }
     else {
       const data = {
@@ -152,13 +154,13 @@ export class BoardMasterComponent implements OnInit {
       })
     }
   }
-  findByRoleId(id: any) {
-    const roleItem = this.selectedRoles.find((role: any) => +role.id === +id)
-    return (roleItem) ? [roleItem] : null
+  changeRole(event:any){
+    let role=this.selectedRoles.find((x:any)=>x.tag==event.target.value)
+    this.roleSelected={
+    id:role.id,
+    name:role.name
   }
-
-  getValueSelected(event: any) {
-    this.roleSelected = event
+    console.log(this.roleSelected)
   }
 
   getRequestParams(username: string, page: number, pageSize: number) {
@@ -187,16 +189,19 @@ export class BoardMasterComponent implements OnInit {
   }
   searchUser() {
     this.isSearched = true
-    const data = this.getSearchParams(this.username, this.page,this.pageSize)
+    const data = {
+      page:this.page-1,
+      username:this.username
+    }
     return this.userService.getUsers(data).subscribe((res: any) => {
-      this.users = res.users?.map((user: any) => {
+      this.users = res.data.users.users?.map((user: any) => {
         return { ...user, editable: this.checkRoleCondition(user) }
       })
 
       console.log(res)
-      this.totalAccounts = res.totalUsers
-      this.count = res.totalUsers
-      this.page = res.currentPage + 1
+      this.totalAccounts =  res.data.users.totalUsers
+      this.count = res.data.users.totalUsers
+      this.page = res.data.users.currentPage + 1
       console.log(this.users)
 
     })
@@ -232,30 +237,22 @@ export class BoardMasterComponent implements OnInit {
     return this.page
   }
   getUsers() {
-    const params = this.getRequestParams(this.username, this.getPage(), this.pageSize)
-    this.userService.getUsers(params).subscribe((res) => {
-      this.totalAccounts = res.totalUsers
-      this.count = res.totalUsers
-      console.log(this.currentUserRole)
-      this.users = res.users?.map((user: any) => {
+    this.userService.getUsers({}).subscribe((res) => {
+      this.totalAccounts = res.data.users.totalUsers
+      this.count = res.data.users.totalUsers
+      this.page=res.data.users.currentPage+1
+      this.users = res.data.users.users?.map((user: any) => {
         return { ...user, editable: this.checkRoleCondition(user) }
       })
       console.log(this.users)
     }, () => { this.noUserError = 'No users could be found' })
   }
   clearFilter() {
-    this.username = ''
+    this.username = null
     this.isSearched = false
     this.page=1
-    const params = this.getRequestParams(this.username, this.page, this.pageSize)
-    this.userService.getUsers(params).subscribe((res) => {
-      this.totalAccounts = res.totalUsers
-      this.count = res.totalUsers
-      this.users = res.users?.map((user: any) => {
-        return { ...user, editable: this.checkRoleCondition(user) }
-      })
-
-    }, () => { this.noUserError = 'No users could be found' })
+    this.pageSize=10
+    this.searchUser()
   }
   checkRoleCondition(user: any) {
     const hasRole = user.roles.some((r: any) => r.name === roleName.a || r.name === roleName.ma)
@@ -298,8 +295,15 @@ export class BoardMasterComponent implements OnInit {
     return this.userService.getUser(id).subscribe((res) => {
       this.selectedUser = res
       this.oldUser=res
-      console.log(this.selectedUser)
       this.roleSelected = this.selectedRoles.find((selectedRole: any) => selectedRole.id === res.roles[0].id)
+      this.updateUserForm.patchValue({
+        id:this.selectedUser.id,
+        username:this.selectedUser.username,
+        phone:this.selectedUser.phone,
+        address:this.selectedUser.address,
+        email:this.selectedUser.email,
+        roles:[this.roleSelected]
+      })
     })
   }
 
@@ -309,30 +313,25 @@ export class BoardMasterComponent implements OnInit {
   }
 
   updateUser(): void {
-    const data = {
-      roles: this.updateUserForm.controls['roleSelected'].value ? this.updateUserForm.controls['roleSelected'].value : this.selectedUser.roles[0]
-    }
-    const roles = [data.roles].map((role: any) => {
-      return {
-        id: role.id,
-        name: role.name
-      }
-    })
     this.updateUserSubmitted=true
+    console.log(this.selectedUser.roles[0])
     const params = {
       user: {
         id: this.selectedUser.id,
-        username: this.selectedUser.username,
-        address: this.selectedUser.address,
         email: this.selectedUser.email,
-        phone: this.selectedUser.phone
+        username: this.selectedUser.username,
+        password: this.selectedUser.password,
+        address:this.selectedUser.address,
+        phone:this.selectedUser.phone,
+        enabled:this.selectedUser.enabled,
+        roles:[this.selectedUser.roles[0]]
       },
-      address: this.updateUserForm.controls['address'].value ? this.updateUserForm.controls['address'].value : this.selectedUser.address,
-      email: this.updateUserForm.controls['email'].value ? this.updateUserForm.controls['email'].value : this.selectedUser.email,
-      phone: this.updateUserForm.controls['phone'].value ? this.updateUserForm.controls['phone'].value : this.selectedUser.phone,
-      roles: roles ? roles : this.selectedUser.roles[0]
+      address: this.updateUserForm.controls['address'].value ,
+      email: this.updateUserForm.controls['email'].value ,
+      phone: this.updateUserForm.controls['phone'].value,
+      roles: [this.roleSelected]
     }
-
+console.log(params)
 if(this.updateUserForm.invalid){
   this.toastr.error('Error submitting form. Please check your inputs again')
 }
@@ -344,7 +343,6 @@ else{
       this.error=false
     }, (error) => {
       this.error=true
-      this.updateUserForm.controls['email'].value==""
       this.updateError = error.error.errorMessage
     })
   }
@@ -366,13 +364,7 @@ else{
   handlePageChange(event: number): void {
     this.page = event
     sessionStorage.setItem(Paging.PAGE_MASTER_HOME, JSON.stringify(event))
-    if (this.username == '') {
-      this.getUsers()
-    }
-    else {
-      this.searchUser()
-    }
-
+    this.searchUser()
   }
 
   handlePageSizeChange(event: any): void {

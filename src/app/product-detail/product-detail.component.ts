@@ -6,6 +6,8 @@ import { ProductService } from '../service/product.service';
 import { TokenStorageService } from '../service/token-storage.service';
 import { CartService } from '../service/cart.service';
 import { User } from '../model/user.model';
+import { lastValueFrom } from 'rxjs';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 @Component({
   selector: 'app-product-detail',
   templateUrl: './product-detail.component.html',
@@ -13,17 +15,30 @@ import { User } from '../model/user.model';
 })
 export class ProductDetailComponent implements OnInit {
 product=new Product()
+productForm:FormGroup
 username:any
-  constructor(private cartService:CartService,private toastr:ToastrService, private api:ProductService,private route:ActivatedRoute,private token:TokenStorageService) { }
+name:string=''
+  constructor(private fb:FormBuilder,private cartService:CartService,private toastr:ToastrService, private api:ProductService,private route:ActivatedRoute,private token:TokenStorageService) { 
+    this.productForm=this.fb.group({
+      id:[null],
+      name:['',[Validators.required]],
+      img:[''],
+      description:[''],
+      category:['',[Validators.required]],
+      price:[null,[Validators.required]],
+      qty:[null,[Validators.required]],
+      date:[],
+      editBy:[]
+    })
+  }
   ngOnInit(): void {
-    this.getProduct(this.route.snapshot.params['id'])
+   this.getProduct(this.route.snapshot.params['id'])
     if(this.token.getToken()){
       this.roles=this.token.getUser().roles
-      this.username=this.roles[0].substring(5,14)+" "+this.token.getUser().username
       console.log(this.roles[0].substring(5,14))
      if(this.roles.includes("ROLE_MODERATOR")&&this.token.getUser().enabled||this.roles.includes("ROLE_ADMIN")&&this.token.getUser().enabled||this.roles.includes('ROLE_MASTER')&&this.token.getUser().enabled){
        this.showButton=true
-      
+       console.log(this.productForm)
      }
      else{
        this.showButton=false
@@ -32,7 +47,6 @@ username:any
       }
    }
     }
-    console.log(this.product);
   }
   showToast(id:any){
     this.toastr.info('Product'+' '+'#'+id+' is updated')
@@ -59,15 +73,28 @@ username:any
   roles:string[]=[]
  
 getProduct(id:number){
-  return this.api.getProductDetail(id).subscribe((s)=>{
+  this.api.getProductDetail(id).subscribe((s)=>{
     this.product=s
+    this.productForm.patchValue({
+      id:s.id,
+     name:s.name,
+     img:s.img,
+     description:s.description,
+     qty:s.qty,
+     price:s.price,
+     category:s.category,
+     editBy:this.roles[0].substring(5,14)+" "+this.token.getUser().username,
+     date:new Date(),
+    })
+    console.log(this.productForm.value)
     if(this.product.qty<=5){
       this.smallStock=true
     }
     if(this.product.qty==0){
       this.outOfStock=true
     }
-    console.log(s)
+    console.log(this.product)
+   
   })
 }
 display='none'
@@ -85,40 +112,22 @@ isOpen(){
 
 
 updateProduct():void{
-  const data={
-id:this.product.id,
-name:this.product.name,
-img:this.product.img,
-description:this.product.description,
-category:this.product.category,
-price:this.product.price,
-qty:this.product.qty,
-editBy:this.username,
-date:new Date()
-  }
-if(data.qty==null||data.price==null||data.name==''){
-  this.toastr.error('Failed to update. Please check your inputs again')
- if(data.name==''){
-   this.nameError=true
- }
- if(data.qty==null){
-  this.quantityError=true
- }
- if(data.price==null){
-    this.priceError=true
- }
+
+if(this.productForm.invalid){
+  this.toastr.error('Error! Please check your input fields again')
 }
 else{
-this.api.updateProduct(data).subscribe((res)=>{
-  console.log(res)
-  this.display='none'
-  this.showToast(res.id);
-  this.nameError=false
-  this.quantityError=false
-  this.priceError=false
-})
+  this.api.updateProduct(this.productForm.value).subscribe((res)=>{
+    console.log(res)
+    this.display='none'
+    this.nameError=false
+    this.quantityError=false
+    this.priceError=false
+  })
+this.toastr.info(this.productForm.get('name')?.value.toString()+' successfully updated')
 }
 }
+
 addProductToCart(){
   if(!this.token.getToken()){
     this.toastr.error('Please sign in to use this service')
