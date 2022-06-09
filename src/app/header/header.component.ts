@@ -12,10 +12,13 @@ import { TokenStorageService } from '../service/token-storage.service';
 })
 export class HeaderComponent implements OnInit {
   userOrder=false
+  userId:any
   constructor(private cartService:CartService,private eventBusService:EventBusService,private tokenStorageService:TokenStorageService) { }
   ngOnInit(): void {
     this.isLoggedIn = !!this.tokenStorageService.getToken();
     if (this.isLoggedIn) {
+      this.userId=this.tokenStorageService.getUser().id
+      console.log(this.userId)
       const user = this.tokenStorageService.getUser(); 
      if(user.roles.includes(roleName.u)){
        this.showCart=true

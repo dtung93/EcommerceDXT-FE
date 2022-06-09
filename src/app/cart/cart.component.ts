@@ -22,7 +22,6 @@ export class CartComponent implements OnInit {
   if (this.token.getToken()){
     if (this.token.getUser().enabled==true){
       this.cartService.getCart().subscribe((res) => {
-        console.log(res)
         this.cartService.updateCartTotal(res.totalItems)
         this.items = res.items.sort(function (a: any, b: any) {
           return parseFloat(a.product.id) - parseFloat(b.product.id)
@@ -31,13 +30,11 @@ export class CartComponent implements OnInit {
           let outStock=item.product.qty==0
           return {...item,outStock:outStock,exceedQuantity:exceedQuantity}
         })
-        console.log(this.items)
         this.totalItems = res.totalItems
         this.grandTotal = this.roundUpNumber(res.grandTotal)
         this.exceedQuantity=this.checkItemQuantity(res.items)
-        console.log(this.exceedQuantity)
         this.outOfStock=this.checkOutStock(res.items)
-        console.log(this.outOfStock)
+      
       })
     }
     else{
@@ -92,7 +89,6 @@ checkItemQuantity(items: any) {
         let outStock=item.product.qty==0
         return {...item,outStock:outStock,exceedQuantity:exceedQuantity}
       })
-      console.log(res)
       this.totalItems = res.totalItems
       this.grandTotal = res.grandTotal
       this.cartService.updateCartTotal(this.totalItems)
@@ -129,7 +125,6 @@ checkItemQuantity(items: any) {
   }
   getItem(item: Product) {
     this.selectedItem = item
-    console.log(this.selectedItem)
   }
   decreaseQuantityByOne(id: number, item: any) {
     this.selectedItemQuantity = item
@@ -142,7 +137,6 @@ checkItemQuantity(items: any) {
         let outStock=item.product.qty==0
         return {...item,outStock:outStock,exceedQuantity:exceedQuantity}
       })
-      console.log(res)
       this.totalItems = res.totalItems
       this.grandTotal = res.grandTotal
       this.cartService.updateCartTotal(res.totalItems)

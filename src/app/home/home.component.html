@@ -26,6 +26,8 @@
           </div>
           <div class="modal-body">
             <app-loader></app-loader>
+
+
             <!-- PRODUCT FORM -->
             <form [formGroup]="productForm" (ngSubmit)="submitProductForm()" (keydown.enter)="submitProductForm()">
               <table [style]="width">
@@ -136,9 +138,11 @@
    </div>
    <div>Total products: <span class="h6">{{totalItems}}</span></div>
   </div>
+  
 
   <!-- PRODUCT LIST - NORMAL  -->
 
+  
   <div class="row" style="padding-top: 20px;">
     <div class="row" *ngIf="!notUser">
       <div id="{{ x.id }}" [ngClass]="{'out-of-stock-normal':x.qty==0}" *ngFor="
@@ -273,9 +277,17 @@
   </div>
 
   <!-- PAGINATION -->
-  <pagination-controls *ngIf="HasProducts" previousLabel="Prev" nextLabel="Next" [responsive]="true"
-    (pageChange)="handlePageChange($event)" style="float:right;" class="my-pagination"></pagination-controls>
-
-</div>
+    <div class="row" id="table">
+      <div class="d-flex flex-row-reverse bd-highlight">
+        <div class="p-2 bd-highlight mt-3">    <pagination-controls *ngIf="HasProducts" previousLabel="Prev" nextLabel="Next" [responsive]="true"
+          (pageChange)="handlePageChange($event)" style="float:right" class="my-pagination">
+        </pagination-controls></div>
+        <div style="max-height:50px"  class="p-2 "><select id="pageSize" (change)="displayItemPerPage(pageSize) "
+         [(ngModel)]="pageSize">
+          <option value="8">8 items per page</option>
+          <option value="12">12 items per page</option>
+          <option value="20">20 items per page</option>
+        </select></div>
+      </div>
 
 <app-loader></app-loader>

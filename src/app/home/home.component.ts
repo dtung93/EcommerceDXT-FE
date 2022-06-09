@@ -156,7 +156,6 @@ export class HomeComponent implements OnInit {
   }
   submitProductForm() {
     this.isSubmitted = true
-    console.log(this.productForm)
     if (this.productForm.valid) {
       const data = this.productForm.value
       return this.productService.addProduct(data).subscribe((res) => {
@@ -200,7 +199,6 @@ export class HomeComponent implements OnInit {
       sort: this.sortValue
     }
     this.productService.getProducts(data).subscribe(response => {
-      console.log(response.data.response.products)
       const { products, totalItems, currentPage } = response.data.response
       this.products = products
       this.count = totalItems
@@ -233,7 +231,6 @@ export class HomeComponent implements OnInit {
 
 
   handlePageChange(event: number): void {
-    console.log(event)
     this.page = event
 
     sessionStorage.setItem(Paging.PAGE_HOME, JSON.stringify(event))
@@ -247,10 +244,8 @@ export class HomeComponent implements OnInit {
 
   delete(id: any): void {
     this.productService.deleteProduct(id).subscribe((res) => {
-      console.log(id)
       const selectedProduct = this.products.find(x => x.id === id);
       this.products = this.products.filter(x => x.id != id)
-      console.log(selectedProduct)
       this.display = 'none'
       this.showDeleteToast(selectedProduct?.name + ' is deleted')
     }, () => {
@@ -262,10 +257,9 @@ export class HomeComponent implements OnInit {
     if (this.roles?.includes(roleName.u)) {
       const productId = { id: id }
       this.cartService.addToCart(productId).subscribe((res) => {
-        console.log(res)
         this.toastr.info('Product successfully added to cart')
         this.cartService.updateCartTotal(res.totalItems)
-      }, error => { console.log(error.error.message) }
+      }, error => {  }
       )
     }
     else {

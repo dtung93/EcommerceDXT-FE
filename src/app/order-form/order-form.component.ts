@@ -31,7 +31,6 @@ export class OrderFormComponent implements OnInit {
       this.amount = res.grandTotal
       this.totalItems = res.totalItems
       this.items = res.items
-      console.log(this.cart)
     })
 
   }
@@ -89,7 +88,6 @@ export class OrderFormComponent implements OnInit {
       key: PaymentApiKey.PUBLIC_KEY,
       locale: 'auto',
       token: function (stripeToken: any) {
-        console.log({ stripeToken })
         paymentstripe(stripeToken)
       }
     });
@@ -111,15 +109,11 @@ export class OrderFormComponent implements OnInit {
         address: this.orderForm.controls['address'].value,
         phone: this.orderForm.controls['phone'].value
       }
-      console.log(orderDetails)
 
       this.checkOutService.checkout(params).subscribe((data: any) => {
-        console.log(data);
-
         if (data.status === 'succeeded') {
           this.cartService.updateCartTotal(0)
           this.orderService.newOrder(orderDetails).subscribe((res) => {
-            console.log(res)
             this.toastr.info('Thank you for your oder! Your payment was processed successfully! Your order number is '+res.id)
             setInterval(()=>location.href='/my-orders',2000)
           })
@@ -153,7 +147,6 @@ export class OrderFormComponent implements OnInit {
 getContact(event:any){
   if(event.target.checked){
    const user=this.token.getUser()
-   console.log(user)
    const userId=this.token.getUser().id
    this.userService.getUser(userId).subscribe((res:any)=>{
     this.orderForm.patchValue({
