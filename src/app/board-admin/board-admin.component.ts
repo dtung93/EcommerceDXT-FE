@@ -104,7 +104,6 @@ export class BoardAdminComponent implements OnInit {
   }
   addUserPanel(){
    this.showUserPanel =!this.showUserPanel
-   console.log(this.showUserPanel)
   }
   getValueSelected(event: any) {
     this.roleSelected = event
@@ -195,7 +194,6 @@ export class BoardAdminComponent implements OnInit {
   addRole(id: any) {
     if (this.checkRole(id)) {
       this.selectedUser.roles.push(this.roleSelected)
-      console.log(this.roleSelected)
     }
 
   }
@@ -240,7 +238,6 @@ export class BoardAdminComponent implements OnInit {
 
   deleteRole(index: any) {
     this.selectedUser.roles?.splice(index, 1)
-    console.log(this.selectedUser.roles)
   }
   userModal(id: number) {
    
@@ -249,11 +246,9 @@ export class BoardAdminComponent implements OnInit {
   }
 
 changeRole(event:any){
-  console.log(event.target.value)
   let role=this.selectedRoles.find((x:any)=>x.tag==event.target.value)
   this.roleSelected.id=role.id
   this.roleSelected.name=role.name
-  console.log(this.roleSelected)
 }
   updateUser(){
     const data = {
@@ -278,7 +273,6 @@ changeRole(event:any){
     }
     else {
       this.userService.updateUser(data).subscribe((res:any) => {
-        console.log(res)
         this.display = 'none'
         this.toastr.info("User " + res.data.data.user.username+" is updated")
         this.updateError==''
@@ -295,7 +289,6 @@ changeRole(event:any){
   }
   deleteUser(id: number) {
     this.userService.deleteUser(id).subscribe((res) => {
-      console.log(id)
       this.selectedUser = this.users.find(user => user.id === id);
       this.users = this.users.filter(user => user.id != id)
       this.closeDeleteModal?.nativeElement.click()

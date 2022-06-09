@@ -35,7 +35,6 @@ name:string=''
    this.getProduct(this.route.snapshot.params['id'])
     if(this.token.getToken()){
       this.roles=this.token.getUser().roles
-      console.log(this.roles[0].substring(5,14))
      if(this.roles.includes("ROLE_MODERATOR")&&this.token.getUser().enabled||this.roles.includes("ROLE_ADMIN")&&this.token.getUser().enabled||this.roles.includes('ROLE_MASTER')&&this.token.getUser().enabled){
        this.showButton=true
        console.log(this.productForm)
@@ -86,14 +85,13 @@ getProduct(id:number){
      editBy:this.roles[0].substring(5,14)+" "+this.token.getUser().username,
      date:new Date(),
     })
-    console.log(this.productForm.value)
     if(this.product.qty<=5){
       this.smallStock=true
     }
     if(this.product.qty==0){
       this.outOfStock=true
     }
-    console.log(this.product)
+
    
   })
 }
@@ -118,7 +116,6 @@ if(this.productForm.invalid){
 }
 else{
   this.api.updateProduct(this.productForm.value).subscribe((res)=>{
-    console.log(res)
     this.display='none'
     this.nameError=false
     this.quantityError=false
@@ -138,7 +135,6 @@ addProductToCart(){
   this.cartService.addToCart(productId).subscribe((res)=>{
     this.cartService.updateCartTotal(res.totalItems)
     this.toastr.info(productName+' added to cart')
-  console.log('success')
   })
   }
 }

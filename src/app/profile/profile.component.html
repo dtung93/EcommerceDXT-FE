@@ -20,9 +20,60 @@
 
 <!-- PROFILE BOARD -->
   <div class="row">
-    <div class="col-xs-12 col-sm-6 col-md-3" style="text-align:center;margin-right:0px">
-      <img src={{selectedUser.avatar}} src="asdasda" onerror="this.src='/assets/img/noimage.jpg'">
+    <div class="col-xs-12 col-sm-6 col-md-3 image" style="text-align:center;margin-right:0px">
+    <label for="file-input"><img id="userphoto" data-bs-toggle="modal" data-bs-target="#avatar"  [src] ='defaultImage'
+      (error)="noImageFound($event)"
+      >
+      </label>
+      <button *ngIf="!noImage" data-bs-toggle="modal" data-bs-target="#deletePicture" class="btn btn-sm btn-danger mt-2">Delete Photo</button>
     </div>
+
+<!-- CHANGE PROFILE PICTURE MODAL -->
+<div class="modal fade" id="avatar" tabindex="-1" aria-labelledby="avatar" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header text-white" style="background-color: #2d8bca">
+        <h5 class="modal-title" id="exampleModalLabel">Update Profile Picture</h5>
+        <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Close"><span
+          aria-hidden="true"></span></button>
+      </div>
+      <div class="modal-body">
+        <input type="file" accept="image/png, image/jpeg, image/jpg, image/gif" (change)="selectFile($event)">
+        <img style="width:100px;height:80px" id="photo" [src]="imageSrc" alt="your image" >
+      </div>
+      <div class="modal-footer">
+        <button style="width:121px" #closeUpload type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button  type="button" class="btn btn-primary" [disabled]="!selectedFile" (click)="upload()">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- DELETE PICTURE -->
+<div class="modal fade" id="deletePicture" tabindex="-1"  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header text-white" style="background-color: #2d8bca">
+        <h5 class="modal-title" id="exampleModalLabel">Delete profile picture</h5>
+        <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Close"><span
+          aria-hidden="true"></span></button>
+      </div>
+      <div class="modal-body">
+        Delete this photo?
+      </div>
+      <div class="modal-footer">
+        <button style="width:121px" #closeDeletePicture type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button  style="width:121px" type="button" class="btn btn-primary" (click)="deletePicture()">Yes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
     <div class="col xs-12 col-md-6">
       <table style="width:70%">
         <tr>
@@ -55,6 +106,13 @@
         <button class="btn text-white profile" data-bs-toggle="modal" data-bs-target="#changePassword"
           (click)="getUserDetail(selectedUser.id)">Change password</button>
       </div>
+
+
+
+
+
+
+
 
       <!-- CHANGE PASSWORD MODAL -->
       <div class="modal" tabindex="-1" role="dialog" id="changePassword" aria-labelledby="changePassword"
@@ -214,7 +272,6 @@
       </div>
     </div>
   </div>
-
 
 
 </div>

@@ -8,68 +8,75 @@ import { ConsoleLogger } from '@angular/compiler-cli';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { confirmField } from '../service/validator';
 import { roleName } from '../model/role.model';
+import { FileUploadService } from '../service/file-upload.service';
+import { HttpEventType } from '@angular/common/http';
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.scss']
 })
 export class ProfileComponent implements OnInit {
-  constructor(private fb: FormBuilder, private token: TokenStorageService, private userService: UserService, private toastr: ToastrService) {
+  constructor(private uploadService: FileUploadService, private fb: FormBuilder, private token: TokenStorageService, private userService: UserService, private toastr: ToastrService) {
     this.changePasswordForm = this.fb.group({
       oldPassword: ['', [Validators.required]],
       newPassword: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(50)]],
       confirmNewPassword: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(50)]]
     }, { validator: confirmField('newPassword', 'confirmNewPassword') })
-this.updateProfileForm=this.fb.group({
-id:[null],
-email:['',[Validators.required]],
-phone:['',[Validators.required]],
-address:['',[Validators.required]]
-})
+    this.updateProfileForm = this.fb.group({
+      id: [null],
+      email: ['', [Validators.required]],
+      phone: ['', [Validators.required]],
+      address: ['', [Validators.required]]
+    })
   }
   ngOnInit(): void {
     if (this.token.getToken()) {
-      let userId=this.token.getUser().id
-      this.userService.getUser(userId).subscribe((res)=>{
-          this.selectedUser=res
-          this.updateProfileForm.patchValue({
-          id:this.selectedUser.id,
-          email:this.selectedUser.email,
-          phone:this.selectedUser.phone,
-          address:this.selectedUser.address
-          })
-          console.log(this.selectedUser)
-          if (this.selectedUser.enabled == true) {
-            if (this.selectedUser.roles.find((element) => element.name == roleName.ma)) {
-              this.isMaster = true
-              console.log('Master? ' + this.isMaster)
-            }
-            if (this.selectedUser.roles.find(element => element.name == roleName.a)) {
-              this.isAdmin = true
-              console.log("Admin? " + this.isAdmin)
-            }
-            if (this.selectedUser.roles.find(element => element.name == roleName.mo))
-             { this.isModerator = true
-            console.log("Moderator? " + this.isModerator)}
+      let userId = this.token.getUser().id
+      this.getDefaultImage(userId)
+      this.userId = userId
+      this.userService.getUser(userId).subscribe((res) => {
+        this.selectedUser = res
+        this.updateProfileForm.patchValue({
+          id: this.selectedUser.id,
+          email: this.selectedUser.email,
+          phone: this.selectedUser.phone,
+          address: this.selectedUser.address
+        })
+        if (this.selectedUser.enabled == true) {
+          if (this.selectedUser.roles.find((element) => element.name == roleName.ma)) {
+            this.isMaster = true
           }
-          else {
-            this.isDisabled = true
-            this.toastr.error('Account not activated!')
+          if (this.selectedUser.roles.find(element => element.name == roleName.a)) {
+            this.isAdmin = true
+        
           }
+          if (this.selectedUser.roles.find(element => element.name == roleName.mo)) {
+            this.isModerator = true
+       
+          }
+        }
+        else {
+          this.isDisabled = true
+          this.toastr.error('Account not activated!')
+        }
       })
-  
+
     }
   }
-  address:any
-  phone:any
-  email:any
-  updateError=false
+
+  noImage:boolean=false
+  uploadError: string = ''
+  imageSrc: any
+  address: any
+  phone: any
+  email: any
+  updateError = false
   pushBottom = false
   username: string = ''
-  updateIsSubmitted=false
+  updateIsSubmitted = false
   isSubmitted = false
   changePasswordForm: FormGroup
-  updateProfileForm:FormGroup
+  updateProfileForm: FormGroup
   passwordError: string = ''
   roleSelected: any = null
   display = 'none'
@@ -81,24 +88,73 @@ address:['',[Validators.required]]
   selectedUser = new User()
   selectedUserRoles: any[] = []
   width = 'width:100%;backround-color:#145580'
-  updateProfileError=''
+  updateProfileError = ''
+  selectedFile?: FileList;
+  currentFile?: File;
+  userId: string = ''
+  defaultImage:string=''
   selectedRoles: any = [
     { id: 1, name: 'ROLE_USER', tag: 'User' },
     { id: 2, name: 'ROLE_MODERATOR', tag: 'Moderator' }, { id: 3, name: "ROLE_ADMIN", tag: 'Admin' }
   ]
-
+  @ViewChild('closeUpload') closeUpload?:ElementRef
   @ViewChild('closeUpdateModal') closeUpdateModal?: ElementRef
-  @ViewChild('closeChangePassword') closeChangePassword?:ElementRef
+  @ViewChild('closeChangePassword') closeChangePassword?: ElementRef
+  @ViewChild('closeDeletePicture') closeDeletePicture?:ElementRef
   getUserDetail(id: number) {
     this.userService.getUser(id).subscribe((res) => {
       this.selectedUser = res
       this.selectedUser.roles = res.roles
-      this.email=res.email
-      this.phone=res.phone
-      this.address=res.address
+      this.email = res.email
+      this.phone = res.phone
+      this.address = res.address
     })
   }
+  getDefaultImage(userId:string){
+        this.defaultImage='http://localhost:8080/api/file/' + userId
+  }
+ noImageFound(event:any){
+   this.noImage=true
+   event.target.src='/assets/img/noimage.jpg'
+ }
+  selectFile(event: any): void {
+    this.selectedFile = event.target.files;
+    if (event.target.files && event.target.files[0]) {
+      const file = event.target.files[0];
 
+      const reader = new FileReader();
+      reader.onload = () => { this.imageSrc = reader.result; }
+
+      reader.readAsDataURL(file);
+    }
+  }
+  upload(): void {
+
+    if (this.selectedFile) {
+      const file: File | null = this.selectedFile.item(0);
+      const userId: string | null = this.userId
+      if (file && userId) {
+        this.currentFile = file;
+        this.uploadService.upload(userId, this.currentFile).subscribe((res: any) => {
+          this.closeUpload?.nativeElement.click()
+          this.imageSrc=null
+          this.toastr.info('Your profile picture has been updated!')
+          location.reload()
+        }, (err: any) => {
+         this.toastr.error(err.error.message)
+        }
+        );
+      }
+      this.selectedFile = undefined;
+    }
+  }
+  deletePicture(){
+  
+     this.uploadService.deleteFile(this.userId).subscribe(()=>{
+       this.closeDeletePicture?.nativeElement.click()
+       this.toastr.info('Your profile photo has been deleted')
+     },error=>{this.toastr.error(error.error.errorMessage)})
+  }
   closeModal() {
     this.display = 'none'
   }
@@ -111,7 +167,6 @@ address:['',[Validators.required]]
       roles: this.selectedUser.roles
     }
     this.userService.updateRole(data).subscribe((res) => {
-      console.log(res)
       this.display = 'none'
       this.toastr.info('Your role has changed! Please login again')
       setInterval(
@@ -122,52 +177,48 @@ address:['',[Validators.required]]
       )
     })
   }
-  testModal() {
-    console.log(this.selectedUser.username)
-  }
   updateUser(): void {
-    this.updateIsSubmitted=true
+    this.updateIsSubmitted = true
     const data = {
-     user:{ id: this.selectedUser.id,
-      email: this.selectedUser.email,
-      username: this.selectedUser.username,
-      password: this.selectedUser.password,
-      address: this.selectedUser.address,
-      phone: this.selectedUser.phone,
-     }
-     ,email:this.updateProfileForm.controls['email'].value,
-     phone:this.updateProfileForm.controls['phone'].value,
-     address:this.updateProfileForm.controls['address'].value,
-     roles:[
-       this.selectedUser.roles[0]
-     ]
+      user: {
+        id: this.selectedUser.id,
+        email: this.selectedUser.email,
+        username: this.selectedUser.username,
+        password: this.selectedUser.password,
+        address: this.selectedUser.address,
+        phone: this.selectedUser.phone,
+      }
+      , email: this.updateProfileForm.controls['email'].value,
+      phone: this.updateProfileForm.controls['phone'].value,
+      address: this.updateProfileForm.controls['address'].value,
+      roles: [
+        this.selectedUser.roles[0]
+      ]
     }
-if(this.updateProfileForm.invalid){
-  this.toastr.error('Please check your inputs again!')
-}
-else{
- this.userService.updateUser(data).subscribe((res) => {
-      console.log(res)
-      this.closeUpdateModal?.nativeElement.click();
-      this.toastr.info("Your account is updated!")
-      this.updateError=false
-    }, error => {
-      console.log(error.error.errorMessage)
-      this.updateError=true
-      this.updateProfileError=error.error.errorMessage
-    })
-}
-   
+    if (this.updateProfileForm.invalid) {
+      this.toastr.error('Please check your inputs again!')
+    }
+    else {
+      this.userService.updateUser(data).subscribe((res) => {
+        this.closeUpdateModal?.nativeElement.click();
+        this.toastr.info("Your account is updated!")
+        this.updateError = false
+      }, error => {
+        this.updateError = true
+        this.updateProfileError = error.error.errorMessage
+      })
+    }
+
   }
-removeUpdateError(){
-  this.updateProfileForm.patchValue({
-    id:this.selectedUser.id,
-    email:this.selectedUser.email,
-    phone:this.selectedUser.phone,
-    address:this.selectedUser.address
+  removeUpdateError() {
+    this.updateProfileForm.patchValue({
+      id: this.selectedUser.id,
+      email: this.selectedUser.email,
+      phone: this.selectedUser.phone,
+      address: this.selectedUser.address
     })
-  this.updateError=false
-}
+    this.updateError = false
+  }
   addRole(id: any) {
     if (this.checkRole(id)) {
       this.selectedUser.roles.push(this.roleSelected)
@@ -180,21 +231,13 @@ removeUpdateError(){
       && !existRole)
   }
 
-  deleteRole(index: any) {
-    this.selectedUser.roles?.splice(index, 1)
-    console.log(this.selectedUser.roles)
-  }
-
   onChangeRole(event: any) {
-    console.log(event.target.value);
     const roleUpdate = this.selectedRoles.find((r: any) => r.id == event.target.value)
-    console.log(roleUpdate);
     const roleParam = {
       id: roleUpdate.id,
       name: roleUpdate.name
     }
     this.selectedUser.roles = [roleParam];
-    console.log(this.selectedUser.roles)
   }
   submitChangePasswordForm() {
     this.isSubmitted = true
@@ -218,7 +261,7 @@ removeUpdateError(){
             this.token.signOut()
           }
         )
-      }, error => { this.passwordError = "You have entered a "+error.error.errorMessage })
+      }, error => { this.passwordError = "You have entered a " + error.error.errorMessage })
     }
   }
   resetForm() {

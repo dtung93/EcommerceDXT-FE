@@ -51,11 +51,9 @@ updatePassword(){
     this.isSubmitted=false
     this.invalidToken=false
     this.passwordForm.reset()
-    console.log(res)
     this.toastr.info('Your password has been successfully updated! Please login again')
     setInterval(()=>location.href='/login',2000)
   },err=>{
-    console.log(err.error.message)
     this.invalidToken=true
     this.toastr.error('Invalid or expired token')
   })

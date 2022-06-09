@@ -121,14 +121,12 @@ export class BoardMasterComponent implements OnInit {
       this.users = res.data.users.users?.map((user: any) => {
         return { ...user, editable: this.checkRoleCondition(user) }
       })
-      console.log(this.users)
     }, () => { this.noUserError = 'No users could be found' })
 
   }
 
   addUserPanel() {
     this.showUserPanel = !this.showUserPanel
-    console.log(this.showUserPanel)
   }
   addUser() {
     this.isSubmitted = true
@@ -149,7 +147,6 @@ export class BoardMasterComponent implements OnInit {
         this.toastr.info("New account is successfully added")
       }, error => {
         this.addUserFailed = true
-        console.log(error.error.message)
         this.errorMessage = error.error.message
       })
     }
@@ -160,7 +157,7 @@ export class BoardMasterComponent implements OnInit {
     id:role.id,
     name:role.name
   }
-    console.log(this.roleSelected)
+
   }
 
   getRequestParams(username: string, page: number, pageSize: number) {
@@ -197,12 +194,10 @@ export class BoardMasterComponent implements OnInit {
       this.users = res.data.users.users?.map((user: any) => {
         return { ...user, editable: this.checkRoleCondition(user) }
       })
-
-      console.log(res)
       this.totalAccounts =  res.data.users.totalUsers
       this.count = res.data.users.totalUsers
       this.page = res.data.users.currentPage + 1
-      console.log(this.users)
+
 
     })
   }
@@ -244,7 +239,6 @@ export class BoardMasterComponent implements OnInit {
       this.users = res.data.users.users?.map((user: any) => {
         return { ...user, editable: this.checkRoleCondition(user) }
       })
-      console.log(this.users)
     }, () => { this.noUserError = 'No users could be found' })
   }
   clearFilter() {
@@ -264,7 +258,6 @@ export class BoardMasterComponent implements OnInit {
   addRole(id: any) {
     if (this.checkRole(id)) {
       this.selectedUser.roles.push(this.roleSelected)
-      console.log(this.roleSelected)
     }
 
   }
@@ -314,7 +307,6 @@ export class BoardMasterComponent implements OnInit {
 
   updateUser(): void {
     this.updateUserSubmitted=true
-    console.log(this.selectedUser.roles[0])
     const params = {
       user: {
         id: this.selectedUser.id,
@@ -331,13 +323,11 @@ export class BoardMasterComponent implements OnInit {
       phone: this.updateUserForm.controls['phone'].value,
       roles: [this.roleSelected]
     }
-console.log(params)
 if(this.updateUserForm.invalid){
   this.toastr.error('Error submitting form. Please check your inputs again')
 }
 else{
     this.userService.updateUser(params).subscribe((res: any) => {
-      console.log(res)
       this.display = 'none'
       this.toastr.info("User " + res.data.data.user.username + " is updated")
       this.error=false
@@ -352,7 +342,6 @@ else{
   }
   deleteUser(id: number) {
     this.userService.deleteUser(id).subscribe((res: any) => {
-      console.log(id)
       this.selectedUser = this.users.find(user => user.id === id)
       this.closeDeleteModal?.nativeElement.click()
       this.users = this.users.filter(user => user.id != id)

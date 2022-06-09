@@ -24,10 +24,12 @@ export class FileUpLoadComponent implements OnInit {
   upload(): void {
     this.progress = 0;
     if (this.selectedFiles) {
-      const file: File | null = this.selectedFiles.item(0);
-      if (file) {
+      const file: File |null = this.selectedFiles.item(0);
+      const userId:string|null ='37'
+      if (file&&userId) {
         this.currentFile = file;
-        this.uploadService.upload(this.currentFile).subscribe(
+        console.log(this.currentFile?this.currentFile:null+" "+ userId)
+        this.uploadService.upload(userId,this.currentFile).subscribe(
           (event: any) => {
             if (event.type === HttpEventType.UploadProgress) {
               this.progress = Math.round(100 * event.loaded / event.total);
@@ -39,8 +41,8 @@ export class FileUpLoadComponent implements OnInit {
           (err: any) => {
             console.log(err);
             this.progress = 0;
-            if (err.error && err.error.message) {
-              this.message = err.error.message;
+            if (err.error && err.error.errorMessage) {
+              this.message = err.error.errorMessage;
             } else {
               this.message = 'Could not upload the file!';
             }
